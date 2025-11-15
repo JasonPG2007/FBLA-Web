@@ -1,1 +1,220 @@
+@import url("https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  font-weight: normal;
+  color: #072138;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 220, 189, 0.8),
+    rgba(241, 253, 249, 1),
+    rgba(255, 189, 131, 0.3),
+    rgba(241, 253, 249, 0.6)
+  );
+
+  /* max-width: 100%;
+  background: hsla(187, 82%, 65%, 1);
+
+  background: linear-gradient(
+    135deg,
+    hsla(187, 82%, 65%, 1) 0%,
+    hsla(65, 77%, 63%, 1) 50%,
+    hsla(327, 67%, 74%, 1) 100%
+  );
+
+  background: -moz-linear-gradient(
+    135deg,
+    hsla(187, 82%, 65%, 1) 0%,
+    hsla(65, 77%, 63%, 1) 50%,
+    hsla(327, 67%, 74%, 1) 100%
+  );
+
+  background: -webkit-linear-gradient(
+    135deg,
+    hsla(187, 82%, 65%, 1) 0%,
+    hsla(65, 77%, 63%, 1) 50%,
+    hsla(327, 67%, 74%, 1) 100%
+  );
+
+  background-repeat: no-repeat; */
+}
+
+#wrapper {
+  width: 90%;
+  margin: auto;
+}
+
+.poppins-font {
+  font-family: "Poppins", sans-serif;
+  font-weight: normal;
+}
+.big-block-about {
+  margin: auto;
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f5f4c2, #ffbd83);
+  margin-bottom: 4%;
+}
+
+.big-block-about h1 {
+  width: 100%;
+  font-family: "Mochiy Pop One", sans-serif;
+  font-weight: 400;
+  font-size: 40px;
+  margin-top: 2%;
+  margin-bottom: 2%;
+}
+
+.big-block-about .content {
+  text-align: left;
+  column-gap: 20px;
+  width: 90%;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 50% 50%;
+  justify-content: center;
+  align-items: center;
+}
+
+.big-block-about .content-bottom {
+  text-align: left;
+  column-gap: 20px;
+  width: 90%;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-report {
+  font-family: "Poppins", sans-serif;
+  background-color: #ec7207;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 10px;
+}
+
+.offer-block {
+  margin-top: 4%;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  column-gap: 2%;
+  margin-bottom: 4%;
+}
+.offer {
+  margin: auto;
+  text-align: left;
+  padding: 30px 20px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #f5f4c2, #ffbd83);
+  margin-bottom: 3%;
+  position: relative;
+}
+
+.offer-middle {
+  position: relative;
+  margin: auto;
+  text-align: left;
+  padding: 30px 20px;
+  border-radius: 10px;
+  background: linear-gradient(-135deg, #f5f4c2, #ffbd83);
+  margin-bottom: 3%;
+}
+
+.offer-h1 {
+  font-size: 35px;
+}
+
+.offer label {
+  position: absolute;
+  background-color: #fc8a26;
+  padding: 8px 40px;
+  border-radius: 10px;
+  color: #fff;
+  top: -25px;
+  left: 40px;
+}
+
+.offer-middle label {
+  position: absolute;
+  background-color: #fc8a26;
+  padding: 8px 40px;
+  border-radius: 10px;
+  color: #fff;
+  top: -25px;
+  left: 40px;
+}
+
+.offer-content {
+  padding: 10px;
+}
+
+.quick-search {
+  width: max-content;
+  margin: auto;
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+  gap: 20px;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #fff;
+  margin-bottom: 3%;
+}
+
+.categories {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.categories .left {
+  margin-right: 30px;
+}
+
+.location {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.location .left {
+  margin-right: 30px;
+}
+
+.btn-quick-search {
+  display: flex;
+  justify-content: center;
+  font-family: "Poppins", sans-serif;
+  background-color: #fdcc4b;
+  border: none;
+  color: #fff;
+  border-radius: 10px;
+}
+
+.btn-quick-search button {
+  font-weight: bold;
+  /* font-size: 16px; */
+  background-color: transparent;
+  cursor: pointer;
+  padding: 10px 25px;
+  border: none;
+}
+.pipe {
+  font-size: 40px;
+  font-weight: 200;
+}
+
+.select {
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
+}
