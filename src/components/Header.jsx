@@ -3,10 +3,18 @@ export default function Header() {
     <>
       <nav>
         <ul>
-          <li>Find My Stuff</li>
-          <li>About us</li>
-          <li>How it works</li>
-          <li>Lost & Found</li>
+          <li>
+            <a href="">Find My Stuff</a>
+          </li>
+          <li>
+            <a href="/about">About us</a>
+          </li>
+          <li>
+            <a href="">How it works</a>
+          </li>
+          <li>
+            <a href="">Lost & Found</a>
+          </li>
           <li>
             <img src="" alt="avatar" />
           </li>
