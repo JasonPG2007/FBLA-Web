@@ -4,7 +4,7 @@ export default function Header() {
       <nav>
         <ul>
           <li>
-            <a href="">Find My Stuff</a>
+            <a href="/find-stuff">Find My Stuff</a>
           </li>
           <li>
             <a href="/about">About us</a>

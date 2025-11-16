@@ -17,32 +17,7 @@ body {
     rgba(255, 189, 131, 0.3),
     rgba(241, 253, 249, 0.6)
   );
-
-  /* max-width: 100%;
-  background: hsla(187, 82%, 65%, 1);
-
-  background: linear-gradient(
-    135deg,
-    hsla(187, 82%, 65%, 1) 0%,
-    hsla(65, 77%, 63%, 1) 50%,
-    hsla(327, 67%, 74%, 1) 100%
-  );
-
-  background: -moz-linear-gradient(
-    135deg,
-    hsla(187, 82%, 65%, 1) 0%,
-    hsla(65, 77%, 63%, 1) 50%,
-    hsla(327, 67%, 74%, 1) 100%
-  );
-
-  background: -webkit-linear-gradient(
-    135deg,
-    hsla(187, 82%, 65%, 1) 0%,
-    hsla(65, 77%, 63%, 1) 50%,
-    hsla(327, 67%, 74%, 1) 100%
-  );
-
-  background-repeat: no-repeat; */
+  background-repeat: no-repeat;
 }
 
 a {
@@ -172,7 +147,7 @@ a {
   padding: 20px;
   border-radius: 10px;
   background-color: #fff;
-  margin-bottom: 3%;
+  margin-bottom: 4%;
 }
 
 .categories {
@@ -211,6 +186,7 @@ a {
   background-color: transparent;
   cursor: pointer;
   padding: 10px 25px;
+  font-size: 16px;
   border: none;
 }
 .pipe {
@@ -221,5 +197,56 @@ a {
 .select {
   background-color: transparent;
   cursor: pointer;
+  border: none;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  background-color: #072138;
+  color: #fff;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 40px 0;
+}
+
+footer .left {
+  font-family: "Mochiy Pop One", sans-serif;
+  font-weight: 400;
+  font-size: 30px;
+}
+
+footer .middle {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 20px;
+}
+
+footer .middle .top a {
+  margin-right: 10%;
+}
+
+footer .middle .bottom a {
+  margin-right: 10%;
+  font-size: 18px;
+}
+
+footer .right form {
+  margin-top: 100px;
+  margin: auto;
+  width: max-content;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+footer .right input {
+  padding: 20px;
+  border: none;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+footer .right button {
+  background-color: #fdcc4b;
   border: none;
 }
