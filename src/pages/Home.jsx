@@ -20,7 +20,6 @@ export default function Home() {
         <p
           style={{ fontSize: "20px", marginLeft: "1200px", marginTop: "200px" }}
         >
-          {" "}
           <strong>Lost Stuff</strong>
         </p>
       </div>

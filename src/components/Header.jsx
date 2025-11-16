@@ -11,7 +11,7 @@ export default function Header() {
         }}
       >
         <a href="/">
-          <h1 className="homepageh1">FIND MY STUFF</h1>
+          <h1 className="homepageh1" style={{ fontFamily: "Mochiy Pop One, sans-serif" }}>Back2Me</h1>
         </a>
         <div
           style={{
@@ -45,6 +45,7 @@ export default function Header() {
               padding: "10px",
               borderRadius: "8px",
               cursor: "pointer",
+              // border: "none",
             }}
           >
             Report a post
