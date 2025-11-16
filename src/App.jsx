@@ -6,7 +6,9 @@ export default function App() {
   return (
     <>
       <Header></Header>
-      <Router></Router>
+      <div id="wrapper">
+        <Router></Router>
+      </div>
       <Footer></Footer>
     </>
   );
