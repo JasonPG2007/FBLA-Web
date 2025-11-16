@@ -1,28 +1,56 @@
 export default function Header() {
   return (
     <>
-      <nav>
-        <ul>
-          <li>
-            <a href="/find-stuff">Find My Stuff</a>
-          </li>
-          <li>
-            <a href="/about">About us</a>
-          </li>
-          <li>
-            <a href="">How it works</a>
-          </li>
-          <li>
-            <a href="">Lost & Found</a>
-          </li>
-          <li>
-            <img src="" alt="avatar" />
-          </li>
-          <li>
-            <button>Report a stuff</button>
-          </li>
-        </ul>
-      </nav>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "0 20px",
+          backgroundColor: "#fffde3ff",
+        }}
+      >
+        <a href="/">
+          <h1 className="homepageh1">FIND MY STUFF</h1>
+        </a>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "0 20px",
+          }}
+        >
+          <a href="/about">
+            <p className="homepageh2" style={{ marginRight: "40px" }}>
+              About us
+            </p>
+          </a>
+          <a href="/how-it-works">
+            <p className="homepageh2" style={{ marginRight: "40px" }}>
+              How it works
+            </p>
+          </a>
+          <a href="/lost-and-found">
+            <p className="homepageh2" style={{ marginRight: "40px" }}>
+              Lost & Found
+            </p>
+          </a>
+          <img width={50} src="./Image/user_icon.png" alt="avatar" />
+          <button
+            className="homepageh3"
+            style={{
+              marginLeft: "60px",
+              backgroundColor: "#ff6a00ff",
+              padding: "10px",
+              borderRadius: "8px",
+              cursor: "pointer",
+            }}
+          >
+            Report a post
+          </button>
+        </div>
+      </div>
     </>
   );
 }
