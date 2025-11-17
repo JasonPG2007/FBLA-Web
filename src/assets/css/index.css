@@ -41,6 +41,7 @@ a {
   border-radius: 10px;
   background: linear-gradient(135deg, #f5f4c2, #ffbd83);
   margin-bottom: 4%;
+  margin-top: 4%;
 }
 
 .big-block-about h1 {
@@ -237,10 +238,12 @@ footer .right form {
   width: max-content;
   background-color: #fff;
   border-radius: 8px;
+  margin-top: 10px;
 }
 
 footer .right input {
   padding: 20px;
+  height: 40px;
   border: none;
   border-top-left-radius: 8px;
   border-bottom-left-radius: 8px;
@@ -248,5 +251,9 @@ footer .right input {
 
 footer .right button {
   background-color: #fdcc4b;
+  border-radius: 8px;
+  padding: 0 25px;
+  cursor: pointer;
   border: none;
+  height: 40px;
 }
