@@ -10,13 +10,11 @@ body {
   font-family: "Poppins", sans-serif;
   font-weight: normal;
   color: #072138;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 220, 189, 0.8),
-    rgba(241, 253, 249, 1),
-    rgba(255, 189, 131, 0.3),
-    rgba(241, 253, 249, 0.6)
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 220, 189, 0.8),
+      rgba(241, 253, 249, 1),
+      rgba(255, 189, 131, 0.3),
+      rgba(241, 253, 249, 0.6));
   background-repeat: no-repeat;
 }
 
@@ -34,6 +32,7 @@ a {
   font-family: "Poppins", sans-serif;
   font-weight: normal;
 }
+
 .big-block-about {
   margin: auto;
   text-align: center;
@@ -91,6 +90,7 @@ a {
   column-gap: 2%;
   margin-bottom: 4%;
 }
+
 .offer {
   margin: auto;
   text-align: left;
@@ -190,6 +190,7 @@ a {
   font-size: 16px;
   border: none;
 }
+
 .pipe {
   font-size: 40px;
   font-weight: 200;
