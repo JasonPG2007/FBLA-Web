@@ -7,7 +7,7 @@ export default function Footer() {
         </div>
         <div className="middle">
           <div className="top">
-            <a href="">How it works</a>
+            <a href="/how-it-works">How it works</a>
             <a href="">Contact</a>
             <a href="">Blog</a>
           </div>
