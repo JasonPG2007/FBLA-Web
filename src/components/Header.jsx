@@ -11,7 +11,12 @@ export default function Header() {
         }}
       >
         <a href="/">
-          <h1 className="homepageh1" style={{ fontFamily: "Mochiy Pop One, sans-serif" }}>Back2Me</h1>
+          <h1
+            className="homepageh1"
+            style={{ fontFamily: "Mochiy Pop One, sans-serif" }}
+          >
+            Back2Me
+          </h1>
         </a>
         <div
           style={{
