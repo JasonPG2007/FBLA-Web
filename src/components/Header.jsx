@@ -6,12 +6,17 @@ export default function Header() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "0 20px",
+          padding: "10px 20px",
           backgroundColor: "#fffde3ff",
         }}
       >
         <a href="/">
-          <h1 className="homepageh1">FIND MY STUFF</h1>
+          <h1
+            className="homepageh1"
+            style={{ fontFamily: "Mochiy Pop One, sans-serif" }}
+          >
+            Back2Me
+          </h1>
         </a>
         <div
           style={{
@@ -41,10 +46,12 @@ export default function Header() {
             className="homepageh3"
             style={{
               marginLeft: "60px",
-              backgroundColor: "#ff6a00ff",
-              padding: "10px",
+              backgroundColor: "#f78f2eff",
+              color: "white",
+              padding: "10px 15px",
               borderRadius: "8px",
               cursor: "pointer",
+              border: "none",
             }}
           >
             Report a post
