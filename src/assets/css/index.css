@@ -20,6 +20,10 @@ body {
   background-repeat: no-repeat;
 }
 
+input {
+  font-family: "Poppins", sans-serif;
+}
+
 a {
   text-decoration: none;
   color: unset;
@@ -148,7 +152,6 @@ a {
   padding: 20px;
   border-radius: 10px;
   background-color: #fff;
-  margin-bottom: 4%;
 }
 
 .categories {
@@ -209,6 +212,7 @@ footer {
   display: grid;
   grid-template-columns: auto auto auto;
   padding: 40px 0;
+  margin-top: 4%;
 }
 
 footer .left {
@@ -250,10 +254,185 @@ footer .right input {
 }
 
 footer .right button {
+  font-family: "Poppins", sans-serif;
   background-color: #fdcc4b;
   border-radius: 8px;
   padding: 0 25px;
   cursor: pointer;
   border: none;
   height: 40px;
+}
+
+/* SEARCH PAGE */
+.filter {
+  margin-top: 4%;
+}
+
+.top-filter {
+  display: flex;
+  gap: 25px;
+}
+
+.status-filter {
+  position: relative;
+  padding: 10px 20px;
+}
+
+.status-filter input[type="radio"] {
+  appearance: none; /* Remove default radio */
+  -webkit-appearance: none;
+  border: 3px solid gold;
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+.status-filter input[type="radio"]:checked {
+  border-color: orange;
+  background-color: #fff;
+}
+
+.status-filter input[type="radio"] + label {
+  padding: 5px 10px;
+  margin-right: 5px;
+  color: #fdcc4b;
+  cursor: pointer;
+}
+
+.status-filter input[type="radio"]:checked + label {
+  color: #ec7207;
+}
+
+.detail-filter {
+  position: relative;
+}
+
+.detail-filter select.form-control {
+  cursor: pointer;
+}
+
+.detail-filter input.form-control::placeholder {
+  color: #5d6d7c;
+}
+
+.detail-filter input.form-control {
+  padding: 11px 20px;
+}
+
+.detail-filter .form-control {
+  appearance: none;
+  border: 1px solid #072138;
+  border-radius: 8px;
+  background-color: transparent;
+  font-size: 16px;
+  width: 230px;
+  padding: 15px 20px;
+}
+
+.detail-filter p {
+  position: absolute;
+  top: -35%;
+  background-color: #072138;
+  color: #fff;
+  padding: 1px 30px;
+  border-radius: 8px;
+  left: 10px;
+  width: max-content;
+}
+
+.detail-filter .caret-type {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.btn-use-filter {
+  font-family: "Poppins", sans-serif;
+  background-color: #fdcc4b;
+  border: none;
+  color: #072138;
+  font-weight: 600;
+  width: 230px;
+  cursor: pointer;
+  padding: 12px 25px;
+  border-radius: 10px;
+  margin-left: auto;
+}
+
+/* AUTHENTICATION CONTAINER */
+.authentication-container {
+  margin: auto;
+  margin-top: 4%;
+  width: 90%;
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.form-box {
+  width: 70%;
+  margin: auto;
+  text-align: center;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  border-radius: 8px;
+}
+
+.authentication-container .img-right {
+  background-color: #fff;
+  width: 70%;
+  margin: auto;
+}
+.authentication-container .img-right img {
+  width: 100%;
+}
+
+.form-control-authentication {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.form-control-authentication .form-control-input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.form-control-authentication label {
+  position: absolute;
+  left: 13px;
+  padding: 0 90px 0 5px;
+  top: 20px;
+  font-size: 14px;
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+  pointer-events: none;
+}
+
+.form-control-authentication .form-control-input:focus ~ label,
+.form-control-authentication .form-control-input:valid ~ label {
+  left: 13px;
+  padding: 0 5px;
+  background-color: #fff;
+  top: -3px;
+  font-size: 14px;
+}
+
+.btn-authentication {
+  font-family: "Poppins", sans-serif;
+  background-color: #fdcc4b;
+  border: none;
+  width: 200px;
+  color: #072138;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 12px 25px;
+  border-radius: 10px;
+  margin-top: 10px;
 }
