@@ -46,7 +46,7 @@ export default function Header() {
             className="homepageh3"
             style={{
               marginLeft: "60px",
-              backgroundColor: "#f67316ff",
+              backgroundColor: "#f78f2eff",
               color: "white",
               padding: "10px 15px",
               borderRadius: "8px",
