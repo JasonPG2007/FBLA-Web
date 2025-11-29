@@ -11,7 +11,7 @@ export default function Search() {
         <title>Search | Back2Me </title>
       </Helmet>
 
-      <form action="">
+      <form onSubmit={() => {}} className="search-form">
         <div className="filter">
           <div className="top-filter">
             <div className="status-filter">
@@ -106,6 +106,53 @@ export default function Search() {
           </div>
         </div>
       </form>
+
+      {/* Cards section */}
+      <div className="card-row">
+        <div className="card">
+          <div style={{ width: "100%", height: "435px" }} className="cardhover">
+            <img
+              src="./Image/keychain.avif"
+              alt="picture of stuffs"
+              style={{
+                width: "100%",
+                height: "300px",
+                objectFit: "cover",
+                backgroundColor: "white",
+              }}
+            />
+            <div className="card-text">
+              <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                Keychain
+              </h3>
+              <p>
+                Lost my keychain last week near Central Park. If found, please
+                contact me!
+              </p>
+            </div>
+          </div>
+          <div className="btn-card-see-more">
+            <a
+              href="/detail-post/1"
+              className="btn-yellow"
+              style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
+            >
+              View Details
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                window.location.href
+              )}&quote=Check%20out%20this%20awesome%20stuff!`}
+              className="btn-with-border"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ marginTop: "20px", width: "100%" }}
+            >
+              Share Stuff
+            </a>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
