@@ -351,7 +351,7 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
               Ipad 11th Gen
             </h3>
             <p>
@@ -374,7 +374,7 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
               Charger USB-C
             </h3>
             <p>
@@ -397,7 +397,7 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
               Chromebook
             </h3>
             <p>
@@ -420,7 +420,7 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>Earbuds</h3>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Earbuds</h3>
             <p>
               Lost my earbuds last week near Central Park. If found, please
               contact me!
@@ -451,7 +451,7 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
               Sponebob
             </h3>
             <p>
@@ -474,7 +474,7 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>Key</h3>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Key</h3>
             <p>
               Lost my sponebob plush toy last week near Central Park. If found,
               please contact me!
@@ -495,7 +495,7 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>Wallet</h3>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Wallet</h3>
             <p>
               Lost my wallet last week near Central Park. If found, please
               contact me!
@@ -516,7 +516,7 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
               Keychain
             </h3>
             <p>

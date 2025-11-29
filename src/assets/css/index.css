@@ -54,7 +54,47 @@ a {
   transition: all 0.3s ease-in-out;
 }
 
+.btn-yellow {
+  font-family: "Poppins", sans-serif;
+  background-color: #fdcc4b;
+  border: none;
+  width: 200px;
+  color: #072138;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 12px 25px;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-with-border {
+  font-family: "Poppins", sans-serif;
+  background-color: transparent;
+  border: 1px solid #fdcc4b;
+  width: 200px;
+  color: #072138;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 12px 25px;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
 .btn:hover {
+  transform: scale(1.05);
+}
+
+.btn-yellow:hover {
+  transform: scale(1.05);
+}
+
+.btn-with-border:hover {
   transform: scale(1.05);
 }
 
@@ -338,6 +378,10 @@ footer .right button {
 }
 
 /* SEARCH PAGE */
+.search-form {
+  margin-bottom: 4%;
+}
+
 .filter {
   margin-top: 4%;
 }
@@ -433,6 +477,27 @@ footer .right button {
   padding: 12px 25px;
   border-radius: 10px;
   margin-left: auto;
+}
+
+.btn-card-see-more {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.card-row {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.card {
+  width: 100%;
+  margin-bottom: 10%;
 }
 
 /* AUTHENTICATION CONTAINER */
