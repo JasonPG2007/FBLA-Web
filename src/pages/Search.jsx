@@ -141,7 +141,7 @@ export default function Search() {
             </a>
             <a
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-                window.location.href
+                "https://back2me.vercel.app/detail-post/1"
               )}&quote=Check%20out%20this%20awesome%20stuff!`}
               className="btn-with-border"
               target="_blank"
