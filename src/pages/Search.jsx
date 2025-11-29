@@ -1,10 +1,16 @@
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 
 export default function Search() {
   let [isDropdownOpenType, setIsDropdownOpenType] = useState(false);
   let [isDropdownOpenLocation, setIsDropdownOpenLocation] = useState(false);
   return (
     <>
+      {/* Helmet for setting the page title */}
+      <Helmet>
+        <title>Search | Back2Me </title>
+      </Helmet>
+
       <form action="">
         <div className="filter">
           <div className="top-filter">

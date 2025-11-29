@@ -1,6 +1,13 @@
+import { Helmet } from "react-helmet-async";
+
 export default function Home() {
   return (
     <>
+      {/* Helmet for setting the page title */}
+      <Helmet>
+        <title>Lost & Found | Back2Me </title>
+      </Helmet>
+
       <div style={{ display: "grid", gridTemplateColumns: "55% 30%" }}>
         <div style={{ marginTop: "83px" }}>
           <p
@@ -98,6 +105,7 @@ export default function Home() {
           alt=""
           className="move-up-down"
           width="850"
+          loading="lazy"
           style={{ objectFit: "cover" }}
         />
       </div>
@@ -334,6 +342,7 @@ export default function Home() {
           <img
             src="./Image/ipad.webp"
             alt="picture of stuffs"
+            loading="lazy"
             style={{
               width: "100%",
               height: "300px",

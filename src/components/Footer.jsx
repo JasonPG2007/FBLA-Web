@@ -2,25 +2,22 @@ export default function Footer() {
   return (
     <>
       <footer>
-        <div className="left">
+        {/* <div className="left">
           <a href="/">Back2Me</a>
-        </div>
+        </div> */}
         <div className="middle">
-          <div className="top">
+          {/* <div className="top">
             <a href="/how-it-works">How it works</a>
             <a href="">Contact</a>
-            <a href="">Blog</a>
-          </div>
+          </div> */}
           <div className="bottom">
-            <a href="">
-              <i className="fa-brands fa-facebook"></i>
-            </a>
-            <a href="">
-              <i className="fa-brands fa-instagram"></i>
-            </a>
+            <a href="/">Back2Me</a>
+            <p style={{ color: "#9CA3AF", marginTop: "10px" }}>
+              Copyright © 2025 Back2Me. All rights reserved
+            </p>
           </div>
         </div>
-        <div className="right">
+        {/* <div className="right">
           <label htmlFor="">Sign up for Newsletter</label>
           <br />
           <form>
@@ -33,7 +30,7 @@ export default function Footer() {
             />
             <button>Submit</button>
           </form>
-        </div>
+        </div> */}
       </footer>
     </>
   );
