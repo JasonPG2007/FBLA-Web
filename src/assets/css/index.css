@@ -406,8 +406,8 @@ footer .right button {
   border-radius: 50%;
 }
 .status-filter input[type="radio"]:checked {
-  border-color: orange;
-  background-color: #fff;
+  border-color: #fc8a26;
+  background-color: #fc8a26;
 }
 
 .status-filter input[type="radio"] + label {
@@ -418,7 +418,7 @@ footer .right button {
 }
 
 .status-filter input[type="radio"]:checked + label {
-  color: #ec7207;
+  color: #fc8a26;
 }
 
 .detail-filter {
@@ -491,8 +491,11 @@ footer .right button {
   display: grid;
   grid-template-columns: auto auto auto auto;
   justify-content: center;
+  padding-top: 20px;
   align-items: center;
   gap: 20px;
+  max-height: 590px;
+  overflow-y: scroll;
 }
 
 .card {
