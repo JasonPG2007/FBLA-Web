@@ -152,6 +152,178 @@ export default function Search() {
             </a>
           </div>
         </div>
+        <div className="card">
+          <div style={{ width: "100%", height: "435px" }} className="cardhover">
+            <img
+              src="./Image/earbuds.webp"
+              alt="picture of stuffs"
+              style={{
+                width: "100%",
+                height: "300px",
+                objectFit: "cover",
+                backgroundColor: "white",
+              }}
+            />
+            <div className="card-text">
+              <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                Keychain
+              </h3>
+              <p>
+                Lost my keychain last week near Central Park. If found, please
+                contact me!
+              </p>
+            </div>
+          </div>
+          <div className="btn-card-see-more">
+            <a
+              href="/detail-post/1"
+              className="btn-yellow"
+              style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
+            >
+              View Details
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                "https://back2me.vercel.app/detail-post/1"
+              )}&quote=Check%20out%20this%20awesome%20stuff!`}
+              className="btn-with-border"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ marginTop: "20px", width: "100%" }}
+            >
+              Share Stuff
+            </a>
+          </div>
+        </div>
+        <div className="card">
+          <div style={{ width: "100%", height: "435px" }} className="cardhover">
+            <img
+              src="./Image/chromebook.jpg"
+              alt="picture of stuffs"
+              style={{
+                width: "100%",
+                height: "300px",
+                objectFit: "cover",
+                backgroundColor: "white",
+              }}
+            />
+            <div className="card-text">
+              <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                Keychain
+              </h3>
+              <p>
+                Lost my keychain last week near Central Park. If found, please
+                contact me!
+              </p>
+            </div>
+          </div>
+          <div className="btn-card-see-more">
+            <a
+              href="/detail-post/1"
+              className="btn-yellow"
+              style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
+            >
+              View Details
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                "https://back2me.vercel.app/detail-post/1"
+              )}&quote=Check%20out%20this%20awesome%20stuff!`}
+              className="btn-with-border"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ marginTop: "20px", width: "100%" }}
+            >
+              Share Stuff
+            </a>
+          </div>
+        </div>
+        <div className="card">
+          <div style={{ width: "100%", height: "435px" }} className="cardhover">
+            <img
+              src="./Image/charger.webp"
+              alt="picture of stuffs"
+              style={{
+                width: "100%",
+                height: "300px",
+                objectFit: "cover",
+                backgroundColor: "white",
+              }}
+            />
+            <div className="card-text">
+              <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                Keychain
+              </h3>
+              <p>
+                Lost my keychain last week near Central Park. If found, please
+                contact me!
+              </p>
+            </div>
+          </div>
+          <div className="btn-card-see-more">
+            <a
+              href="/detail-post/1"
+              className="btn-yellow"
+              style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
+            >
+              View Details
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                "https://back2me.vercel.app/detail-post/1"
+              )}&quote=Check%20out%20this%20awesome%20stuff!`}
+              className="btn-with-border"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ marginTop: "20px", width: "100%" }}
+            >
+              Share Stuff
+            </a>
+          </div>
+        </div>
+        <div className="card">
+          <div style={{ width: "100%", height: "435px" }} className="cardhover">
+            <img
+              src="./Image/ipad.webp"
+              alt="picture of stuffs"
+              style={{
+                width: "100%",
+                height: "300px",
+                objectFit: "cover",
+                backgroundColor: "white",
+              }}
+            />
+            <div className="card-text">
+              <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                Keychain
+              </h3>
+              <p>
+                Lost my keychain last week near Central Park. If found, please
+                contact me!
+              </p>
+            </div>
+          </div>
+          <div className="btn-card-see-more">
+            <a
+              href="/detail-post/1"
+              className="btn-yellow"
+              style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
+            >
+              View Details
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                "https://back2me.vercel.app/detail-post/1"
+              )}&quote=Check%20out%20this%20awesome%20stuff!`}
+              className="btn-with-border"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ marginTop: "20px", width: "100%" }}
+            >
+              Share Stuff
+            </a>
+          </div>
+        </div>
       </div>
     </>
   );
