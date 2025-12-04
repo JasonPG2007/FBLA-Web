@@ -365,6 +365,7 @@ footer .right button {
 }
 
 @keyframes moveUpDown {
+
   0%,
   100% {
     transform: translateY(0);
@@ -461,7 +462,8 @@ footer .right button {
 }
 
 .status-filter input[type="radio"] {
-  appearance: none; /* Remove default radio */
+  appearance: none;
+  /* Remove default radio */
   -webkit-appearance: none;
   border: 3px solid gold;
   cursor: pointer;
@@ -469,12 +471,13 @@ footer .right button {
   height: 15px;
   border-radius: 50%;
 }
+
 .status-filter input[type="radio"]:checked {
   border-color: #fc8a26;
   background-color: #fc8a26;
 }
 
-.status-filter input[type="radio"] + label {
+.status-filter input[type="radio"]+label {
   padding: 5px 10px;
   margin-right: 5px;
   color: #fdcc4b;
@@ -594,6 +597,7 @@ footer .right button {
   width: 70%;
   margin: auto;
 }
+
 .authentication-container .img-right img {
   width: 100%;
 }
@@ -1040,4 +1044,108 @@ footer .right button {
 .stuff-information-box {
   max-height: 660px;
   overflow-y: scroll;
+}
+
+/* Detail icon */
+.icon-light {
+  color: #072138;
+  opacity: 0.6;
+  font-size: 13px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+/* Detail image */
+.post-image-container {
+  background: linear-gradient(135deg,
+      rgb(241, 177, 67),
+      rgb(252, 248, 172));
+  width: 100%;
+  height: max-content;
+  border-radius: 20px;
+}
+
+/* Table */
+th {
+  width: 130px;
+}
+
+.table-td {
+  padding: 0px 100px;
+  vertical-align: top;
+}
+
+.table-tr {
+  height: 40px;
+  padding-top: 20PX;
+}
+
+/* 2 two buttons */
+.btn-yellow {
+  font-family: Poppins, sans-serif;
+  background-color: #fdcc4b;
+  border: none;
+  width: 200px;
+  color: #072138;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 12px 25px;
+  border-radius: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transition: all .3s ease-in-out;
+}
+
+.btn-yellow:hover {
+  transform: scale(1.05);
+}
+
+.btn-with-border {
+  font-family: Poppins, sans-serif;
+  background-color: transparent;
+  border: 1px solid #fdcc4b;
+  width: 200px;
+  color: #072138;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 12px 25px;
+  border-radius: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transition: all .3s ease-in-out;
+}
+
+.btn-with-border:hover {
+  transform: scale(1.05);
+}
+
+.btn-card-see-more {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+
+/* Post image mini */
+.post-image-mini {
+  margin-top: 75%;
+}
+
+.post-image-mini img {
+  cursor: pointer;
+  margin: 5px;
+  transition: all .3s ease-in-out;
+  border: 1px solid #072138;
+}
+
+.post-image-mini img:hover {
+  transform: scale(1.1);
+}
+
+/* Profile */
+.input {
+  font-size: 20px;
 }
