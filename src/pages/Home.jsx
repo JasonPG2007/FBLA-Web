@@ -343,11 +343,11 @@ export default function Home() {
           />
           <div className="card-text">
             <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
-              Ipad 11th Gen
+              <a href="/detail-post">Ipad 11th Gen</a>
             </h3>
             <p>
-              Lost my Ipad 11th Gen last week near Central Park. If found,
-              please contact me!
+              <a href="/detail-post">Lost my Ipad 11th Gen last week near Central Park. If found,
+                please contact me!</a>
             </p>
           </div>
         </div>

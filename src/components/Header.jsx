@@ -41,7 +41,7 @@ export default function Header() {
               Lost & Found
             </p>
           </a>
-          <img width={50} src="./Image/user_icon.png" alt="avatar" />
+          <a href="/profile"><img width={50} src="./Image/user_icon.png" alt="avatar" /></a>
           <button
             className="homepageh3"
             style={{
