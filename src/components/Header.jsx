@@ -1,3 +1,5 @@
+import ModalReportStuff from "./ModalReportStuff";
+
 export default function Header() {
   return (
     <>
@@ -8,6 +10,10 @@ export default function Header() {
           alignItems: "center",
           padding: "10px 20px",
           backgroundColor: "#fffde3ff",
+          position: "sticky",
+          top: "0",
+          zIndex: "1",
+          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
         }}
       >
         <a href="/">
@@ -31,11 +37,6 @@ export default function Header() {
               About us
             </p>
           </a>
-          <a href="/how-it-works">
-            <p className="homepageh2" style={{ marginRight: "40px" }}>
-              How it works
-            </p>
-          </a>
           <a href="/lost-and-found">
             <p className="homepageh2" style={{ marginRight: "40px" }}>
               Lost & Found
@@ -43,21 +44,34 @@ export default function Header() {
           </a>
           <a href="/profile"><img width={50} src="./Image/user_icon.png" alt="avatar" /></a>
           <button
-            className="homepageh3"
             style={{
               marginLeft: "60px",
-              backgroundColor: "#f78f2eff",
+              backgroundColor: "#ec7207",
               color: "white",
-              padding: "10px 15px",
+              padding: "10px 20px",
               borderRadius: "8px",
               cursor: "pointer",
               border: "none",
+            }}
+            onClick={() => {
+              const modal = document.querySelector(".modal-report-stuff");
+              const overlay = document.querySelector(
+                ".modal-overlay-report-stuff"
+              );
+              modal.style.visibility = "visible";
+              modal.style.opacity = "1";
+              overlay.style.visibility = "visible";
+              overlay.style.opacity = "1";
+              document.body.style.overflow = "hidden";
             }}
           >
             Report a post
           </button>
         </div>
       </div>
+
+      {/* Modal report stuff component */}
+      <ModalReportStuff></ModalReportStuff>
     </>
   );
 }

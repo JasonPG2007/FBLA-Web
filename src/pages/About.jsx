@@ -1,6 +1,13 @@
+import { Helmet } from "react-helmet-async";
+
 export default function About() {
   return (
     <>
+      {/* Helmet for setting the page title */}
+      <Helmet>
+        <title>About Us | Back2Me </title>
+      </Helmet>
+
       <div className="big-block-about">
         <h1>
           About <span className="poppins-font">Back2Me</span>

@@ -1,6 +1,20 @@
+import { Helmet } from "react-helmet-async";
+
 export default function Home() {
+  // Functions
+  function handleSearch(e) {
+    e.preventDefault();
+
+    window.location.href = "http://localhost:5173/search";
+  }
+
   return (
     <>
+      {/* Helmet for setting the page title */}
+      <Helmet>
+        <title>Lost & Found | Back2Me </title>
+      </Helmet>
+
       <div style={{ display: "grid", gridTemplateColumns: "55% 30%" }}>
         <div style={{ marginTop: "83px" }}>
           <p
@@ -98,6 +112,7 @@ export default function Home() {
           alt=""
           className="move-up-down"
           width="850"
+          loading="lazy"
           style={{ objectFit: "cover" }}
         />
       </div>
@@ -321,19 +336,13 @@ export default function Home() {
       </div>
 
       {/* Newest images */}
-      <div
-        style={{
-          display: "flex",
-          gap: "20px",
-          padding: "0 10px",
-          marginBottom: "100px",
-        }}
-      >
+      <div className="newest-post-container">
         {/* Card img 1 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/ipad.webp"
             alt="picture of stuffs"
+            loading="lazy"
             style={{
               width: "100%",
               height: "300px",
@@ -350,10 +359,13 @@ export default function Home() {
                 please contact me!</a>
             </p>
           </div>
+
+          {/* Status */}
+          <div className="status-post-lost">Lost</div>
         </div>
 
         {/* Card img 2 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/charger.webp"
             alt="picture of stuffs"
@@ -365,7 +377,7 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
               Charger USB-C
             </h3>
             <p>
@@ -373,10 +385,13 @@ export default function Home() {
               please contact me!
             </p>
           </div>
+
+          {/* Status */}
+          <div className="status-post-found">Found</div>
         </div>
 
         {/* Card img 3 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/chromebook.jpg"
             alt="picture of stuffs"
@@ -388,7 +403,7 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
               Chromebook
             </h3>
             <p>
@@ -396,10 +411,13 @@ export default function Home() {
               contact me!
             </p>
           </div>
+
+          {/* Status */}
+          <div className="status-post-lost">Lost</div>
         </div>
 
         {/* Card img 4 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/earbuds.webp"
             alt="picture of stuffs"
@@ -411,26 +429,19 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>Earbuds</h3>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Earbuds</h3>
             <p>
               Lost my earbuds last week near Central Park. If found, please
               contact me!
             </p>
           </div>
-        </div>
-      </div>
 
-      {/* Newest img 2 */}
-      <div
-        style={{
-          display: "flex",
-          gap: "20px",
-          padding: "0 10px",
-          marginBottom: "100px",
-        }}
-      >
+          {/* Status */}
+          <div className="status-post-lost">Lost</div>
+        </div>
+
         {/* Card img 1 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/phone.webp"
             alt="picture of stuffs"
@@ -442,7 +453,7 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
               Sponebob
             </h3>
             <p>
@@ -450,10 +461,13 @@ export default function Home() {
               please contact me!
             </p>
           </div>
+
+          {/* Status */}
+          <div className="status-post-found">Found</div>
         </div>
 
         {/* Card img 2 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/key.jpg"
             alt="picture of stuffs"
@@ -465,16 +479,19 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>Key</h3>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Key</h3>
             <p>
               Lost my sponebob plush toy last week near Central Park. If found,
               please contact me!
             </p>
           </div>
+
+          {/* Status */}
+          <div className="status-post-lost">Lost</div>
         </div>
 
         {/* Card img 3 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/wallet.jpg"
             alt="picture of stuffs"
@@ -486,16 +503,19 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>Wallet</h3>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Wallet</h3>
             <p>
               Lost my wallet last week near Central Park. If found, please
               contact me!
             </p>
           </div>
+
+          {/* Status */}
+          <div className="status-post-found">Found</div>
         </div>
 
         {/* Card img 4 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/keychain.avif"
             alt="picture of stuffs"
@@ -507,7 +527,7 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
               Keychain
             </h3>
             <p>
@@ -515,6 +535,9 @@ export default function Home() {
               contact me!
             </p>
           </div>
+
+          {/* Status */}
+          <div className="status-post-found">Found</div>
         </div>
       </div>
 
@@ -540,7 +563,7 @@ export default function Home() {
         </span>
       </p>
 
-      <form onSubmit={() => { }}>
+      <form onSubmit={handleSearch}>
         <div className="quick-search">
           <div className="categories">
             <div className="left">
