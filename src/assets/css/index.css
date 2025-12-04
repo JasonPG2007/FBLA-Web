@@ -38,6 +38,35 @@ a {
   margin: auto;
 }
 
+.form-control-input-label-top {
+  width: 100%;
+  padding: 12px 15px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.label-top {
+  position: absolute;
+  left: 13px;
+  padding: 0 70px 0 5px;
+  top: 20px;
+  font-size: 14px;
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+  pointer-events: none;
+}
+
+.form-control-input-label-top:focus ~ label,
+.form-control-input-label-top:not(:placeholder-shown) /* When input has value */
+  ~ label {
+  left: 13px;
+  padding: 0 5px;
+  background-color: #fff;
+  top: -3px;
+  font-size: 14px;
+}
+
 .btn {
   font-family: "Poppins", sans-serif;
   background-color: #ec7207;
@@ -352,25 +381,60 @@ footer .right button {
 }
 
 /* NEWEST IMG */
-.cardhover {
-  transition: all 0.3s ease-in-out;
-  border-radius: 20px;
-  border: 1px solid #ec7207;
+.newest-post-container {
+  display: grid;
+  grid-template-columns: auto auto auto auto;
+  gap: 20px;
+  padding: 0 10px;
+  margin-bottom: 100px;
 }
 
-.cardhover:hover {
+.card {
+  transition: all 0.3s ease-in-out;
+  border-radius: 20px;
+  width: 100%;
+  position: relative;
+  height: 435px;
+  /* border: 1px solid #ec7207; */
+}
+
+.card:hover {
   transform: translateY(-10px);
   box-shadow: 10px 5px 5px rgba(0, 0, 0, 0.25);
   background-color: #fdcc4b;
   border: none;
 }
 
-.cardhover img {
+.card img {
   border-radius: 20px;
 }
 
-.cardhover:hover img {
+.card:hover img {
   border-radius: 20px;
+}
+
+.status-post-lost {
+  background-color: #fdcc4b;
+  width: max-content;
+  padding: 0px 30px;
+  position: absolute;
+  top: 10px;
+  color: #072138;
+  font-weight: 500;
+  right: 10px;
+  border-radius: 10px;
+}
+
+.status-post-found {
+  background-color: #ec7207;
+  width: max-content;
+  padding: 0px 30px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #fff;
+  font-weight: 500;
+  border-radius: 10px;
 }
 
 .card-text {
@@ -826,16 +890,25 @@ footer .right button {
   width: 65%;
   z-index: 2;
   position: fixed;
-  top: 50%;
+  top: 53%;
   opacity: 0;
   visibility: hidden;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 40px 20px;
+  padding: 70px 20px 40px 20px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-in-out;
+}
+
+.close-modal-report {
+  position: absolute;
+  top: -45px;
+  right: 0px;
+  color: #ec7207;
+  font-size: 30px;
+  cursor: pointer;
 }
 
 /* Modal overlay */
@@ -856,7 +929,7 @@ footer .right button {
 .modal-header-report-stuff {
   display: grid;
   position: fixed;
-  top: -44px;
+  top: -35px;
   left: 0;
   width: 100%;
   /* background-color: #fff; */
@@ -870,7 +943,7 @@ footer .right button {
   padding: 10px 50px;
   font-size: 18px;
   font-weight: normal;
-  border-radius: 10px;
+  border-radius: 20px;
   background-color: #eae9e9;
   color: rgb(117, 117, 117);
   cursor: pointer;
@@ -887,4 +960,84 @@ footer .right button {
   line-height: 40px;
   background-color: #fff;
   box-shadow: unset;
+}
+
+.modal-content-container {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  gap: 5%;
+  width: 89%;
+}
+
+.form-lost-found-container {
+  display: grid;
+  grid-template-columns: auto auto;
+  width: 219%;
+  gap: 100px;
+  transition: all 0.3s ease-in-out;
+}
+
+.upload-img-box {
+  text-align: center;
+  border: 1px solid #072138;
+  padding: 50px;
+  height: max-content;
+  border-radius: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.upload-img-box i {
+  font-size: 40px;
+  margin-bottom: 15px;
+}
+
+.preview-img {
+  border-radius: 20px;
+  margin-left: -20px;
+  object-fit: cover;
+}
+
+.btn-change-img {
+  margin-left: -20px;
+  margin-top: 20px;
+}
+
+.stuff-information {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 20px;
+  max-height: 500px;
+  overflow-y: scroll;
+}
+
+.form-control-authentication .form-control-input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.form-control-authentication .fa-solid {
+  position: absolute;
+  right: 15px;
+  top: 44%;
+}
+
+.stuff-name {
+  position: absolute;
+  left: 13px;
+  padding: 0 70px 0 5px;
+  top: 20px;
+  font-size: 14px;
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+  pointer-events: none;
+}
+
+.stuff-information-box {
+  max-height: 660px;
+  overflow-y: scroll;
 }

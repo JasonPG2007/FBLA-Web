@@ -5,6 +5,7 @@ import About from "../pages/About";
 import Search from "../pages/Search";
 import Authentication from "../pages/Authentication";
 import NotFound from "../pages/NotFound";
+import LostAndFound from "../pages/LostAndFound";
 
 export default function Router() {
   return (
@@ -16,6 +17,7 @@ export default function Router() {
           <Route path="/about" element={<About />} />
           <Route path="/search" element={<Search />} />
           <Route path="/authentication" element={<Authentication />} />
+          <Route path="/lost-and-found" element={<LostAndFound />} />
         </Routes>
       </Suspense>
     </BrowserRouter>
