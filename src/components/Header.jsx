@@ -37,11 +37,6 @@ export default function Header() {
               About us
             </p>
           </a>
-          <a href="/how-it-works">
-            <p className="homepageh2" style={{ marginRight: "40px" }}>
-              How it works
-            </p>
-          </a>
           <a href="/lost-and-found">
             <p className="homepageh2" style={{ marginRight: "40px" }}>
               Lost & Found

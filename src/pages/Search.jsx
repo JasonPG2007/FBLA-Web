@@ -137,7 +137,7 @@ export default function Search() {
               className="btn-yellow"
               style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
             >
-              View Details
+              View Details <i className="fa-solid fa-eye"></i>
             </a>
             <a
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
@@ -148,7 +148,7 @@ export default function Search() {
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
             >
-              Share Stuff
+              Found <i class="fa-solid fa-magnifying-glass"></i>
             </a>
           </div>
         </div>
@@ -180,7 +180,7 @@ export default function Search() {
               className="btn-yellow"
               style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
             >
-              View Details
+              View Details <i className="fa-solid fa-eye"></i>
             </a>
             <a
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
@@ -191,7 +191,7 @@ export default function Search() {
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
             >
-              Share Stuff
+              Found <i class="fa-solid fa-magnifying-glass"></i>
             </a>
           </div>
         </div>
@@ -223,7 +223,7 @@ export default function Search() {
               className="btn-yellow"
               style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
             >
-              View Details
+              View Details <i className="fa-solid fa-eye"></i>
             </a>
             <a
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
@@ -234,7 +234,7 @@ export default function Search() {
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
             >
-              Share Stuff
+              Found <i class="fa-solid fa-magnifying-glass"></i>
             </a>
           </div>
         </div>
@@ -266,7 +266,7 @@ export default function Search() {
               className="btn-yellow"
               style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
             >
-              View Details
+              View Details <i className="fa-solid fa-eye"></i>
             </a>
             <a
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
@@ -277,7 +277,7 @@ export default function Search() {
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
             >
-              Share Stuff
+              Found <i class="fa-solid fa-magnifying-glass"></i>
             </a>
           </div>
         </div>
@@ -309,7 +309,7 @@ export default function Search() {
               className="btn-yellow"
               style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
             >
-              View Details
+              View Details <i className="fa-solid fa-eye"></i>
             </a>
             <a
               href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
@@ -320,7 +320,7 @@ export default function Search() {
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
             >
-              Share Stuff
+              Found <i class="fa-solid fa-magnifying-glass"></i>
             </a>
           </div>
         </div>

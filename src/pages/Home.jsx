@@ -1,6 +1,13 @@
 import { Helmet } from "react-helmet-async";
 
 export default function Home() {
+  // Functions
+  function handleSearch(e) {
+    e.preventDefault();
+
+    window.location.href = "http://localhost:5173/search";
+  }
+
   return (
     <>
       {/* Helmet for setting the page title */}
@@ -329,16 +336,9 @@ export default function Home() {
       </div>
 
       {/* Newest images */}
-      <div
-        style={{
-          display: "flex",
-          gap: "20px",
-          padding: "0 10px",
-          marginBottom: "100px",
-        }}
-      >
+      <div className="newest-post-container">
         {/* Card img 1 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/ipad.webp"
             alt="picture of stuffs"
@@ -359,10 +359,13 @@ export default function Home() {
               please contact me!
             </p>
           </div>
+
+          {/* Status */}
+          <div className="status-post-lost">Lost</div>
         </div>
 
         {/* Card img 2 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/charger.webp"
             alt="picture of stuffs"
@@ -382,10 +385,13 @@ export default function Home() {
               please contact me!
             </p>
           </div>
+
+          {/* Status */}
+          <div className="status-post-found">Found</div>
         </div>
 
         {/* Card img 3 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/chromebook.jpg"
             alt="picture of stuffs"
@@ -405,10 +411,13 @@ export default function Home() {
               contact me!
             </p>
           </div>
+
+          {/* Status */}
+          <div className="status-post-lost">Lost</div>
         </div>
 
         {/* Card img 4 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/earbuds.webp"
             alt="picture of stuffs"
@@ -426,20 +435,13 @@ export default function Home() {
               contact me!
             </p>
           </div>
-        </div>
-      </div>
 
-      {/* Newest img 2 */}
-      <div
-        style={{
-          display: "flex",
-          gap: "20px",
-          padding: "0 10px",
-          marginBottom: "100px",
-        }}
-      >
+          {/* Status */}
+          <div className="status-post-lost">Lost</div>
+        </div>
+
         {/* Card img 1 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/phone.webp"
             alt="picture of stuffs"
@@ -459,10 +461,13 @@ export default function Home() {
               please contact me!
             </p>
           </div>
+
+          {/* Status */}
+          <div className="status-post-found">Found</div>
         </div>
 
         {/* Card img 2 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/key.jpg"
             alt="picture of stuffs"
@@ -480,10 +485,13 @@ export default function Home() {
               please contact me!
             </p>
           </div>
+
+          {/* Status */}
+          <div className="status-post-lost">Lost</div>
         </div>
 
         {/* Card img 3 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/wallet.jpg"
             alt="picture of stuffs"
@@ -501,10 +509,13 @@ export default function Home() {
               contact me!
             </p>
           </div>
+
+          {/* Status */}
+          <div className="status-post-found">Found</div>
         </div>
 
         {/* Card img 4 */}
-        <div style={{ width: "25%", height: "435px" }} className="cardhover">
+        <div className="card">
           <img
             src="./Image/keychain.avif"
             alt="picture of stuffs"
@@ -524,6 +535,9 @@ export default function Home() {
               contact me!
             </p>
           </div>
+
+          {/* Status */}
+          <div className="status-post-found">Found</div>
         </div>
       </div>
 
@@ -549,7 +563,7 @@ export default function Home() {
         </span>
       </p>
 
-      <form onSubmit={() => {}}>
+      <form onSubmit={handleSearch}>
         <div className="quick-search">
           <div className="categories">
             <div className="left">
