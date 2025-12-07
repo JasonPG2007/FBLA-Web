@@ -8,6 +8,8 @@ import Profile from "../pages/Profile";
 import Authentication from "../pages/Authentication";
 import NotFound from "../pages/NotFound";
 import LostAndFound from "../pages/LostAndFound";
+import Notifications from "../pages/Notifications";
+import MyPost from "../pages/MyPost";
 
 export default function Router() {
   return (
@@ -22,6 +24,8 @@ export default function Router() {
           <Route path="/profile/*" element={<Profile />} />
           <Route path="/authentication" element={<Authentication />} />
           <Route path="/lost-and-found" element={<LostAndFound />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/my-post" element={<MyPost />} />
         </Routes>
       </Suspense>
     </BrowserRouter>
