@@ -33,13 +33,14 @@ export default function Search() {
                 type="radio"
                 name="status"
                 id="lost"
+                value="lost"
                 defaultChecked
                 style={{ marginLeft: "20px" }}
               />{" "}
               <label htmlFor="lost" style={{ marginRight: "40px" }}>
                 <strong>Lost</strong>
               </label>
-              <input type="radio" name="status" id="found" />{" "}
+              <input type="radio" name="status" value="found" id="found" />{" "}
               <label htmlFor="found">
                 <strong>Found</strong>
               </label>
@@ -109,11 +110,12 @@ export default function Search() {
 
       {/* Cards section */}
       <div className="card-row">
-        <div className="card">
-          <div style={{ width: "100%", height: "435px" }} className="cardhover">
+        <div className="card card-search">
+          <div style={{ width: "100%", height: "435px" }}>
             <img
               src="./Image/keychain.avif"
-              alt="picture of stuffs"
+              alt="picture of stuff"
+              loading="lazy"
               style={{
                 width: "100%",
                 height: "300px",
@@ -130,6 +132,9 @@ export default function Search() {
                 contact me!
               </p>
             </div>
+
+            {/* Status */}
+            <div className="status-post-lost">Lost</div>
           </div>
           <div className="btn-card-see-more">
             <a
@@ -148,15 +153,15 @@ export default function Search() {
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
             >
-              Found <i class="fa-solid fa-magnifying-glass"></i>
+              Found <i className="fa-solid fa-magnifying-glass"></i>
             </a>
           </div>
         </div>
-        <div className="card">
-          <div style={{ width: "100%", height: "435px" }} className="cardhover">
+        <div className="card card-search">
+          <div style={{ width: "100%", height: "435px" }}>
             <img
               src="./Image/earbuds.webp"
-              alt="picture of stuffs"
+              alt="picture of stuff"
               style={{
                 width: "100%",
                 height: "300px",
@@ -173,6 +178,9 @@ export default function Search() {
                 contact me!
               </p>
             </div>
+
+            {/* Status */}
+            <div className="status-post-found">Found</div>
           </div>
           <div className="btn-card-see-more">
             <a
@@ -191,15 +199,15 @@ export default function Search() {
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
             >
-              Found <i class="fa-solid fa-magnifying-glass"></i>
+              Found <i className="fa-solid fa-magnifying-glass"></i>
             </a>
           </div>
         </div>
-        <div className="card">
-          <div style={{ width: "100%", height: "435px" }} className="cardhover">
+        <div className="card card-search">
+          <div style={{ width: "100%", height: "435px" }}>
             <img
               src="./Image/chromebook.jpg"
-              alt="picture of stuffs"
+              alt="picture of stuff"
               style={{
                 width: "100%",
                 height: "300px",
@@ -216,6 +224,9 @@ export default function Search() {
                 contact me!
               </p>
             </div>
+
+            {/* Status */}
+            <div className="status-post-lost">Lost</div>
           </div>
           <div className="btn-card-see-more">
             <a
@@ -234,15 +245,15 @@ export default function Search() {
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
             >
-              Found <i class="fa-solid fa-magnifying-glass"></i>
+              Found <i className="fa-solid fa-magnifying-glass"></i>
             </a>
           </div>
         </div>
-        <div className="card">
-          <div style={{ width: "100%", height: "435px" }} className="cardhover">
+        <div className="card card-search">
+          <div style={{ width: "100%", height: "435px" }}>
             <img
               src="./Image/charger.webp"
-              alt="picture of stuffs"
+              alt="picture of stuff"
               style={{
                 width: "100%",
                 height: "300px",
@@ -259,6 +270,9 @@ export default function Search() {
                 contact me!
               </p>
             </div>
+
+            {/* Status */}
+            <div className="status-post-lost">Lost</div>
           </div>
           <div className="btn-card-see-more">
             <a
@@ -277,15 +291,15 @@ export default function Search() {
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
             >
-              Found <i class="fa-solid fa-magnifying-glass"></i>
+              Found <i className="fa-solid fa-magnifying-glass"></i>
             </a>
           </div>
         </div>
-        <div className="card">
-          <div style={{ width: "100%", height: "435px" }} className="cardhover">
+        <div className="card card-search">
+          <div style={{ width: "100%", height: "435px" }}>
             <img
               src="./Image/ipad.webp"
-              alt="picture of stuffs"
+              alt="picture of stuff"
               style={{
                 width: "100%",
                 height: "300px",
@@ -302,6 +316,9 @@ export default function Search() {
                 contact me!
               </p>
             </div>
+
+            {/* Status */}
+            <div className="status-post-lost">Lost</div>
           </div>
           <div className="btn-card-see-more">
             <a
@@ -320,7 +337,7 @@ export default function Search() {
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
             >
-              Found <i class="fa-solid fa-magnifying-glass"></i>
+              Found <i className="fa-solid fa-magnifying-glass"></i>
             </a>
           </div>
         </div>

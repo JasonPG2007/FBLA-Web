@@ -95,7 +95,7 @@ export default function ModalReportStuff() {
               document.body.style.overflow = "auto";
             }}
           >
-            <i class="fa-solid fa-circle-xmark"></i>
+            <i className="fa-solid fa-circle-xmark"></i>
           </div>
         </div>
 
@@ -133,6 +133,7 @@ export default function ModalReportStuff() {
                         src={imageLost}
                         alt="Preview lost item"
                         width="290"
+                        loading="lazy"
                         height="297"
                         className="preview-img"
                       />
@@ -188,7 +189,7 @@ export default function ModalReportStuff() {
                       <div className="right">
                         {/* Stuff ID */}
                         <label htmlFor="stuff-id" style={{ fontWeight: "600" }}>
-                          Stuff ID
+                          Category
                         </label>
                         <br />
                         <div
@@ -256,7 +257,7 @@ export default function ModalReportStuff() {
                           htmlFor="stuff-name"
                           style={{ fontWeight: "600" }}
                         >
-                          Stuff Name
+                          Full Name
                         </label>
                         <br />
                         <div
@@ -279,7 +280,7 @@ export default function ModalReportStuff() {
                       <div className="right">
                         {/* Stuff ID */}
                         <label htmlFor="stuff-id" style={{ fontWeight: "600" }}>
-                          Stuff ID
+                          Student ID
                         </label>
                         <br />
                         <div
@@ -300,24 +301,27 @@ export default function ModalReportStuff() {
                         <br />
 
                         {/* Last Seen Date */}
-                        <label htmlFor="stuff-id" style={{ fontWeight: "600" }}>
-                          Stuff ID
+                        <label
+                          htmlFor="school-email"
+                          style={{ fontWeight: "600" }}
+                        >
+                          School Email
                         </label>
                         <br />
                         <div
                           style={{ position: "relative", marginTop: "10px" }}
                         >
                           <input
-                            type="text"
+                            type="email"
                             name=""
-                            id="stuff-id"
-                            placeholder="Ex: 736296"
+                            id="school-email"
+                            placeholder="Ex: demo@ex.io"
                             className="form-control-input-label-top"
                             autoFocus
                             required
                             onChange={(e) => {}}
                           />
-                          <label className="label-top">Enter ID</label>
+                          <label className="label-top">Enter Email</label>
                         </div>
                         <br />
                       </div>
@@ -365,6 +369,7 @@ export default function ModalReportStuff() {
                         src={imageFound}
                         alt="Preview found item"
                         width="290"
+                        loading="lazy"
                         height="297"
                         className="preview-img"
                       />
@@ -416,17 +421,11 @@ export default function ModalReportStuff() {
                           <label className="label-top">Enter name</label>
                         </div>
                         <br />
-
-                        {/* Btn unknown */}
-                        <div>
-                          <input type="checkbox" name="" id="unknown" />
-                          <label htmlFor="unknown"> Unknown</label>
-                        </div>
                       </div>
                       <div className="right">
                         {/* Stuff ID */}
                         <label htmlFor="stuff-id" style={{ fontWeight: "600" }}>
-                          Stuff ID
+                          Category
                         </label>
                         <br />
                         <div
@@ -494,7 +493,7 @@ export default function ModalReportStuff() {
                           htmlFor="stuff-name"
                           style={{ fontWeight: "600" }}
                         >
-                          Stuff Name
+                          Full Name
                         </label>
                         <br />
                         <div
@@ -517,7 +516,7 @@ export default function ModalReportStuff() {
                       <div className="right">
                         {/* Stuff ID */}
                         <label htmlFor="stuff-id" style={{ fontWeight: "600" }}>
-                          Stuff ID
+                          Student ID
                         </label>
                         <br />
                         <div
@@ -539,14 +538,14 @@ export default function ModalReportStuff() {
 
                         {/* Last Seen Date */}
                         <label htmlFor="stuff-id" style={{ fontWeight: "600" }}>
-                          Stuff ID
+                          School Email
                         </label>
                         <br />
                         <div
                           style={{ position: "relative", marginTop: "10px" }}
                         >
                           <input
-                            type="text"
+                            type="email"
                             name=""
                             id="stuff-id"
                             placeholder="Ex: 736296"
@@ -555,7 +554,7 @@ export default function ModalReportStuff() {
                             required
                             onChange={(e) => {}}
                           />
-                          <label className="label-top">Enter ID</label>
+                          <label className="label-top">Enter email</label>
                         </div>
                         <br />
                       </div>
