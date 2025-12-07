@@ -10,17 +10,15 @@ body {
   font-family: "Poppins", sans-serif;
   font-weight: normal;
   color: #072138;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 220, 189, 0.8),
-    rgba(241, 253, 249, 1),
-    rgba(255, 189, 131, 0.3),
-    rgba(241, 253, 249, 0.6),
-    rgba(241, 253, 249, 0.6),
-    rgba(255, 189, 131, 0.3),
-    rgba(241, 253, 249, 1),
-    rgba(255, 220, 189, 0.8)
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 220, 189, 0.8),
+      rgba(241, 253, 249, 1),
+      rgba(255, 189, 131, 0.3),
+      rgba(241, 253, 249, 0.6),
+      rgba(241, 253, 249, 0.6),
+      rgba(255, 189, 131, 0.3),
+      rgba(241, 253, 249, 1),
+      rgba(255, 220, 189, 0.8));
   background-repeat: no-repeat;
 }
 
@@ -44,6 +42,7 @@ a {
   margin-top: 8px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  outline: none;
 }
 
 .label-top {
@@ -57,9 +56,11 @@ a {
   pointer-events: none;
 }
 
-.form-control-input-label-top:focus ~ label,
-.form-control-input-label-top:not(:placeholder-shown) /* When input has value */
-  ~ label {
+.form-control-input-label-top:focus~label,
+.form-control-input-label-top:not(:placeholder-shown)
+
+/* When input has value */
+~label {
   left: 13px;
   padding: 0 5px;
   background-color: #fff;
@@ -484,8 +485,31 @@ footer .right button {
   cursor: pointer;
 }
 
-.status-filter input[type="radio"]:checked + label {
+.status-filter input[type="radio"]:checked+label {
   color: #fc8a26;
+}
+
+#search-all {
+  appearance: none;
+  /* Remove default radio */
+  -webkit-appearance: none;
+  border: 3px solid #072138;
+  color: #072138;
+  cursor: pointer;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+}
+
+#search-all-label {
+  padding: 5px 10px;
+  margin-right: 5px;
+  color: #072138;
+  cursor: pointer;
+}
+
+#search-all:checked {
+  background-color: #072138;
 }
 
 .detail-filter {
@@ -544,14 +568,6 @@ footer .right button {
   padding: 12px 25px;
   border-radius: 10px;
   margin-left: auto;
-}
-
-.btn-card-see-more {
-  display: grid;
-  grid-template-columns: auto auto;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
 }
 
 .card-row {
@@ -636,10 +652,11 @@ footer .right button {
   pointer-events: none;
 }
 
-.form-control-authentication .form-control-input:focus ~ label,
-.form-control-authentication
-  .form-control-input:not(:placeholder-shown) /* When input has value */
-  ~ label {
+.form-control-authentication .form-control-input:focus~label,
+.form-control-authentication .form-control-input:not(:placeholder-shown)
+
+/* When input has value */
+~label {
   left: 13px;
   padding: 0 5px;
   background-color: #fff;
@@ -720,7 +737,7 @@ footer .right button {
 }
 
 /* When checked */
-#agree:checked + .checkbox {
+#agree:checked+.checkbox {
   background: linear-gradient(135deg, #7cd1ff, #4f8dfd);
   border-color: transparent;
   box-shadow: 0 6px 16px rgba(79, 141, 253, 0.4);
@@ -760,14 +777,14 @@ footer .right button {
 }
 
 /* Button enabled when checked */
-#agree:checked ~ .continue {
+#agree:checked~.continue {
   background: linear-gradient(135deg, #4f8dfd, #2567ff);
   color: white;
   pointer-events: auto;
   box-shadow: 0 5px 14px rgba(79, 141, 253, 0.35);
 }
 
-#agree:checked ~ .continue:hover {
+#agree:checked~.continue:hover {
   transform: translateY(-2px);
 }
 
@@ -876,6 +893,7 @@ footer .right button {
     opacity: 0;
     transform: translateY(15px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1071,7 +1089,7 @@ th {
 }
 
 .table-td {
-  padding: 0px 100px;
+  /* padding: 0px 100px; */
   vertical-align: top;
 }
 
@@ -1145,7 +1163,7 @@ th {
   transform: scale(1.1);
 }
 
-/* Profile */
-.input {
-  font-size: 20px;
+/* Notify text */
+.notify-text {
+  padding: 20px 20px 30px;
 }

@@ -4,8 +4,9 @@ export default function Profile() {
             <div
                 style={{
                     display: "grid",
-                    gridTemplateColumns: "auto auto auto",
-                    gap: "20px",
+                    gridTemplateColumns: "15% 50% 15%",
+                    gap: "50px",
+                    // backgroundColor: "pink",
                     position: "relative",
                 }}>
 
@@ -19,7 +20,7 @@ export default function Profile() {
                     borderBottomRightRadius: "12px",
                     position: "relative",
                     height: "700px",
-                    width: "70%"
+                    width: "100%"
                 }}>
                     <div
                         style={{
@@ -59,10 +60,10 @@ export default function Profile() {
                     }}> <i class="fa-solid fa-envelope"></i> Messeges</a>
                     <br />
                     {/* Notifications */}
-                    <a href="/notification" style={{
+                    <a href="/notifications" style={{
                         fontWeight: "400",
                         lineHeight: "50px",
-                    }}> <i class="fa-solid fa-mobile-vibrate"></i> Notifications</a>
+                    }}> <i class="fa-solid fa-bell"></i> Notifications</a>
                     <br />
                     {/* Log out */}
                     <a href="/log-out" style={{
@@ -73,8 +74,8 @@ export default function Profile() {
                 </div>
 
                 {/* Name of profile */}
-                <div style={{ margin: "auto", marginBottom: "37%", display: "flex" }}>
-                    <div>
+                <div style={{ display: "flex", marginTop: "100px" }}>
+                    <div style={{ width: "100%" }}>
                         <h1
                             style={{
                                 fontFamily: "Mochiy Pop One, sans-serif",
@@ -87,28 +88,114 @@ export default function Profile() {
                         <table border="0" style={{
                             padding: "10px",
                             textAlign: "left",
-                            verticalAlign: "top",
-                            width: "100%"
+                            width: "100%",
                         }}>
-                            <tr className="table-tr"><th style={{ verticalAlign: "top", fontWeight: "600" }}><label className="input">Name: </label></th><td style={{ verticalAlign: "top" }} className="table-td"><input placeholder="Ex: Jennie Nguyen" type="text" className="input" /></td></tr>
-                            <tr className="table-tr"><th style={{ verticalAlign: "top", fontWeight: "600" }}><label className="input">Phone number: </label></th><td style={{ verticalAlign: "top" }} className="table-td"><input placeholder="Ex: 123 456 789" type="number" className="input" /></td></tr>
-                            <tr className="table-tr"><th style={{ verticalAlign: "top", fontWeight: "600" }}><label className="input">E-mail: </label></th><td style={{ verticalAlign: "top" }} className="table-td"><input placeholder="Ex: demo@ex.io" type="email" className="input" /></td></tr>
-                            <tr className="table-tr"><th style={{ verticalAlign: "top", fontWeight: "600" }}><label className="input">New pasword: </label></th><td style={{ verticalAlign: "top" }} className="table-td"><input placeholder="Enter new pasword" type="password" className="input" /></td></tr>
-                            <tr className="table-tr"><th style={{ verticalAlign: "top", fontWeight: "600" }}><label className="input">Old password: </label></th><td style={{ verticalAlign: "top" }} className="table-td"><input placeholder="Confirm new password" type="password" className="input" /></td></tr>
+                            <tr className="table-tr">
+                                <th style={{ fontWeight: "600", paddingRight: "100px" }} className="input">
+                                    Name:
+                                </th>
+                                <td style={{ verticalAlign: "top" }} className="table-td">
+                                    <input placeholder="Ex: Jennie Nguyen" type="text" className="form-control-input-label-top" />
+                                </td>
+                            </tr>
+                            <tr className="table-tr"><th style={{ fontWeight: "600" }}>Phone number: </th><td style={{ verticalAlign: "top" }} className="table-td"><input placeholder="Ex: 123 456 789" type="number" className="form-control-input-label-top" /></td></tr>
+                            <tr className="table-tr"><th style={{ fontWeight: "600" }}><label>Email: </label></th><td style={{ verticalAlign: "top" }} className="table-td"><input placeholder="Ex: demo@ex.io" type="email" className="form-control-input-label-top" /></td></tr>
+                            <tr className="table-tr"><th style={{ fontWeight: "600" }}><label>New pasword: </label></th><td style={{ verticalAlign: "top" }} className="table-td"><input placeholder="Enter new pasword" type="password" className="form-control-input-label-top" /></td></tr>
+                            <tr className="table-tr"><th style={{ fontWeight: "600" }}><label>Old password*: </label></th><td style={{ verticalAlign: "top" }} className="table-td"><input placeholder="Confirm new password" type="password" className="form-control-input-label-top" /></td></tr>
                         </table>
+
+                        {/* Notify me */}
+                        <div
+                            style={{
+                                padding: "10px 10px 30px",
+                            }}>
+                            <div
+                                style={{
+                                    padding: " 10px 0 10px",
+                                }}>
+                                <div>
+                                    <input type="checkbox" name="" id="" style={{ marginRight: "10px" }} />
+                                    <label style={{
+
+                                        textAlign: "center",
+                                        fontSize: "14px",
+                                        color: "#072138",
+                                        marginRight: "50%",
+                                        className: "notify-text",
+                                        marginBottom: "10px",
+                                    }}>
+                                        Notify me when there is a new lost stuff post
+                                    </label>
+                                </div>
+
+                                <div>
+                                    <input type="checkbox" name="" id="" style={{ marginRight: "10px" }} />
+                                    <label style={{
+
+                                        textAlign: "center",
+                                        fontSize: "14px",
+                                        color: "#072138",
+                                        marginRight: "48%",
+                                        className: "notify-text",
+                                        marginBottom: "10px",
+                                    }}>
+                                        Notify me when there is a new found stuff post
+                                    </label>
+                                </div>
+
+                                <div>
+                                    <input type="checkbox" name="" id="" style={{ marginRight: "10px" }} />
+                                    <label style={{
+
+                                        textAlign: "center",
+                                        fontSize: "14px",
+                                        color: "#072138",
+                                        marginRight: "45%",
+                                        className: "notify-text",
+                                    }}>
+                                        Notify me when there is a post that similar to mine
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <button
+                            className="btn-yellow" style={{ width: "100%" }}>
+                            Save changes
+                        </button>
                     </div>
 
-                    {/* Avatar */}
-                    <div>
-                        <img src="./Image/keychain.avif" alt="avatar"
-                            style={{
-                                borderRadius: "12px",
-                                width: "300px",
-                            }} />
-                    </div>
+
                 </div>
 
-            </div>
+                {/* Avatar */}
+                <div style={{ marginLeft: "100px", }}>
+                    <img src="./Image/keychain.avif" alt="avatar"
+                        style={{
+                            borderRadius: "12px",
+                            width: "420px",
+                            marginTop: "150px",
+                        }} />
+                    <div style={{
+                        display: "flex",
+                        gap: "20px",
+                    }}>
+                        <div>
+                            <button className="btn-with-border" style={{
+                                borderColor: "#ec7207",
+                            }}>
+                                Change
+                            </button>
+                        </div>
+                        <div>
+                            <button className="btn-with-border" style={{
+                                borderColor: "#ec7207",
+                            }}>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div >
         </>
     );
 }
