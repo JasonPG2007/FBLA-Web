@@ -260,7 +260,7 @@ export default function Authentication() {
                   <label className="agree-box">
                     <span className="text">
                       Click
-                      <a href="#policyModal"> "Terms & Recovery Rules"</a> to
+                      <a href="#policyModal"> "Terms & Recovery Guide"</a> to
                       read and agree
                     </span>
                   </label>

@@ -150,6 +150,10 @@ a {
   font-weight: normal;
 }
 
+.bar {
+  display: none;
+}
+
 .big-block-about {
   margin: auto;
   text-align: center;

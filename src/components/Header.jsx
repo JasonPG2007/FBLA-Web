@@ -8,6 +8,7 @@ export default function Header() {
   // Variables
   const [v1, setV1] = useState(null);
   const [vector, setVector] = useState([]);
+  let [showMenu, setShowMenu] = useState(false);
 
   // Functions
   const handleSearchByImage = async (e) => {
@@ -15,6 +16,20 @@ export default function Header() {
 
     const file = e.target.files[0];
     if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/png"];
+    const maxSize = 5 * 1014 * 1014;
+
+    // Check type of file
+    if (!allowedTypes.includes(file.type)) {
+      alert("Only accept JPG or PNG files");
+      return;
+    }
+
+    if (file.size > maxSize) {
+      alert("The image exceeds 5MB. Please select a smaller image");
+      return;
+    }
 
     const overlay = document.getElementById("overlay-search-image");
     overlay.style.visibility = "visible";
@@ -86,6 +101,7 @@ export default function Header() {
           zIndex: "1",
           boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
         }}
+        className="nav"
       >
         <a href="/">
           <h1
@@ -95,6 +111,26 @@ export default function Header() {
             Back2Me
           </h1>
         </a>
+        <div className="bar">
+          {showMenu ? (
+            <i
+              className="fa-solid fa-x"
+              onClick={() => {
+                setShowMenu(!showMenu);
+                document.getElementById("list-service").style.height = "0";
+              }}
+            ></i>
+          ) : (
+            <i
+              className="fa-solid fa-bars"
+              onClick={() => {
+                setShowMenu(!showMenu);
+                document.getElementById("list-service").style.height =
+                  document.getElementById("list-service").scrollHeight + "px";
+              }}
+            ></i>
+          )}
+        </div>
         <div className="btn-with-border search-by-image">
           <div style={{ display: "flex", flexDirection: "column" }}>
             <label htmlFor="search-by-image">
@@ -131,19 +167,17 @@ export default function Header() {
             alignItems: "center",
             padding: "0 20px",
           }}
+          className="list-service"
+          id="list-service"
         >
           <a href="#policyModal" style={{ marginRight: "40px" }}>
-            Term & Guide
+            Terms & Guide
           </a>
-          <a href="/about">
-            <p className="homepageh2" style={{ marginRight: "40px" }}>
-              About us
-            </p>
+          <a href="/about" style={{ marginRight: "40px" }}>
+            About us
           </a>
-          <a href="/lost-and-found">
-            <p className="homepageh2" style={{ marginRight: "40px" }}>
-              Lost & Found
-            </p>
+          <a href="/lost-and-found" style={{ marginRight: "40px" }}>
+            Lost & Found
           </a>
           <div className="profile-menu">
             <button
@@ -170,6 +204,7 @@ export default function Header() {
               cursor: "pointer",
               border: "none",
             }}
+            className="btn btn-create-post"
             onClick={() => {
               const modal = document.querySelector(".modal-report-stuff");
               const overlay = document.querySelector(
@@ -195,12 +230,15 @@ export default function Header() {
         <Suspense fallback={<p>Loading animation...</p>}>
           <Lottie
             animationData={DocumentScan}
-            className="m-auto"
+            className="analyzing-animation"
             style={{ width: "50%", margin: "auto" }}
           />
         </Suspense>
 
-        <p style={{ marginTop: "-150px", marginBottom: "200px" }}>
+        <p
+          style={{ marginTop: "-150px", marginBottom: "200px" }}
+          className="analyzing-text"
+        >
           Analyzing...
         </p>
       </div>

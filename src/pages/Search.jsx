@@ -33,13 +33,14 @@ export default function Search() {
                 type="radio"
                 name="status"
                 id="lost"
+                value="lost"
                 defaultChecked
                 style={{ marginLeft: "20px" }}
               />{" "}
               <label htmlFor="lost" style={{ marginRight: "40px" }}>
                 <strong>Lost</strong>
               </label>
-              <input type="radio" name="status" id="found" />{" "}
+              <input type="radio" name="status" value="found" id="found" />{" "}
               <label htmlFor="found">
                 <strong>Found</strong>
               </label>
