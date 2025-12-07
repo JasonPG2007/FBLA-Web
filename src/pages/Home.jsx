@@ -5,7 +5,7 @@ export default function Home() {
   function handleSearch(e) {
     e.preventDefault();
 
-    window.location.href = "http://localhost:5173/search";
+    window.location.href = "/search";
   }
 
   return (
@@ -70,10 +70,15 @@ export default function Home() {
                 fontSize: "20px",
                 border: "none",
                 backgroundColor: "transparent",
-                cusor: "pointer",
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                window.location.href = "/search?status=lost";
               }}
             >
-              <strong>Lost Stuff</strong>
+              <strong>
+                <span style={{ fontSize: "25px" }}>30</span> <br /> Lost Stuff
+              </strong>
             </button>
             <p style={{ fontSize: "20px" }}>
               {" "}
@@ -84,11 +89,13 @@ export default function Home() {
                 fontSize: "20px",
                 border: "none",
                 backgroundColor: "transparent",
-                cusor: "pointer",
+                cursor: "pointer",
               }}
             >
               {" "}
-              <strong>Found Stuff</strong>
+              <strong>
+                <span style={{ fontSize: "25px" }}>60</span> <br /> Found Stuff
+              </strong>
             </button>
           </div>
 
@@ -319,20 +326,6 @@ export default function Home() {
           </span>{" "}
           posts
         </p>
-        <button
-          style={{
-            backgroundColor: "#fdcc4b",
-            border: "none",
-            color: "#072138",
-            borderRadius: "15px",
-            width: "110px",
-            height: " 40px",
-            marginTop: "9px",
-            fontWeight: "bold",
-          }}
-        >
-          show more <i className="fa-solid fa-arrow-right"></i>
-        </button>
       </div>
 
       {/* Newest images */}
@@ -341,7 +334,7 @@ export default function Home() {
         <div className="card">
           <img
             src="./Image/ipad.webp"
-            alt="picture of stuffs"
+            alt="picture of stuff"
             loading="lazy"
             style={{
               width: "100%",
@@ -355,8 +348,10 @@ export default function Home() {
               <a href="/detail-post">Ipad 11th Gen</a>
             </h3>
             <p>
-              <a href="/detail-post">Lost my Ipad 11th Gen last week near Central Park. If found,
-                please contact me!</a>
+              <a href="/detail-post">
+                Lost my Ipad 11th Gen last week near Central Park. If found,
+                please contact me!
+              </a>
             </p>
           </div>
 
@@ -368,13 +363,14 @@ export default function Home() {
         <div className="card">
           <img
             src="./Image/charger.webp"
-            alt="picture of stuffs"
+            alt="picture of stuff"
             style={{
               width: "100%",
               height: "300px",
               objectFit: "cover",
               backgroundColor: "white",
             }}
+            loading="lazy"
           />
           <div className="card-text">
             <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
@@ -394,13 +390,14 @@ export default function Home() {
         <div className="card">
           <img
             src="./Image/chromebook.jpg"
-            alt="picture of stuffs"
+            alt="picture of stuff"
             style={{
               width: "100%",
               height: "300px",
               objectFit: "cover",
               backgroundColor: "white",
             }}
+            loading="lazy"
           />
           <div className="card-text">
             <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
@@ -420,13 +417,14 @@ export default function Home() {
         <div className="card">
           <img
             src="./Image/earbuds.webp"
-            alt="picture of stuffs"
+            alt="picture of stuff"
             style={{
               width: "100%",
               height: "300px",
               objectFit: "cover",
               backgroundColor: "white",
             }}
+            loading="lazy"
           />
           <div className="card-text">
             <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Earbuds</h3>
@@ -444,13 +442,14 @@ export default function Home() {
         <div className="card">
           <img
             src="./Image/phone.webp"
-            alt="picture of stuffs"
+            alt="picture of stuff"
             style={{
               width: "100%",
               height: "300px",
               objectFit: "cover",
               backgroundColor: "white",
             }}
+            loading="lazy"
           />
           <div className="card-text">
             <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
@@ -470,13 +469,14 @@ export default function Home() {
         <div className="card">
           <img
             src="./Image/key.jpg"
-            alt="picture of stuffs"
+            alt="picture of stuff"
             style={{
               width: "100%",
               height: "300px",
               objectFit: "cover",
               backgroundColor: "white",
             }}
+            loading="lazy"
           />
           <div className="card-text">
             <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Key</h3>
@@ -494,13 +494,14 @@ export default function Home() {
         <div className="card">
           <img
             src="./Image/wallet.jpg"
-            alt="picture of stuffs"
+            alt="picture of stuff"
             style={{
               width: "100%",
               height: "300px",
               objectFit: "cover",
               backgroundColor: "white",
             }}
+            loading="lazy"
           />
           <div className="card-text">
             <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Wallet</h3>
@@ -518,13 +519,14 @@ export default function Home() {
         <div className="card">
           <img
             src="./Image/keychain.avif"
-            alt="picture of stuffs"
+            alt="picture of stuff"
             style={{
               width: "100%",
               height: "300px",
               objectFit: "cover",
               backgroundColor: "white",
             }}
+            loading="lazy"
           />
           <div className="card-text">
             <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
@@ -569,7 +571,7 @@ export default function Home() {
             <div className="left">
               <label htmlFor="category">Type of Stuff</label>
               <br />
-              <select className="select" name="" id="category" required>
+              <select className="select" name="" id="category">
                 <option value="">Select type</option>
                 <option value="">Iphone</option>
               </select>
@@ -583,7 +585,7 @@ export default function Home() {
             <div className="left">
               <label htmlFor="location">Location</label>
               <br />
-              <select className="select" name="" id="location" required>
+              <select className="select" name="" id="location">
                 <option value="">Select location</option>
                 <option value="">Hall 500</option>
                 <option value="">Hall 600</option>

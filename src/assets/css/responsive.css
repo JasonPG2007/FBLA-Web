@@ -1,0 +1,76 @@
+/* MOBILE */
+@media (max-width: 576px) {
+  /* Navbar */
+  .bar {
+    display: block;
+    font-size: 20px;
+  }
+
+  .nav .list-service {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 65px;
+    padding: 20px;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    height: 0;
+    line-height: 1.75em;
+    background-color: #fffde3;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 5px 4px;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .nav .list-service a {
+    margin: 7px;
+    margin-right: unset !important;
+  }
+
+  .nav .list-service a:first-child {
+    margin-top: 15px;
+  }
+
+  .nav .list-service button {
+    margin-left: unset !important;
+    margin-bottom: 20px;
+  }
+
+  /* Search image bar */
+  .search-by-image {
+    position: fixed;
+    top: 70px;
+    width: 89%;
+  }
+
+  /* ANALYZING TEXT */
+  .analyzing-text {
+    font-size: 20px;
+    margin-top: -170px !important;
+    margin-bottom: 230px !important;
+  }
+
+  .analyzing-animation {
+    transform: scale(2);
+  }
+}
+
+/* SMALL TABLET */
+@media (min-width: 577px) and (max-width: 768px) {
+  /* Code here */
+}
+
+/* BIG TABLET */
+@media (min-width: 769px) and (max-width: 992px) {
+  /* Code here */
+}
+
+/* SMALL LAPTOP */
+@media (min-width: 993px) and (max-width: 1200px) {
+  /* Code here */
+}
+
+/* BIG LAPTOP (Desktop screen) */
+@media (min-width: 1201px) {
+  /* Code here */
+}

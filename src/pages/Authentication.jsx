@@ -5,7 +5,13 @@ import InputMask from "react-input-mask";
 export default function Authentication() {
   // Variables
   let [isAgreeTerm, setIsAgreeTerm] = useState(false);
-  let [isClickShowPassword, setIsClickShowPassword] = useState(false);
+  let [isClickShowPasswordSignUp, setIsClickShowPasswordSignUp] =
+    useState(false);
+  let [isClickShowPasswordSignIn, setIsClickShowPasswordSignIn] =
+    useState(false);
+  let [isClickShowNewPassword, setIsClickShowNewPassword] = useState(false);
+  let [isClickShowConfirmNewPassword, setIsClickShowConfirmNewPassword] =
+    useState(false);
   let [isMatchPassword, setIsMatchPassword] = useState(false);
   let [isSentVerificationCodeEmail, setIsSentVerificationCodeEmail] =
     useState(false);
@@ -114,7 +120,7 @@ export default function Authentication() {
                         validateSignUp();
                       }}
                     />
-                    <label htmlFor="first-name">First Name</label>
+                    <label htmlFor="first-name">First Name*</label>
                   </div>
                   <div className="form-control-authentication">
                     <input
@@ -129,21 +135,27 @@ export default function Authentication() {
                         validateSignUp();
                       }}
                     />
-                    <label htmlFor="last-name">Last Name</label>
+                    <label htmlFor="last-name">Last Name*</label>
                   </div>
                 </div>
                 <div className="form-control-authentication">
-                  <InputMask
-                    mask={"999-999-9999"}
-                    value={phone || ""}
-                    placeholder="Ex: 678-456-7890"
-                    className="form-control-input p-2"
-                    id="phone"
+                  <input
+                    type="text"
+                    name=""
+                    id="student-id"
+                    placeholder="Ex: 202434567"
+                    className="form-control-input"
+                    required
                     onChange={(e) => {
-                      setPhone(e.target.value);
+                      setStudentId(e.target.value);
                     }}
-                  ></InputMask>
-                  <label htmlFor="phone">Phone Number</label>
+                    onInput={(e) => {
+                      e.target.value = e.target.value
+                        .replace(/[^0-9]/g, "") // Remove non-numeric characters
+                        .slice(0, 9); // Allow only numbers, max length 9
+                    }}
+                  />
+                  <label htmlFor="phone">Student ID*</label>
                 </div>
                 <div className="form-control-authentication">
                   <input
@@ -158,11 +170,11 @@ export default function Authentication() {
                       validateSignUp();
                     }}
                   />
-                  <label htmlFor="email">Email</label>
+                  <label htmlFor="email">Email*</label>
                 </div>
                 <div className="form-control-authentication">
                   <input
-                    type={isClickShowPassword ? "text" : "password"}
+                    type={isClickShowPasswordSignUp ? "text" : "password"}
                     name=""
                     id="password"
                     className="form-control-input"
@@ -173,22 +185,26 @@ export default function Authentication() {
                       validateSignUp();
                     }}
                   />
-                  {isClickShowPassword ? (
+                  {isClickShowPasswordSignUp ? (
                     <i
                       className="fa-solid fa-eye-slash"
                       onClick={() => {
-                        setIsClickShowPassword(!isClickShowPassword);
+                        setIsClickShowPasswordSignUp(
+                          !isClickShowPasswordSignUp
+                        );
                       }}
                     ></i>
                   ) : (
                     <i
                       className="fa-solid fa-eye"
                       onClick={() => {
-                        setIsClickShowPassword(!isClickShowPassword);
+                        setIsClickShowPasswordSignUp(
+                          !isClickShowPasswordSignUp
+                        );
                       }}
                     ></i>
                   )}
-                  <label htmlFor="password">Password</label>
+                  <label htmlFor="password">Password*</label>
                 </div>
                 <div className="form-control-authentication">
                   <input
@@ -223,7 +239,7 @@ export default function Authentication() {
                       }}
                     ></i>
                   )}
-                  <label htmlFor="confirm-password">Confirm Password</label>
+                  <label htmlFor="confirm-password">Confirm Password*</label>
                 </div>
                 {confirmPasswordSignUp.trim() !== "" && !isMatchPassword && (
                   <div
@@ -244,11 +260,8 @@ export default function Authentication() {
                   <label className="agree-box">
                     <span className="text">
                       Click
-                      <a href="#policyModal">
-                        {" "}
-                        "User Terms & Recovery Rules"
-                      </a>{" "}
-                      to read and agree
+                      <a href="#policyModal"> "Terms & Recovery Guide"</a> to
+                      read and agree
                     </span>
                   </label>
                 </div>
@@ -313,11 +326,11 @@ export default function Authentication() {
                         .slice(0, 9); // Allow only numbers, max length 9
                     }}
                   />
-                  <label htmlFor="student-id">Student ID</label>
+                  <label htmlFor="student-id">Student ID*</label>
                 </div>
                 <div className="form-control-authentication">
                   <input
-                    type={isClickShowPassword ? "text" : "password"}
+                    type={isClickShowPasswordSignIn ? "text" : "password"}
                     name=""
                     id="password-sign-in"
                     className="form-control-input"
@@ -327,22 +340,26 @@ export default function Authentication() {
                       setPasswordSignIn(e.target.value);
                     }}
                   />
-                  {isClickShowPassword ? (
+                  {isClickShowPasswordSignIn ? (
                     <i
                       className="fa-solid fa-eye-slash"
                       onClick={() => {
-                        setIsClickShowPassword(!isClickShowPassword);
+                        setIsClickShowPasswordSignIn(
+                          !isClickShowPasswordSignIn
+                        );
                       }}
                     ></i>
                   ) : (
                     <i
                       className="fa-solid fa-eye"
                       onClick={() => {
-                        setIsClickShowPassword(!isClickShowPassword);
+                        setIsClickShowPasswordSignIn(
+                          !isClickShowPasswordSignIn
+                        );
                       }}
                     ></i>
                   )}
-                  <label htmlFor="password-sign-in">Password</label>
+                  <label htmlFor="password-sign-in">Password*</label>
                 </div>
                 <div className="form-control-authentication">
                   <span
@@ -421,7 +438,7 @@ export default function Authentication() {
                       setEmail(e.target.value);
                     }}
                   />
-                  <label htmlFor="email-forgot-password">Email</label>
+                  <label htmlFor="email-forgot-password">Email*</label>
                 </div>
                 <div className="form-control-authentication">
                   <input
@@ -459,12 +476,12 @@ export default function Authentication() {
                       opacity: isSentVerificationCodeEmail ? 1 : 0.9,
                     }}
                   >
-                    Verification Code
+                    Verification Code*
                   </label>
                 </div>
                 <div className="form-control-authentication">
                   <input
-                    type={isClickShowPassword ? "text" : "password"}
+                    type={isClickShowNewPassword ? "text" : "password"}
                     style={{
                       backgroundColor: isSentVerificationCodeEmail
                         ? "#fff"
@@ -484,7 +501,7 @@ export default function Authentication() {
                       setPasswordSignIn(e.target.value);
                     }}
                   />
-                  {isClickShowPassword ? (
+                  {isClickShowNewPassword ? (
                     <i
                       className="fa-solid fa-eye-slash"
                       style={{
@@ -493,7 +510,7 @@ export default function Authentication() {
                           : "none",
                       }}
                       onClick={() => {
-                        setIsClickShowPassword(!isClickShowPassword);
+                        setIsClickShowNewPassword(!isClickShowNewPassword);
                       }}
                     ></i>
                   ) : (
@@ -505,7 +522,7 @@ export default function Authentication() {
                           : "none",
                       }}
                       onClick={() => {
-                        setIsClickShowPassword(!isClickShowPassword);
+                        setIsClickShowNewPassword(!isClickShowNewPassword);
                       }}
                     ></i>
                   )}
@@ -518,12 +535,12 @@ export default function Authentication() {
                       opacity: isSentVerificationCodeEmail ? 1 : 0.9,
                     }}
                   >
-                    New Password
+                    New Password*
                   </label>
                 </div>
                 <div className="form-control-authentication">
                   <input
-                    type={isClickShowPassword ? "text" : "password"}
+                    type={isClickShowConfirmNewPassword ? "text" : "password"}
                     style={{
                       backgroundColor: isSentVerificationCodeEmail
                         ? "#fff"
@@ -543,12 +560,12 @@ export default function Authentication() {
                       setPasswordSignIn(e.target.value);
                     }}
                   />
-                  {isClickShowConfirmPassword ? (
+                  {isClickShowConfirmNewPassword ? (
                     <i
                       className="fa-solid fa-eye-slash"
                       onClick={() => {
-                        setIsClickShowConfirmPassword(
-                          !isClickShowConfirmPassword
+                        setIsClickShowConfirmNewPassword(
+                          !isClickShowConfirmNewPassword
                         );
                       }}
                     ></i>
@@ -556,8 +573,8 @@ export default function Authentication() {
                     <i
                       className="fa-solid fa-eye"
                       onClick={() => {
-                        setIsClickShowConfirmPassword(
-                          !isClickShowConfirmPassword
+                        setIsClickShowConfirmNewPassword(
+                          !isClickShowConfirmNewPassword
                         );
                       }}
                     ></i>
@@ -571,7 +588,7 @@ export default function Authentication() {
                       opacity: isSentVerificationCodeEmail ? 1 : 0.9,
                     }}
                   >
-                    Confirm New Password
+                    Confirm New Password*
                   </label>
                 </div>
                 <div
@@ -593,7 +610,7 @@ export default function Authentication() {
                     }}
                     disabled={email.trim() !== "" ? false : true}
                   >
-                    Resend Code
+                    {!isSentVerificationCodeEmail ? "Send Code" : "Resend Code"}
                   </button>
                   {isSentVerificationCodeEmail && (
                     <button
@@ -638,41 +655,90 @@ export default function Authentication() {
           </div>
         </div>
         <div className="img-right">
-          <img src="../Image/logo-2.png" alt="picture" />
+          <img src="../Image/logo-2.png" alt="picture" loading="lazy" />
         </div>
       </div>
 
       {/* Modal Policy */}
       <div id="policyModal" className="modal">
         <div className="modal-content">
-          <h2>Privacy & Policy</h2>
+          <h2>Terms & Recovery Guide</h2>
 
           <div className="policy-section">
-            <h3>Đối với người mất đồ / muốn lấy lại đồ / tìm đồ</h3>
+            <h3>Users agree NOT to:</h3>
             <ul>
+              <li>Use the website for any unlawful purpose.</li>
               <li>
-                Người dùng có trách nhiệm kiểm tra thường xuyên bài đăng của
-                mình trên website.
+                Disrupt, interfere with, or attempt unauthorized access to the
+                website or its systems.
               </li>
               <li>
-                Khi muốn nhận lại đồ,{" "}
-                <strong>bắt buộc phải đăng một bài</strong> để được cấp mã code.
+                Upload or share content that is false, offensive, violates
+                privacy, or infringes copyrights.
               </li>
               <li>
-                Trong bài đăng phải ghi rõ mô tả chi tiết vật bị mất để đối
-                chiếu với bên giữ đồ khi xác thực.
+                Provide inaccurate information when creating an account (if
+                applicable).
               </li>
             </ul>
           </div>
 
           <div className="policy-section">
-            <h3>Đối với người giữ đồ</h3>
+            <h3>We reserve the right to:</h3>
             <ul>
               <li>
-                Có trách nhiệm kiểm tra mã code và thông tin mô tả của người đến
-                nhận đồ xem có trùng khớp hay không.
+                Suspend, terminate, or limit your access if any violation is
+                detected.
               </li>
-              <li>Có trách nhiệm đăng bài để trả lại đồ cho người mất.</li>
+              <li>
+                Modify or temporarily disable any part of the website without
+                prior notice.
+              </li>
+              <li>
+                Collect and use user information as described in our Privacy
+                Policy.
+              </li>
+            </ul>
+          </div>
+
+          <div className="policy-section">
+            <h3>For individuals seeking to reclaim lost items:</h3>
+            <ul>
+              <li>
+                You <strong>MUST</strong> provide a detailed description of the
+                lost item for verification with the holder.
+              </li>
+              <li>
+                You are <strong>REQUIRED</strong> to create a post in order to
+                receive a verification code.
+              </li>
+              <li>
+                The post <strong>MUST</strong> include a complete and accurate
+                description of the lost item.
+              </li>
+              <li>
+                Users are responsible for regularly checking their post on the
+                website for updates.
+              </li>
+              <li>
+                You <strong>MUST</strong> present the verification code when
+                retrieving your item.
+              </li>
+            </ul>
+          </div>
+
+          <div className="policy-section">
+            <h3>For individuals holding found items:</h3>
+            <ul>
+              <li>
+                You are <strong>RESPONSIBLE</strong> for verifying the
+                claimant's verification code and item description to ensure they
+                match the item in your possession.
+              </li>
+              <li>
+                You are <strong>RESPONSIBLE</strong> for creating a post to
+                assist in returning the item to its rightful owner.
+              </li>
             </ul>
           </div>
 
