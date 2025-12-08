@@ -1,4 +1,5 @@
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import InputMask from "react-input-mask";
 
@@ -22,17 +23,46 @@ export default function Authentication() {
   let [passwordSignUp, setPasswordSignUp] = useState("");
   let [confirmPasswordSignUp, setConfirmPasswordSignUp] = useState("");
   let [studentId, setStudentId] = useState("");
+  let [isTypeStudentId, setIsTypeStudentId] = useState(false);
+  let [isValidStudentId, setIsValidStudentId] = useState(false);
+  let [isValidPassword, setIsValidPassword] = useState(false);
+  let [isExistSpecialChar, setIsExistSpecialChar] = useState(false);
+  let [isExistNumber, setIsExistNumber] = useState(false);
+  let [isExistUppercase, setIsExistUppercase] = useState(false);
+  let [isExistLowercase, setIsExistLowercase] = useState(false);
+  let [isValidLength, setIsValidLength] = useState(false);
   let [passwordSignIn, setPasswordSignIn] = useState("");
   let [isClickShowConfirmPassword, setIsClickShowConfirmPassword] =
     useState(false);
 
   // Functions
   // Handle form submission for Sign Up
-  function handleSubmitSignUp(e) {
+  const handleSubmitSignUp = async (e) => {
     e.preventDefault();
 
-    alert("Clicked");
-  }
+    // Validate
+    validateSignUp();
+
+    try {
+      const response = await axios.post(
+        "https://localhost:44306/api/Users",
+        null,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+          validateStatus: (status) => status === 200 || status === 401,
+        }
+      );
+
+      if (response.status) {
+        alert("OK");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // Handle form submission for Sign In
   function handleSubmitSignIn(e) {
@@ -56,10 +86,13 @@ export default function Authentication() {
       firstName.trim() == "" ||
       lastName.trim() == "" ||
       email.trim() == "" ||
+      studentId.trim() == "" ||
       passwordSignUp.trim() == "" ||
       confirmPasswordSignUp.trim() == "" ||
       !isMatchPassword ||
-      !isAgreeTerm
+      !isAgreeTerm ||
+      !isValidStudentId ||
+      !isValidPassword
     ) {
       return false;
     } else {
@@ -85,6 +118,89 @@ export default function Authentication() {
       setIsMatchPassword(true);
     }
   }
+
+  // useEffect
+  useEffect(() => {
+    validateSignUp();
+  }, [
+    firstName,
+    lastName,
+    studentId,
+    email,
+    passwordSignUp,
+    confirmPasswordSignUp,
+    isAgreeTerm,
+    isValidStudentId,
+  ]);
+
+  // Check student id if valid
+  useEffect(() => {
+    if (studentId.length == 9) {
+      setIsValidStudentId(true);
+    } else {
+      setIsValidStudentId(false);
+    }
+  }, [studentId]);
+
+  // Check password if valid
+  useEffect(() => {
+    const hasSpecial = /[@$!%*?&]/.test(passwordSignUp);
+    const hasNumber = /\d/.test(passwordSignUp);
+    const hasUppercase = /[A-Z]/.test(passwordSignUp);
+    const hasLowercase = /[a-z]/.test(passwordSignUp);
+    const hasMinLength = passwordSignUp.length >= 12;
+
+    // Check special
+    if (hasSpecial) {
+      setIsExistSpecialChar(true);
+    } else {
+      setIsExistSpecialChar(false);
+    }
+
+    // Check number
+    if (hasNumber) {
+      setIsExistNumber(true);
+    } else {
+      setIsExistNumber(false);
+    }
+
+    // Check uppercase
+    if (hasUppercase) {
+      setIsExistUppercase(true);
+    } else {
+      setIsExistUppercase(false);
+    }
+
+    // Check lowercase
+    if (hasLowercase) {
+      setIsExistLowercase(true);
+    } else {
+      setIsExistLowercase(false);
+    }
+
+    // Check valid length
+    if (hasMinLength) {
+      setIsValidLength(true);
+    } else {
+      setIsValidLength(false);
+    }
+
+    // Set valid password
+    if (
+      hasNumber &&
+      hasUppercase &&
+      hasLowercase &&
+      hasMinLength &&
+      hasSpecial
+    ) {
+      setIsValidPassword(true);
+    } else {
+      setIsValidPassword(false);
+    }
+
+    // Check Match confirm password
+    checkPasswordMatch(confirmPasswordSignUp);
+  }, [passwordSignUp]);
 
   return (
     <>
@@ -117,7 +233,6 @@ export default function Authentication() {
                       required
                       onChange={(e) => {
                         setFirstName(e.target.value);
-                        validateSignUp();
                       }}
                     />
                     <label htmlFor="first-name">First Name*</label>
@@ -132,7 +247,6 @@ export default function Authentication() {
                       required
                       onChange={(e) => {
                         setLastName(e.target.value);
-                        validateSignUp();
                       }}
                     />
                     <label htmlFor="last-name">Last Name*</label>
@@ -148,6 +262,7 @@ export default function Authentication() {
                     required
                     onChange={(e) => {
                       setStudentId(e.target.value);
+                      setIsTypeStudentId(true);
                     }}
                     onInput={(e) => {
                       e.target.value = e.target.value
@@ -157,6 +272,21 @@ export default function Authentication() {
                   />
                   <label htmlFor="phone">Student ID*</label>
                 </div>
+                {studentId.trim() !== "" &&
+                  isTypeStudentId &&
+                  studentId.length < 9 && (
+                    <div
+                      className="form-control-authentication"
+                      style={{
+                        marginTop: "-15px",
+                        justifyContent: "left",
+                        color: "red",
+                        fontSize: "14px",
+                      }}
+                    >
+                      <p>Student ID must be 9 digits long</p>
+                    </div>
+                  )}
                 <div className="form-control-authentication">
                   <input
                     type="email"
@@ -167,7 +297,6 @@ export default function Authentication() {
                     required
                     onChange={(e) => {
                       setEmail(e.target.value);
-                      validateSignUp();
                     }}
                   />
                   <label htmlFor="email">Email*</label>
@@ -182,7 +311,6 @@ export default function Authentication() {
                     required
                     onChange={(e) => {
                       setPasswordSignUp(e.target.value);
-                      validateSignUp();
                     }}
                   />
                   {isClickShowPasswordSignUp ? (
@@ -206,6 +334,68 @@ export default function Authentication() {
                   )}
                   <label htmlFor="password">Password*</label>
                 </div>
+
+                {/* Password Requirement */}
+                <div
+                  className="form-control-authentication"
+                  style={{
+                    marginTop: "-15px",
+                    justifyContent: "left",
+                    color: isExistSpecialChar ? "green" : "red",
+                    fontSize: "14px",
+                  }}
+                >
+                  <p>Has special characters (@$!%*?&)</p>
+                </div>
+
+                <div
+                  className="form-control-authentication"
+                  style={{
+                    marginTop: "-15px",
+                    justifyContent: "left",
+                    color: isExistNumber ? "green" : "red",
+                    fontSize: "14px",
+                  }}
+                >
+                  <p>Has number</p>
+                </div>
+
+                <div
+                  className="form-control-authentication"
+                  style={{
+                    marginTop: "-15px",
+                    justifyContent: "left",
+                    color: isExistUppercase ? "green" : "red",
+                    fontSize: "14px",
+                  }}
+                >
+                  <p>Has uppercase characters</p>
+                </div>
+
+                <div
+                  className="form-control-authentication"
+                  style={{
+                    marginTop: "-15px",
+                    justifyContent: "left",
+                    color: isExistLowercase ? "green" : "red",
+                    fontSize: "14px",
+                  }}
+                >
+                  <p>Has lowercase characters</p>
+                </div>
+
+                <div
+                  className="form-control-authentication"
+                  style={{
+                    marginTop: "-15px",
+                    justifyContent: "left",
+                    color: isValidLength ? "green" : "red",
+                    fontSize: "14px",
+                  }}
+                >
+                  <p>Minimum length of 12 characters</p>
+                </div>
+
                 <div className="form-control-authentication">
                   <input
                     type={isClickShowConfirmPassword ? "text" : "password"}
@@ -217,7 +407,6 @@ export default function Authentication() {
                     onChange={(e) => {
                       setConfirmPasswordSignUp(e.target.value); // Used to set real password value
                       checkPasswordMatch(e.target.value);
-                      validateSignUp();
                     }}
                   />
                   {isClickShowConfirmPassword ? (
@@ -260,8 +449,19 @@ export default function Authentication() {
                   <label className="agree-box">
                     <span className="text">
                       Click
-                      <a href="#policyModal"> "Terms & Recovery Guide"</a> to
-                      read and agree
+                      <a
+                        href="#policyModal"
+                        onClick={(e) => {
+                          e.preventDefault();
+
+                          document.getElementById("policyModal").style.display =
+                            "flex";
+                        }}
+                      >
+                        {" "}
+                        "Terms & Recovery Guide"
+                      </a>{" "}
+                      to read and agree
                     </span>
                   </label>
                 </div>
@@ -745,7 +945,11 @@ export default function Authentication() {
           <a
             className="close"
             href="#"
-            onClick={() => {
+            onClick={(e) => {
+              e.preventDefault();
+
+              document.getElementById("policyModal").style.display = "none";
+              validateSignUp();
               setIsAgreeTerm(true);
             }}
           >

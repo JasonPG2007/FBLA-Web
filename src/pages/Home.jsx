@@ -344,7 +344,7 @@ export default function Home() {
             }}
           />
           <div className="card-text">
-            <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
+            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
               <a href="/detail-post">Ipad 11th Gen</a>
             </h3>
             <p>
