@@ -30,92 +30,16 @@ export default function Profile() {
                             marginBottom: "40px",
                         }}>
 
-        {/* Name of profile */}
-        <div style={{ margin: "auto", marginBottom: "37%", display: "flex" }}>
-          <div>
-            <h1
-              style={{
-                fontFamily: "Mochiy Pop One, sans-serif",
-                fontSize: "20px",
-                fontWeight: "100",
-                marginLeft: "10px",
-              }}
-            >
-              My profile
-            </h1>
-            <table
-              border="0"
-              style={{
-                padding: "10px",
-                textAlign: "left",
-                verticalAlign: "top",
-                width: "100%",
-              }}
-            >
-              <tbody>
-                <tr className="table-tr">
-                  <th style={{ verticalAlign: "top", fontWeight: "600" }}>
-                    <label className="input">Name: </label>
-                  </th>
-                  <td style={{ verticalAlign: "top" }} className="table-td">
-                    <input
-                      placeholder="Ex: Jennie Nguyen"
-                      type="text"
-                      className="input"
-                    />
-                  </td>
-                </tr>
-                <tr className="table-tr">
-                  <th style={{ verticalAlign: "top", fontWeight: "600" }}>
-                    <label className="input">Phone number: </label>
-                  </th>
-                  <td style={{ verticalAlign: "top" }} className="table-td">
-                    <input
-                      placeholder="Ex: 123 456 789"
-                      type="number"
-                      className="input"
-                    />
-                  </td>
-                </tr>
-                <tr className="table-tr">
-                  <th style={{ verticalAlign: "top", fontWeight: "600" }}>
-                    <label className="input">E-mail: </label>
-                  </th>
-                  <td style={{ verticalAlign: "top" }} className="table-td">
-                    <input
-                      placeholder="Ex: demo@ex.io"
-                      type="email"
-                      className="input"
-                    />
-                  </td>
-                </tr>
-                <tr className="table-tr">
-                  <th style={{ verticalAlign: "top", fontWeight: "600" }}>
-                    <label className="input">New pasword: </label>
-                  </th>
-                  <td style={{ verticalAlign: "top" }} className="table-td">
-                    <input
-                      placeholder="Enter new pasword"
-                      type="password"
-                      className="input"
-                    />
-                  </td>
-                </tr>
-                <tr className="table-tr">
-                  <th style={{ verticalAlign: "top", fontWeight: "600" }}>
-                    <label className="input">Old password: </label>
-                  </th>
-                  <td style={{ verticalAlign: "top" }} className="table-td">
-                    <input
-                      placeholder="Confirm new password"
-                      type="password"
-                      className="input"
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+                        {/* Icon */}
+                        <img src="./Image/user_icon.png" alt="avatar"
+                            style={{
+                                borderRadius: "100%",
+                                width: "60px",
+                            }} />
+                        <h3 style={{
+                            fontWeight: "500"
+                        }}>User name</h3>
+                    </div>
 
                     {/* Personal information  */}
                     <a href="/profile" style={{
