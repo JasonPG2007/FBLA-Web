@@ -170,7 +170,7 @@ export default function Header() {
           className="list-service"
           id="list-service"
         >
-          <a href="#policyModal" style={{ marginRight: "40px" }}>
+          <a href="#policyModal2" style={{ marginRight: "40px" }}>
             Terms & Guide
           </a>
           <a href="/about" style={{ marginRight: "40px" }}>
@@ -244,7 +244,7 @@ export default function Header() {
       </div>
 
       {/* Modal Policy */}
-      <div id="policyModal" className="modal">
+      <div id="policyModal2" className="modal">
         <div className="modal-content">
           <h2>Terms & Recovery Guide</h2>
 
