@@ -2,6 +2,7 @@ export default function LostAndFound() {
   return (
     <>
       <div
+        className="title-lost-and-found"
         style={{
           display: "flex",
           gap: "2%",

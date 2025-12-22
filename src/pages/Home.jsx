@@ -180,10 +180,7 @@ export default function Home() {
             Register
           </p>
           <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vero,
-            dolorem? Autem maiores rem cupiditate expedita vero qui, dolorum
-            consequatur quas, nulla odio nemo sint temporibus, itaque doloribus
-            aperiam libero aliquam!
+            This step allows you to have a personalized space for managing your stuff. You can edit and update your profile, contact other users, and access useful tools.
           </p>
         </div>
 
@@ -216,10 +213,7 @@ export default function Home() {
             Report a stuff
           </p>
           <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vero,
-            dolorem? Autem maiores rem cupiditate expedita vero qui, dolorum
-            consequatur quas, nulla odio nemo sint temporibus, itaque doloribus
-            aperiam libero aliquam!
+            Share the details of your lost or found items by creating a post. Provide essential information about your items. This step helps us match lost and found items more effectively.
           </p>
         </div>
       </div>
@@ -264,10 +258,7 @@ export default function Home() {
             Promote
           </p>
           <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vero,
-            dolorem? Autem maiores rem cupiditate expedita vero qui, dolorum
-            consequatur quas, nulla odio nemo sint temporibus, itaque doloribus
-            aperiam libero aliquam!
+            Our platform offers options to share your listing on social media, reaching a wider audience. The more you promote your listing, the higher the chances of reuniting with your items.
           </p>
         </div>
 
@@ -300,16 +291,14 @@ export default function Home() {
             Reunite
           </p>
           <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vero,
-            dolorem? Autem maiores rem cupiditate expedita vero qui, dolorum
-            consequatur quas, nulla odio nemo sint temporibus, itaque doloribus
-            aperiam libero aliquam!
+            This is the ultimate goal. With a strong user community and effective promotion, the chances of reuniting with your lost items or finding the item’s owner become much higher.
           </p>
         </div>
       </div>
 
       {/* Newest posts */}
       <div
+        className="title-newest-post"
         style={{
           display: "flex",
           gap: "2%",
@@ -453,11 +442,10 @@ export default function Home() {
           />
           <div className="card-text">
             <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-              Sponebob
+              Phone
             </h3>
             <p>
-              Lost my sponebob plush toy last week near Central Park. If found,
-              please contact me!
+              Lost my phone last Monday near Center Park. If found, please contact me!
             </p>
           </div>
 
@@ -481,7 +469,7 @@ export default function Home() {
           <div className="card-text">
             <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Key</h3>
             <p>
-              Lost my sponebob plush toy last week near Central Park. If found,
+              Lost my key last week near Central Park. If found,
               please contact me!
             </p>
           </div>
