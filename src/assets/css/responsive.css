@@ -1,5 +1,6 @@
 /* MOBILE */
 @media (max-width: 576px) {
+
   /* Navbar */
   .bar {
     display: block;
@@ -57,17 +58,161 @@
   /* FAQ */
   .faq-container {
     margin-top: 100px;
+  /* Home */
+  .newest-post-container {
+    display: grid;
+    grid-template-columns: auto;
+    gap: 20px;
+    padding: 0 10px;
+    margin-bottom: 100px;
+  }
+
+  /* New post */
+  .title-newest-post {
+    padding: 70px 82px 30px !important;
+  }
+
+  .title-newest-post p {
+    font-size: 25px !important;
+  }
+
+  /* Quick search */
+  .quick-search {
+    position: relative;
+    width: 100%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 20px;
+    padding: 20px 20px 70px;
+    border-radius: 20px;
+    background-color: #fff;
+  }
+
+  .pipe {
+    display: none;
+  }
+
+  .quick-search .categories .left {
+    margin-right: 27px;
+  }
+
+  .quick-search .categories .left label {
+    font-size: 14px;
+  }
+
+  .btn-quick-search {
+    position: absolute;
+    left: 26%;
+    bottom: 10px;
+  }
+
+  /* About us */
+  .offer-block {
+    margin-top: 15%;
+    display: grid;
+    grid-template-columns: auto;
+    column-gap: 2%;
+    margin-bottom: 4%;
+  }
+
+  .offer {
+    margin-bottom: 15%;
+  }
+
+  .offer-middle {
+    margin-bottom: 15%;
+  }
+
+  .offer-content {
+    font-size: 14px;
+  }
+
+  .big-block-about h1 {
+    font-size: 25px;
+  }
+
+  .big-block-about {
+    margin-top: 26%;
+    margin-bottom: 10%;
+  }
+
+  .big-block-about .content {
+    grid-template-columns: auto;
+    gap: 20px;
+    font-size: 14px;
+  }
+
+  /* Lost and found stuff */
+  .newest-post-container {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    gap: 20px;
+    padding: 0 15px;
+    margin-bottom: 100px;
+    margin-left: -20px;
+  }
+
+  /* Card */
+  .card {
+    transition: all 0.3s ease-in-out;
+    width: 100%;
+    position: relative;
+    margin-bottom: 10%;
+    height: 380px;
+  }
+
+  .card img {
+    height: 200px !important;
+  }
+
+  /* Card text */
+  .card-text h3 {
+    font-size: 16px;
+  }
+
+  .card-text p {
+    font-size: 14px;
+  }
+
+  /* Status post */
+  .status-post-lost {
+    font-size: 14px;
+  }
+
+  .status-post-found {
+    font-size: 14px;
+  }
+
+  /* Title */
+  .title-lost-and-found {
+    padding: 70px 10px 30px !important;
+  }
+
+  .title-lost-and-found p {
+    font-size: 18px !important;
   }
 }
 
 /* SMALL TABLET */
-@media (min-width: 577px) and (max-width: 768px) {
-  /* Code here */
-}
+@media (min-width: 577px) and (max-width: 768px) {}
 
 /* BIG TABLET */
 @media (min-width: 769px) and (max-width: 992px) {
-  /* Code here */
+
+  /* Home */
+  .newest-post-container {
+    display: grid;
+    grid-template-columns: 33.3333333333% 33.3333333333% 33.3333333333%;
+    gap: 20px;
+    padding: 0 20px;
+    margin-bottom: 100px;
+    margin-left: -40px;
+  }
+
+  .card img {
+    height: 235px !important;
+  }
 }
 
 /* SMALL LAPTOP */
