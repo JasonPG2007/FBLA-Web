@@ -1,323 +1,277 @@
+import SidebarProfile from "../components/SidebarProfile";
+
 export default function MyPost() {
-    return (
-        <>
-            <div
+  return (
+    <>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "15% 85%",
+          gap: "50px",
+          // backgroundColor: "pink",
+          position: "relative",
+        }}
+      >
+        {/* Menu for profile */}
+        <SidebarProfile></SidebarProfile>
+
+        {/* Post similar to you */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            marginTop: "100px",
+            gap: "30px",
+          }}
+        >
+          <div className="status-filter">
+            <p
+              style={{
+                backgroundColor: "#072138",
+                width: "max-content",
+                color: "white",
+                padding: "1px 30px",
+                borderRadius: "8px",
+                position: "absolute",
+                top: "-50%",
+                left: "0",
+                marginTop: "20px",
+              }}
+            >
+              Status
+            </p>
+            <input type="radio" name="status" id="search-all" defaultChecked />{" "}
+            <label htmlFor="search-all" id="search-all-label">
+              <strong>All</strong>
+            </label>
+            <input
+              type="radio"
+              name="status"
+              id="lost"
+              style={{ marginLeft: "20px", marginTop: "25px" }}
+            />{" "}
+            <label htmlFor="lost" style={{ marginRight: "25px" }}>
+              <strong>Lost</strong>
+            </label>
+            <input type="radio" name="status" id="found" />{" "}
+            <label htmlFor="found">
+              <strong>Found</strong>
+            </label>
+          </div>
+
+          {/* Card */}
+          <div className="newest-post-container">
+            {/* Card img 1 */}
+            <div className="card">
+              <img
+                src="./Image/ipad.webp"
+                alt="picture of stuffs"
+                loading="lazy"
                 style={{
-                    display: "grid",
-                    gridTemplateColumns: "15% 85%",
-                    gap: "50px",
-                    // backgroundColor: "pink",
-                    position: "relative",
-                }}>
+                  width: "100%",
+                  height: "300px",
+                  objectFit: "cover",
+                  backgroundColor: "white",
+                }}
+              />
+              <div className="card-text">
+                <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
+                  <a href="/detail-post">Ipad 11th Gen</a>
+                </h3>
+                <p>
+                  <a href="/detail-post">
+                    Lost my Ipad 11th Gen last week near Central Park. If found,
+                    please contact me!
+                  </a>
+                </p>
+              </div>
 
-                {/* Menu for profile */}
-                <div style={{
-                    backgroundColor: "#ffbd83",
-                    marginLeft: "-100px",
-                    borderTopRightRadius: "12px",
-                    padding: "40px 20px",
-                    marginTop: "100px",
-                    borderBottomRightRadius: "12px",
-                    position: "relative",
-                    height: "700px",
-                    width: "100%"
-                }}>
-                    <div
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "20px",
-                            marginBottom: "40px",
-                        }}>
+              {/* Status */}
+              <div className="status-post-lost">Lost</div>
+            </div>
 
-                        {/* Icon */}
-                        <img src="./Image/user_icon.png" alt="avatar"
-                            style={{
-                                borderRadius: "100%",
-                                width: "60px",
-                            }} />
-                        <h3 style={{
-                            fontWeight: "500"
-                        }}>User name</h3>
-                    </div>
+            {/* Card img 2 */}
+            <div className="card">
+              <img
+                src="./Image/charger.webp"
+                alt="picture of stuffs"
+                style={{
+                  width: "100%",
+                  height: "300px",
+                  objectFit: "cover",
+                  backgroundColor: "white",
+                }}
+              />
+              <div className="card-text">
+                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                  Charger USB-C
+                </h3>
+                <p>
+                  Lost my charger USB-C last week near Central Park. If found,
+                  please contact me!
+                </p>
+              </div>
 
-                    {/* Personal information  */}
-                    <a href="/profile" style={{
-                        fontWeight: "400",
-                        lineHeight: "50px",
-                    }}> <i class="fa-solid fa-user"></i> Personal information</a>
-                    <br />
-                    {/* My post */}
-                    <a href="/my-post" style={{
-                        fontWeight: "400",
-                        lineHeight: "50px",
-                    }}> <i class="fa-solid fa-sim-card"></i> My post</a>
-                    <br />
-                    {/* Messeges */}
-                    <a href="/messeges" style={{
-                        fontWeight: "400",
-                        lineHeight: "50px",
-                    }}> <i class="fa-solid fa-envelope"></i> Messeges</a>
-                    <br />
-                    {/* Notifications */}
-                    <a href="/notifications" style={{
-                        fontWeight: "400",
-                        lineHeight: "50px",
-                    }}> <i class="fa-solid fa-bell"></i> Notifications</a>
-                    <br />
-                    {/* Log out */}
-                    <a href="/log-out" style={{
-                        fontWeight: "400",
-                        position: "absolute",
-                        bottom: "20px",
-                    }}> <i class="fa-solid fa-arrow-right-from-bracket"></i>Log out</a>
-                </div>
+              {/* Status */}
+              <div className="status-post-found">Found</div>
+            </div>
 
-                {/* Post similar to you */}
-                <div style={{ display: "flex", flexDirection: "column", marginTop: "100px", gap: "30px" }}>
-                    <div className="status-filter">
-                        <p
-                            style={{
-                                backgroundColor: "#072138",
-                                width: "max-content",
-                                color: "white",
-                                padding: "1px 30px",
-                                borderRadius: "8px",
-                                position: "absolute",
-                                top: "-50%",
-                                left: "0",
-                                marginTop: "20px",
-                            }}
-                        >
-                            Status
-                        </p>
-                        <input type="radio" name="status" id="search-all" defaultChecked />{" "}
-                        <label htmlFor="search-all" id="search-all-label">
-                            <strong>All</strong>
-                        </label>
-                        <input
-                            type="radio"
-                            name="status"
-                            id="lost"
-                            style={{ marginLeft: "20px", marginTop: "25px" }}
-                        />{" "}
-                        <label htmlFor="lost" style={{ marginRight: "25px" }}>
-                            <strong>Lost</strong>
-                        </label>
-                        <input type="radio" name="status" id="found" />{" "}
-                        <label htmlFor="found">
-                            <strong>Found</strong>
-                        </label>
-                    </div>
+            {/* Card img 3 */}
+            <div className="card">
+              <img
+                src="./Image/chromebook.jpg"
+                alt="picture of stuffs"
+                style={{
+                  width: "100%",
+                  height: "300px",
+                  objectFit: "cover",
+                  backgroundColor: "white",
+                }}
+              />
+              <div className="card-text">
+                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                  Chromebook
+                </h3>
+                <p>
+                  Lost my chromebook last week near Central Park. If found,
+                  please contact me!
+                </p>
+              </div>
 
-                    {/* Card */}
-                    <div className="newest-post-container">
-                        {/* Card img 1 */}
-                        <div className="card">
-                            <img
-                                src="./Image/ipad.webp"
-                                alt="picture of stuffs"
-                                loading="lazy"
-                                style={{
-                                    width: "100%",
-                                    height: "300px",
-                                    objectFit: "cover",
-                                    backgroundColor: "white",
-                                }}
-                            />
-                            <div className="card-text">
-                                <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
-                                    <a href="/detail-post">Ipad 11th Gen</a>
-                                </h3>
-                                <p>
-                                    <a href="/detail-post">Lost my Ipad 11th Gen last week near Central Park. If found,
-                                        please contact me!</a>
-                                </p>
-                            </div>
+              {/* Status */}
+              <div className="status-post-lost">Lost</div>
+            </div>
 
-                            {/* Status */}
-                            <div className="status-post-lost">Lost</div>
-                        </div>
+            {/* Card img 4 */}
+            <div className="card">
+              <img
+                src="./Image/earbuds.webp"
+                alt="picture of stuffs"
+                style={{
+                  width: "100%",
+                  height: "300px",
+                  objectFit: "cover",
+                  backgroundColor: "white",
+                }}
+              />
+              <div className="card-text">
+                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                  Earbuds
+                </h3>
+                <p>
+                  Lost my earbuds last week near Central Park. If found, please
+                  contact me!
+                </p>
+              </div>
 
-                        {/* Card img 2 */}
-                        <div className="card">
-                            <img
-                                src="./Image/charger.webp"
-                                alt="picture of stuffs"
-                                style={{
-                                    width: "100%",
-                                    height: "300px",
-                                    objectFit: "cover",
-                                    backgroundColor: "white",
-                                }}
-                            />
-                            <div className="card-text">
-                                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                                    Charger USB-C
-                                </h3>
-                                <p>
-                                    Lost my charger USB-C last week near Central Park. If found,
-                                    please contact me!
-                                </p>
-                            </div>
+              {/* Status */}
+              <div className="status-post-lost">Lost</div>
+            </div>
 
-                            {/* Status */}
-                            <div className="status-post-found">Found</div>
-                        </div>
+            {/* Card img 1 */}
+            <div className="card">
+              <img
+                src="./Image/phone.webp"
+                alt="picture of stuffs"
+                style={{
+                  width: "100%",
+                  height: "300px",
+                  objectFit: "cover",
+                  backgroundColor: "white",
+                }}
+              />
+              <div className="card-text">
+                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                  Sponebob
+                </h3>
+                <p>
+                  Lost my sponebob plush toy last week near Central Park. If
+                  found, please contact me!
+                </p>
+              </div>
 
-                        {/* Card img 3 */}
-                        <div className="card">
-                            <img
-                                src="./Image/chromebook.jpg"
-                                alt="picture of stuffs"
-                                style={{
-                                    width: "100%",
-                                    height: "300px",
-                                    objectFit: "cover",
-                                    backgroundColor: "white",
-                                }}
-                            />
-                            <div className="card-text">
-                                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                                    Chromebook
-                                </h3>
-                                <p>
-                                    Lost my chromebook last week near Central Park. If found, please
-                                    contact me!
-                                </p>
-                            </div>
+              {/* Status */}
+              <div className="status-post-found">Found</div>
+            </div>
 
-                            {/* Status */}
-                            <div className="status-post-lost">Lost</div>
-                        </div>
+            {/* Card img 2 */}
+            <div className="card">
+              <img
+                src="./Image/key.jpg"
+                alt="picture of stuffs"
+                style={{
+                  width: "100%",
+                  height: "300px",
+                  objectFit: "cover",
+                  backgroundColor: "white",
+                }}
+              />
+              <div className="card-text">
+                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Key</h3>
+                <p>
+                  Lost my sponebob plush toy last week near Central Park. If
+                  found, please contact me!
+                </p>
+              </div>
 
-                        {/* Card img 4 */}
-                        <div className="card">
-                            <img
-                                src="./Image/earbuds.webp"
-                                alt="picture of stuffs"
-                                style={{
-                                    width: "100%",
-                                    height: "300px",
-                                    objectFit: "cover",
-                                    backgroundColor: "white",
-                                }}
-                            />
-                            <div className="card-text">
-                                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Earbuds</h3>
-                                <p>
-                                    Lost my earbuds last week near Central Park. If found, please
-                                    contact me!
-                                </p>
-                            </div>
+              {/* Status */}
+              <div className="status-post-lost">Lost</div>
+            </div>
 
-                            {/* Status */}
-                            <div className="status-post-lost">Lost</div>
-                        </div>
+            {/* Card img 3 */}
+            <div className="card">
+              <img
+                src="./Image/wallet.jpg"
+                alt="picture of stuffs"
+                style={{
+                  width: "100%",
+                  height: "300px",
+                  objectFit: "cover",
+                  backgroundColor: "white",
+                }}
+              />
+              <div className="card-text">
+                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                  Wallet
+                </h3>
+                <p>
+                  Lost my wallet last week near Central Park. If found, please
+                  contact me!
+                </p>
+              </div>
 
-                        {/* Card img 1 */}
-                        <div className="card">
-                            <img
-                                src="./Image/phone.webp"
-                                alt="picture of stuffs"
-                                style={{
-                                    width: "100%",
-                                    height: "300px",
-                                    objectFit: "cover",
-                                    backgroundColor: "white",
-                                }}
-                            />
-                            <div className="card-text">
-                                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                                    Sponebob
-                                </h3>
-                                <p>
-                                    Lost my sponebob plush toy last week near Central Park. If found,
-                                    please contact me!
-                                </p>
-                            </div>
+              {/* Status */}
+              <div className="status-post-found">Found</div>
+            </div>
 
-                            {/* Status */}
-                            <div className="status-post-found">Found</div>
-                        </div>
+            {/* Card img 4 */}
+            <div className="card">
+              <img
+                src="./Image/keychain.avif"
+                alt="picture of stuffs"
+                style={{
+                  width: "100%",
+                  height: "300px",
+                  objectFit: "cover",
+                  backgroundColor: "white",
+                }}
+              />
+              <div className="card-text">
+                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                  Keychain
+                </h3>
+                <p>
+                  Lost my keychain last week near Central Park. If found, please
+                  contact me!
+                </p>
+              </div>
 
-                        {/* Card img 2 */}
-                        <div className="card">
-                            <img
-                                src="./Image/key.jpg"
-                                alt="picture of stuffs"
-                                style={{
-                                    width: "100%",
-                                    height: "300px",
-                                    objectFit: "cover",
-                                    backgroundColor: "white",
-                                }}
-                            />
-                            <div className="card-text">
-                                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Key</h3>
-                                <p>
-                                    Lost my sponebob plush toy last week near Central Park. If found,
-                                    please contact me!
-                                </p>
-                            </div>
-
-                            {/* Status */}
-                            <div className="status-post-lost">Lost</div>
-                        </div>
-
-                        {/* Card img 3 */}
-                        <div className="card">
-                            <img
-                                src="./Image/wallet.jpg"
-                                alt="picture of stuffs"
-                                style={{
-                                    width: "100%",
-                                    height: "300px",
-                                    objectFit: "cover",
-                                    backgroundColor: "white",
-                                }}
-                            />
-                            <div className="card-text">
-                                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Wallet</h3>
-                                <p>
-                                    Lost my wallet last week near Central Park. If found, please
-                                    contact me!
-                                </p>
-                            </div>
-
-                            {/* Status */}
-                            <div className="status-post-found">Found</div>
-                        </div>
-
-                        {/* Card img 4 */}
-                        <div className="card">
-                            <img
-                                src="./Image/keychain.avif"
-                                alt="picture of stuffs"
-                                style={{
-                                    width: "100%",
-                                    height: "300px",
-                                    objectFit: "cover",
-                                    backgroundColor: "white",
-                                }}
-                            />
-                            <div className="card-text">
-                                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                                    Keychain
-                                </h3>
-                                <p>
-                                    Lost my keychain last week near Central Park. If found, please
-                                    contact me!
-                                </p>
-                            </div>
-
-                            {/* Status */}
-                            <div className="status-post-found">Found</div>
-                        </div>
-                    </div>
-
-                </div>
-            </div >
-        </>
-    );
+              {/* Status */}
+              <div className="status-post-found">Found</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
