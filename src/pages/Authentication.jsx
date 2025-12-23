@@ -1,10 +1,32 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
-import InputMask from "react-input-mask";
 
 export default function Authentication() {
   // Variables
+  const images = [
+    "https://img.icons8.com/papercut/120/clock.png",
+    "https://img.icons8.com/dusk/64/pencil--v1.png",
+    "https://img.icons8.com/color/96/smartphone.png",
+    "https://img.icons8.com/fluency/96/umbrella.png",
+    "https://img.icons8.com/scribby/100/headphones.png",
+    "https://img.icons8.com/doodle/96/ring-front-view--v1.png",
+    "https://img.icons8.com/color/96/cap.png",
+    "https://img.icons8.com/plasticine/100/camera--v1.png",
+    "https://img.icons8.com/color/96/wallet--v1.png",
+    "https://img.icons8.com/color/96/bottle-of-water.png",
+    "https://img.icons8.com/fluency/96/book--v1.png",
+    "https://img.icons8.com/color/96/glasses.png",
+    "https://img.icons8.com/color/96/laptop--v1.png",
+    "https://img.icons8.com/color/96/keys-holder.png",
+    "https://img.icons8.com/emoji/96/credit-card-emoji.png",
+    "https://img.icons8.com/plasticine/100/sneakers.png",
+    "https://img.icons8.com/officel/80/skateboard.png",
+    "https://img.icons8.com/3d-fluency/94/usb-memory-stick.png",
+  ];
+  const initialState = images.map(() => ({ isActive: false }));
+
+  const [selectedIndex, setSelectedIndex] = useState(initialState);
   let [isAgreeTerm, setIsAgreeTerm] = useState(false);
   let [isClickShowPasswordSignUp, setIsClickShowPasswordSignUp] =
     useState(false);
@@ -16,18 +38,24 @@ export default function Authentication() {
   let [isMatchPassword, setIsMatchPassword] = useState(false);
   let [isSentVerificationCodeEmail, setIsSentVerificationCodeEmail] =
     useState(false);
-  let [phone, setPhone] = useState("");
+  let [msgSignIn, setMsgSignIn] = useState({
+    msg: "",
+    status: "",
+  });
   let [firstName, setFirstName] = useState("");
   let [lastName, setLastName] = useState("");
   let [email, setEmail] = useState("");
   let [passwordSignUp, setPasswordSignUp] = useState("");
   let [confirmPasswordSignUp, setConfirmPasswordSignUp] = useState("");
   let [studentId, setStudentId] = useState("");
+  let [studentIdOrEmailForSignIn, setStudentIdOrEmailForSignIn] = useState("");
+  let [isInProcessing, setIsInProcessing] = useState(false);
   let [isTypeStudentId, setIsTypeStudentId] = useState(false);
   let [isValidStudentId, setIsValidStudentId] = useState(false);
   let [isValidPassword, setIsValidPassword] = useState(false);
   let [isExistSpecialChar, setIsExistSpecialChar] = useState(false);
   let [isExistNumber, setIsExistNumber] = useState(false);
+  let [isClickSignIn, setIsClickSignIn] = useState(false);
   let [isExistUppercase, setIsExistUppercase] = useState(false);
   let [isExistLowercase, setIsExistLowercase] = useState(false);
   let [isValidLength, setIsValidLength] = useState(false);
@@ -40,13 +68,31 @@ export default function Authentication() {
   const handleSubmitSignUp = async (e) => {
     e.preventDefault();
 
-    // Validate
-    validateSignUp();
+    setIsInProcessing(true);
+
+    // Two image is picked
+    const pickedIndexes = selectedIndex
+      .map((item, i) => (item.isActive ? i : null))
+      .filter((i) => i !== null);
+    const imagePicked1 = pickedIndexes[0];
+    const imagePicked2 = pickedIndexes[1];
 
     try {
+      const payload = {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        studentId: Number(studentId),
+        password: confirmPasswordSignUp,
+        pickImage1: imagePicked1.toString(),
+        pickImage2: imagePicked2.toString(),
+        isAgreedToTerms: isAgreeTerm,
+        role: "Student",
+      };
+
       const response = await axios.post(
-        "https://localhost:44306/api/Users",
-        null,
+        "https://localhost:44306/api/Users/sign-up",
+        payload,
         {
           headers: {
             "Content-Type": "application/json",
@@ -56,20 +102,231 @@ export default function Authentication() {
         }
       );
 
-      if (response.status) {
-        alert("OK");
+      // Success
+      if (response.status == 200) {
+        setIsInProcessing(false);
       }
     } catch (error) {
-      console.log(error);
+      setIsInProcessing(false);
+      handleCloseSelectImage();
+
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data?.message || "Server error";
+
+        setMsgSignIn({
+          msg: message,
+          status: status,
+        });
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          setMsgSignIn({
+            msg: "Network error. Please check your internet connection",
+            status: 0,
+          });
+        } else {
+          // Server offline
+          setMsgSignIn({
+            msg: "Server is currently unavailable. Please try again later.",
+            status: 503,
+          });
+        }
+      } else {
+        // Other errors
+        setMsgSignIn({
+          msg: "Something went wrong. Please try again",
+          status: 500,
+        });
+      }
     }
   };
 
-  // Handle form submission for Sign In
-  function handleSubmitSignIn(e) {
+  const handleChangeToSelectImage = (e) => {
     e.preventDefault();
 
-    alert("Clicked");
-  }
+    const isValidSignUp = validateSignUp();
+    const isValidSignIn = validateSignIn();
+
+    if (isValidSignUp || isValidSignIn) {
+      document.getElementById("pick-image-container").style.visibility =
+        "visible";
+      document.getElementById("pick-image-container").style.opacity = "1";
+    }
+  };
+
+  const handleCloseSelectImage = () => {
+    document.getElementById("pick-image-container").style.visibility = "hidden";
+    document.getElementById("pick-image-container").style.opacity = "0";
+  };
+
+  // Handle form submission for Sign In
+  const handleSubmitSignIn = async (e) => {
+    e.preventDefault();
+
+    setIsInProcessing(true);
+    try {
+      const responseSignInUser = await axios.post(
+        `https://localhost:44306/api/Users/sign-in`,
+        {
+          studentId: studentIdOrEmailForSignIn.includes("@")
+            ? 0
+            : studentIdOrEmailForSignIn,
+          password: passwordSignIn,
+          email: studentIdOrEmailForSignIn,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      // Success, then pick image
+      if (responseSignInUser.status == 200) {
+        handleChangeToSelectImage(e);
+        setMsgSignIn({
+          msg: responseSignInUser.data,
+          status: responseSignInUser.status,
+        });
+      }
+
+      if (responseSignInUser.status === 401) {
+        handleCloseSelectImage();
+        setMsgSignIn({
+          msg: responseSignInUser.data,
+          status: responseSignInUser.status,
+        });
+      }
+
+      setIsInProcessing(false);
+    } catch (error) {
+      setIsInProcessing(false);
+      handleCloseSelectImage();
+
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data?.message || "Server error";
+
+        setMsgSignIn({
+          msg: message,
+          status: status,
+        });
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          setMsgSignIn({
+            msg: "Network error. Please check your internet connection",
+            status: 0,
+          });
+        } else {
+          // Server offline
+          setMsgSignIn({
+            msg: "Server is currently unavailable. Please try again later.",
+            status: 503,
+          });
+        }
+      } else {
+        // Other errors
+        setMsgSignIn({
+          msg: "Something went wrong. Please try again",
+          status: 500,
+        });
+      }
+    }
+  };
+
+  const handleSubmitImageChose = async (e) => {
+    e.preventDefault();
+
+    setIsInProcessing(true);
+
+    // Two image is picked
+    const pickedIndexes = selectedIndex
+      .map((item, i) => (item.isActive ? i : null))
+      .filter((i) => i !== null);
+
+    try {
+      const responseSignInUser = await axios.post(
+        `https://localhost:44306/api/Users/select-image`,
+        {
+          studentId: studentIdOrEmailForSignIn.includes("@")
+            ? 0
+            : studentIdOrEmailForSignIn.trim(),
+          password: passwordSignIn,
+          email: studentIdOrEmailForSignIn.trim(),
+          pickedIndexes: pickedIndexes,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      // Success, then pick image
+      if (responseSignInUser.status == 200) {
+        handleChangeToSelectImage(e);
+        sessionStorage.removeItem("requiredSignIn");
+
+        setMsgSignIn({
+          msg: "Sign in successfully",
+          status: responseSignInUser.status,
+        });
+
+        window.location.href = "/";
+      }
+
+      if (responseSignInUser.status === 401) {
+        handleCloseSelectImage();
+        setMsgSignIn({
+          msg: responseSignInUser.data,
+          status: responseSignInUser.status,
+        });
+      }
+
+      setIsInProcessing(false);
+    } catch (error) {
+      setIsInProcessing(false);
+      handleCloseSelectImage();
+
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data?.message || "Server error";
+
+        setMsgSignIn({
+          msg: message,
+          status: status,
+        });
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          setMsgSignIn({
+            msg: "Network error. Please check your internet connection",
+            status: 0,
+          });
+        } else {
+          // Server offline
+          setMsgSignIn({
+            msg: "Server is currently unavailable. Please try again later.",
+            status: 503,
+          });
+        }
+      } else {
+        // Other errors
+        setMsgSignIn({
+          msg: "Something went wrong. Please try again",
+          status: 500,
+        });
+      }
+    }
+  };
 
   // Handle form submission for Forgot Password
   function handleSubmitForgotPassword(e) {
@@ -79,6 +336,29 @@ export default function Authentication() {
 
     alert("Clicked");
   }
+
+  // Select image function
+  const handleSelectImage = (index) => {
+    const activeCount = selectedIndex.filter((x) => x.isActive).length;
+
+    setSelectedIndex((prev) =>
+      prev.map((item, i) => {
+        // If click that icon
+        if (i === index) {
+          // If that icon is active so remove active it
+          if (item.isActive) return { isActive: false };
+
+          // If that icon is not active and total active is < 2 so add active it
+          if (activeCount < 2) return { isActive: true };
+
+          // If reach 2 so don't change
+          return item;
+        }
+
+        return item;
+      })
+    );
+  };
 
   // Validate Sign Up inputs
   function validateSignUp() {
@@ -102,7 +382,7 @@ export default function Authentication() {
 
   // Validate Sign In inputs
   function validateSignIn() {
-    if (studentId.trim() == "" || passwordSignIn.trim() == "") {
+    if (studentIdOrEmailForSignIn.trim() == "" || passwordSignIn.trim() == "") {
       return false;
     } else {
       return true;
@@ -211,16 +491,44 @@ export default function Authentication() {
 
       <div className="authentication-container">
         <div className="form-box">
+          {sessionStorage.getItem("requiredSignIn") && (
+            <h1
+              style={{
+                backgroundColor: "red",
+                color: "#fff", // chữ tối
+                border: "1px solid #f5c6cb",
+                padding: "10px 20px",
+                borderRadius: "10px",
+                fontSize: "18px",
+                fontWeight: "bold",
+                maxWidth: "400px",
+                margin: "20px auto",
+              }}
+            >
+              {sessionStorage.getItem("requiredSignIn")}
+            </h1>
+          )}
           <div
             className="form-sign-up-in-container"
             id="form-sign-up-in-container"
           >
             {/* Sign Up */}
-            <form onSubmit={handleSubmitSignUp} style={{ width: "100%" }}>
+            <form
+              onSubmit={handleChangeToSelectImage}
+              style={{ width: "100%" }}
+            >
               <div className="sign-up">
                 <h1 style={{ marginBottom: "20px", fontSize: "40px" }}>
                   Sign Up
                 </h1>
+                <p
+                  style={{
+                    marginBottom: "20px",
+                    color: msgSignIn.status === 200 ? "green" : "red",
+                  }}
+                >
+                  {msgSignIn.msg}
+                </p>
                 <div style={{ display: "flex", gap: "20px" }}>
                   <div className="form-control-authentication">
                     <input
@@ -256,7 +564,7 @@ export default function Authentication() {
                   <input
                     type="text"
                     name=""
-                    id="student-id"
+                    id="student-id-sign-up"
                     placeholder="Ex: 202434567"
                     className="form-control-input"
                     required
@@ -270,7 +578,7 @@ export default function Authentication() {
                         .slice(0, 9); // Allow only numbers, max length 9
                     }}
                   />
-                  <label htmlFor="phone">Student ID*</label>
+                  <label htmlFor="student-id-sign-up">Student ID*</label>
                 </div>
                 {studentId.trim() !== "" &&
                   isTypeStudentId &&
@@ -299,7 +607,7 @@ export default function Authentication() {
                       setEmail(e.target.value);
                     }}
                   />
-                  <label htmlFor="email">Email*</label>
+                  <label htmlFor="email">School Email*</label>
                 </div>
                 <div className="form-control-authentication">
                   <input
@@ -336,65 +644,87 @@ export default function Authentication() {
                 </div>
 
                 {/* Password Requirement */}
-                <div
-                  className="form-control-authentication"
-                  style={{
-                    marginTop: "-15px",
-                    justifyContent: "left",
-                    color: isExistSpecialChar ? "green" : "red",
-                    fontSize: "14px",
-                  }}
-                >
-                  <p>Has special characters (@$!%*?&)</p>
-                </div>
+                {!isExistSpecialChar && (
+                  <div
+                    className="form-control-authentication"
+                    style={{
+                      marginTop: "-15px",
+                      justifyContent: "left",
+                      color: isExistSpecialChar ? "green" : "red",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <p>
+                      <i className="fa-solid fa-x"></i> Has special characters
+                      (@$!%*?&)
+                    </p>
+                  </div>
+                )}
 
-                <div
-                  className="form-control-authentication"
-                  style={{
-                    marginTop: "-15px",
-                    justifyContent: "left",
-                    color: isExistNumber ? "green" : "red",
-                    fontSize: "14px",
-                  }}
-                >
-                  <p>Has number</p>
-                </div>
+                {!isExistNumber && (
+                  <div
+                    className="form-control-authentication"
+                    style={{
+                      marginTop: "-15px",
+                      justifyContent: "left",
+                      color: isExistNumber ? "green" : "red",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <p>
+                      <i className="fa-solid fa-x"></i> Has number
+                    </p>
+                  </div>
+                )}
 
-                <div
-                  className="form-control-authentication"
-                  style={{
-                    marginTop: "-15px",
-                    justifyContent: "left",
-                    color: isExistUppercase ? "green" : "red",
-                    fontSize: "14px",
-                  }}
-                >
-                  <p>Has uppercase characters</p>
-                </div>
+                {!isExistUppercase && (
+                  <div
+                    className="form-control-authentication"
+                    style={{
+                      marginTop: "-15px",
+                      justifyContent: "left",
+                      color: isExistUppercase ? "green" : "red",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <p>
+                      <i className="fa-solid fa-x"></i> Has uppercase characters
+                    </p>
+                  </div>
+                )}
 
-                <div
-                  className="form-control-authentication"
-                  style={{
-                    marginTop: "-15px",
-                    justifyContent: "left",
-                    color: isExistLowercase ? "green" : "red",
-                    fontSize: "14px",
-                  }}
-                >
-                  <p>Has lowercase characters</p>
-                </div>
+                {!isExistLowercase && (
+                  <div
+                    className="form-control-authentication"
+                    style={{
+                      marginTop: "-15px",
+                      justifyContent: "left",
+                      color: isExistLowercase ? "green" : "red",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <p>
+                      <i className="fa-solid fa-x"></i> Has lowercase characters
+                    </p>
+                  </div>
+                )}
 
-                <div
-                  className="form-control-authentication"
-                  style={{
-                    marginTop: "-15px",
-                    justifyContent: "left",
-                    color: isValidLength ? "green" : "red",
-                    fontSize: "14px",
-                  }}
-                >
-                  <p>Minimum length of 12 characters</p>
-                </div>
+                {!isValidLength && (
+                  <div
+                    className="form-control-authentication"
+                    style={{
+                      marginTop: "-15px",
+                      justifyContent: "left",
+                      color: isValidLength ? "green" : "red",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <p>
+                      <i className="fa-solid fa-x"></i> Minimum length of 12
+                      characters
+                    </p>
+                  </div>
+                )}
 
                 <div className="form-control-authentication">
                   <input
@@ -477,6 +807,9 @@ export default function Authentication() {
                     opacity: validateSignUp() ? 1 : 0.6,
                   }}
                   disabled={!validateSignUp()}
+                  onClick={() => {
+                    setIsClickSignIn(false);
+                  }}
                 >
                   Sign Up
                 </button>
@@ -509,24 +842,38 @@ export default function Authentication() {
                 <h1 style={{ marginBottom: "20px", fontSize: "40px" }}>
                   Sign In
                 </h1>
+                <p
+                  style={{
+                    marginBottom: "20px",
+                    color: msgSignIn.status === 200 ? "green" : "red",
+                  }}
+                >
+                  {msgSignIn.msg}
+                </p>
                 <div className="form-control-authentication">
                   <input
-                    type="text"
+                    type={
+                      /\D/.test(studentIdOrEmailForSignIn) ? "email" : "text"
+                    }
                     name=""
                     id="student-id"
                     placeholder="Ex: 202434567"
                     className="form-control-input"
                     required
                     onChange={(e) => {
-                      setStudentId(e.target.value);
+                      setStudentIdOrEmailForSignIn(e.target.value);
                     }}
                     onInput={(e) => {
-                      e.target.value = e.target.value
-                        .replace(/[^0-9]/g, "") // Remove non-numeric characters
-                        .slice(0, 9); // Allow only numbers, max length 9
+                      const value = e.target.value;
+
+                      if (/^\d*$/.test(value)) {
+                        e.target.value = value.slice(0, 9);
+                      } else {
+                        e.target.value = value;
+                      }
                     }}
                   />
-                  <label htmlFor="student-id">Student ID*</label>
+                  <label htmlFor="student-id">Student ID or Email*</label>
                 </div>
                 <div className="form-control-authentication">
                   <input
@@ -581,15 +928,30 @@ export default function Authentication() {
                 <button
                   className="btn-authentication"
                   style={{
-                    backgroundColor: validateSignIn() ? "#ec7207" : "#d3d3d3",
-                    color: validateSignIn() ? "#fff" : "#8c8c8c",
-                    cursor: validateSignIn() ? "pointer" : "not-allowed",
-                    pointerEvents: validateSignIn() ? "auto" : "none",
-                    opacity: validateSignIn() ? 1 : 0.6,
+                    backgroundColor:
+                      validateSignIn() && !isInProcessing
+                        ? "#ec7207"
+                        : "#d3d3d3",
+                    color:
+                      validateSignIn() && !isInProcessing ? "#fff" : "#8c8c8c",
+                    cursor:
+                      validateSignIn() && !isInProcessing
+                        ? "pointer"
+                        : "not-allowed",
+                    pointerEvents:
+                      validateSignIn() && !isInProcessing ? "auto" : "none",
+                    opacity: validateSignIn() && !isInProcessing ? 1 : 0.6,
                   }}
-                  disabled={validateSignIn()}
+                  disabled={!validateSignIn() && !isInProcessing}
+                  onClick={() => {
+                    setIsClickSignIn(true);
+                  }}
                 >
-                  Sign In
+                  {isInProcessing ? (
+                    <i className="fas fa-spinner fa-spin"></i>
+                  ) : (
+                    "Sign In"
+                  )}
                 </button>
                 <br />
                 <p
@@ -626,6 +988,14 @@ export default function Authentication() {
                 <h1 style={{ marginBottom: "20px", fontSize: "40px" }}>
                   Forgot Password
                 </h1>
+                <p
+                  style={{
+                    marginBottom: "20px",
+                    color: msgSignIn.status === 200 ? "green" : "red",
+                  }}
+                >
+                  {msgSignIn.msg}
+                </p>
                 <div className="form-control-authentication">
                   <input
                     type="email"
@@ -638,7 +1008,7 @@ export default function Authentication() {
                       setEmail(e.target.value);
                     }}
                   />
-                  <label htmlFor="email-forgot-password">Email*</label>
+                  <label htmlFor="email-forgot-password">School Email*</label>
                 </div>
                 <div className="form-control-authentication">
                   <input
@@ -955,6 +1325,105 @@ export default function Authentication() {
           >
             I got it
           </a>
+        </div>
+      </div>
+
+      {/* Modal pick image */}
+      <div className="pick-image-container" id="pick-image-container">
+        <div className="content-images">
+          <p style={{ fontSize: "30px", fontWeight: "600" }}>
+            {isClickSignIn ? "Select" : "Register"} two pictures of you:
+          </p>
+          <p
+            style={{
+              fontSize: "16px",
+              color: "#555",
+              fontStyle: "italic",
+              marginTop: "4px",
+            }}
+          >
+            (For security reasons, please do not share your selected images)
+          </p>
+          <div className="images">
+            {images.map((src, index) => {
+              return (
+                <img
+                  key={index}
+                  src={src}
+                  alt={`image-${index}`}
+                  width="64"
+                  className={selectedIndex[index].isActive ? "active" : ""}
+                  loading="lazy"
+                  onClick={() => {
+                    handleSelectImage(index);
+                  }}
+                />
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Accept btn and cancel btn */}
+        <div className="btn-continue-container">
+          <button
+            className="btn"
+            style={{
+              backgroundColor:
+                selectedIndex.filter((s) => s.isActive).length === 2 &&
+                !isInProcessing
+                  ? "#ec7207"
+                  : "#d3d3d3",
+              color:
+                selectedIndex.filter((s) => s.isActive).length === 2 &&
+                !isInProcessing
+                  ? "#fff"
+                  : "#8c8c8c",
+              cursor:
+                selectedIndex.filter((s) => s.isActive).length === 2 &&
+                !isInProcessing
+                  ? "pointer"
+                  : "not-allowed",
+              pointerEvents:
+                selectedIndex.filter((s) => s.isActive).length === 2 &&
+                !isInProcessing
+                  ? "auto"
+                  : "none",
+              opacity:
+                selectedIndex.filter((s) => s.isActive).length === 2 &&
+                !isInProcessing
+                  ? 1
+                  : 0.6,
+            }}
+            disabled={
+              (selectedIndex.filter((s) => s.isActive).length == 2
+                ? false
+                : true) && !isInProcessing
+            }
+            onClick={
+              isClickSignIn ? handleSubmitImageChose : handleSubmitSignUp
+            }
+          >
+            {isInProcessing ? (
+              <i className="fas fa-spinner fa-spin"></i>
+            ) : (
+              <>
+                {isClickSignIn ? "Sign In Account" : "Sign Up Account"}{" "}
+                <i className="fa-solid fa-arrow-right"></i>
+              </>
+            )}
+          </button>
+          <button
+            className="btn-with-border"
+            style={{ backgroundColor: "#fff", border: "none" }}
+            onClick={() => {
+              document.getElementById("pick-image-container").style.visibility =
+                "hidden";
+              document.getElementById("pick-image-container").style.opacity =
+                "0";
+            }}
+          >
+            Cancel <i className="fa-solid fa-x"></i>
+          </button>
         </div>
       </div>
     </>
