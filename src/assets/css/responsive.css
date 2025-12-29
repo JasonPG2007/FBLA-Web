@@ -11,7 +11,7 @@
     position: absolute;
     display: flex;
     flex-direction: column;
-    top: 65px;
+    top: 45px;
     padding: 20px;
     left: 0;
     width: 100%;
@@ -34,7 +34,7 @@
 
   .nav .list-service button {
     margin-left: unset !important;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
   }
 
   /* Search image bar */
@@ -55,6 +55,9 @@
     transform: scale(2);
   }
 
+  /* FAQ */
+  .faq-container {
+    margin-top: 100px;
   /* Home */
   .hero {
     grid-template-rows: 55% 30% !important;

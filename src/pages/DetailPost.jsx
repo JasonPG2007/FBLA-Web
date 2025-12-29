@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 
-export default function Header() {
+export default function DetailPost() {
   function handleChangeImage(srcOld, srcNew, idImg) {
     document.getElementById("big-img").src = srcNew;
     document.getElementById(idImg).src = srcOld;
@@ -116,7 +116,7 @@ export default function Header() {
                 padding: "5px 10px 10px 0",
               }}
             >
-              ID 12345
+              ID: 12345
             </h3>
           </div>
 

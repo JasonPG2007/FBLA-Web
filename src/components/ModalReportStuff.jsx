@@ -1,16 +1,96 @@
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import axios from "axios";
 
 export default function ModalReportStuff() {
   // Variables
   const fileInputLostRef = useRef(null);
   const fileInputFoundRef = useRef(null);
-  let [description, setDescription] = useState("");
   let [imageLost, setImageLost] = useState(null);
   let [imageFound, setImageFound] = useState(null);
+  let [description, setDescription] = useState("");
+  let [user, setUser] = useState("");
+  let [firstName, setFirstName] = useState("");
+  let [lastName, setLastName] = useState("");
+  let [isInProcessing, setIsInProcessing] = useState(false);
+
+  // APIs
+  const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
 
   // Functions
+  // Get my profile
+  const getMyProfile = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.get(
+        "https://localhost:44306/api/Users/profile",
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        setUser(response.data);
+
+        // Set details
+        setFirstName(response.data.firstName);
+        setLastName(response.data.lastName);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
   const handleImageLostChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -34,6 +114,84 @@ export default function ModalReportStuff() {
       reader.readAsDataURL(file);
     }
   };
+
+  const handleSubmitPostLost = async (e) => {
+    e.preventDefault();
+
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.get(
+        "https://localhost:44306/api/Users/profile",
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        setUser(response.data);
+
+        // Set details
+        setFirstName(response.data.firstName);
+        setLastName(response.data.lastName);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  // UseEffect
+  useEffect(() => {
+    getMyProfile();
+  }, []);
 
   return (
     <>
@@ -102,7 +260,7 @@ export default function ModalReportStuff() {
         <div style={{ overflow: "hidden" }}>
           <div className="form-lost-found-container" id="form-lost-found">
             {/* Form lost stuff */}
-            <form style={{ width: "100%" }}>
+            <form style={{ width: "100%" }} onSubmit={handleSubmitPostLost}>
               <div className="modal-content-container">
                 <div style={{ textAlign: "center" }}>
                   <div
@@ -166,7 +324,7 @@ export default function ModalReportStuff() {
                           htmlFor="stuff-name"
                           style={{ fontWeight: "600" }}
                         >
-                          Stuff Name
+                          Stuff Name*
                         </label>
                         <br />
                         <div
@@ -189,7 +347,7 @@ export default function ModalReportStuff() {
                       <div className="right">
                         {/* Stuff ID */}
                         <label htmlFor="stuff-id" style={{ fontWeight: "600" }}>
-                          Category
+                          Category*
                         </label>
                         <br />
                         <div
@@ -198,8 +356,8 @@ export default function ModalReportStuff() {
                           <input
                             type="text"
                             name=""
-                            id="stuff-id"
-                            placeholder="Ex: 736296"
+                            id="category"
+                            placeholder="Ex: IPhone"
                             className="form-control-input-label-top"
                             autoFocus
                             required
@@ -210,13 +368,18 @@ export default function ModalReportStuff() {
                                 .slice(0, 9); // Allow only numbers, max length 9
                             }}
                           />
-                          <label className="label-top">Enter ID</label>
+                          <label className="label-top">
+                            Enter at least 3 characters to search
+                          </label>
                         </div>
                         <br />
 
                         {/* Last Seen Date */}
-                        <label htmlFor="stuff-id" style={{ fontWeight: "600" }}>
-                          Description
+                        <label
+                          htmlFor="description"
+                          style={{ fontWeight: "600" }}
+                        >
+                          Description*
                         </label>
                         <br />
                         <div
@@ -230,7 +393,6 @@ export default function ModalReportStuff() {
                               toolbar: [
                                 "bold",
                                 "italic",
-                                "underline",
                                 "bulletedList",
                                 "numberedList",
                                 "link",
@@ -257,7 +419,7 @@ export default function ModalReportStuff() {
                           htmlFor="stuff-name"
                           style={{ fontWeight: "600" }}
                         >
-                          Full Name
+                          Full Name*
                         </label>
                         <br />
                         <div
@@ -279,7 +441,10 @@ export default function ModalReportStuff() {
                       </div>
                       <div className="right">
                         {/* Stuff ID */}
-                        <label htmlFor="stuff-id" style={{ fontWeight: "600" }}>
+                        <label
+                          htmlFor="student-id"
+                          style={{ fontWeight: "600" }}
+                        >
                           Student ID
                         </label>
                         <br />
@@ -289,11 +454,10 @@ export default function ModalReportStuff() {
                           <input
                             type="text"
                             name=""
-                            id="stuff-id"
+                            id="student-id-lost"
                             placeholder="Ex: 736296"
                             className="form-control-input-label-top"
                             autoFocus
-                            required
                             onChange={(e) => {}}
                           />
                           <label className="label-top">Enter ID</label>
@@ -305,7 +469,7 @@ export default function ModalReportStuff() {
                           htmlFor="school-email"
                           style={{ fontWeight: "600" }}
                         >
-                          School Email
+                          Email*
                         </label>
                         <br />
                         <div
@@ -402,7 +566,7 @@ export default function ModalReportStuff() {
                           htmlFor="stuff-name"
                           style={{ fontWeight: "600" }}
                         >
-                          Stuff Name
+                          Stuff Name*
                         </label>
                         <br />
                         <div
@@ -425,7 +589,7 @@ export default function ModalReportStuff() {
                       <div className="right">
                         {/* Stuff ID */}
                         <label htmlFor="stuff-id" style={{ fontWeight: "600" }}>
-                          Category
+                          Category*
                         </label>
                         <br />
                         <div
@@ -434,8 +598,8 @@ export default function ModalReportStuff() {
                           <input
                             type="text"
                             name=""
-                            id="stuff-id"
-                            placeholder="Ex: 736296"
+                            id="category"
+                            placeholder="Ex: IPhone"
                             className="form-control-input-label-top"
                             autoFocus
                             required
@@ -446,13 +610,18 @@ export default function ModalReportStuff() {
                                 .slice(0, 9); // Allow only numbers, max length 9
                             }}
                           />
-                          <label className="label-top">Enter ID</label>
+                          <label className="label-top">
+                            Enter at least 3 characters to search
+                          </label>
                         </div>
                         <br />
 
                         {/* Last Seen Date */}
-                        <label htmlFor="stuff-id" style={{ fontWeight: "600" }}>
-                          Description
+                        <label
+                          htmlFor="description"
+                          style={{ fontWeight: "600" }}
+                        >
+                          Description*
                         </label>
                         <br />
                         <div
@@ -466,7 +635,6 @@ export default function ModalReportStuff() {
                               toolbar: [
                                 "bold",
                                 "italic",
-                                "underline",
                                 "bulletedList",
                                 "numberedList",
                                 "link",
@@ -493,7 +661,7 @@ export default function ModalReportStuff() {
                           htmlFor="stuff-name"
                           style={{ fontWeight: "600" }}
                         >
-                          Full Name
+                          Full Name*
                         </label>
                         <br />
                         <div
@@ -529,7 +697,6 @@ export default function ModalReportStuff() {
                             placeholder="Ex: 736296"
                             className="form-control-input-label-top"
                             autoFocus
-                            required
                             onChange={(e) => {}}
                           />
                           <label className="label-top">Enter ID</label>
@@ -538,7 +705,7 @@ export default function ModalReportStuff() {
 
                         {/* Last Seen Date */}
                         <label htmlFor="stuff-id" style={{ fontWeight: "600" }}>
-                          School Email
+                          Email*
                         </label>
                         <br />
                         <div

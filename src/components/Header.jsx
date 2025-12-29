@@ -1,14 +1,23 @@
 import ModalReportStuff from "./ModalReportStuff";
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 const Lottie = lazy(() => import("lottie-react"));
 import DocumentScan from "../assets/animations/Document-OCR-Scan.json";
+import Cookies from "js-cookie";
 import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
+import Skeleton from "react-loading-skeleton";
 
 export default function Header() {
   // Variables
+  let [user, setUser] = useState("");
   const [v1, setV1] = useState(null);
   const [vector, setVector] = useState([]);
+  let [isInProcessing, setIsInProcessing] = useState(false);
   let [showMenu, setShowMenu] = useState(false);
+  let [isErrorCallAI, setIsErrorCallAI] = useState(false);
+
+  // APIs
+  const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
 
   // Functions
   const handleSearchByImage = async (e) => {
@@ -39,35 +48,72 @@ export default function Header() {
     const formData = new FormData();
     formData.append("image", file);
 
-    const res = await axios.post("http://localhost:5001/embed", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    try {
+      const res = await axios.post("http://localhost:5001/embed", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-    if (res.status === 200) {
-      const overlay = document.getElementById("overlay-search-image");
-      overlay.style.visibility = "hidden";
-      overlay.style.opacity = "0";
-      document.body.style.overflow = "auto";
+      if (res.status === 200) {
+        const overlay = document.getElementById("overlay-search-image");
+        overlay.style.visibility = "hidden";
+        overlay.style.opacity = "0";
+        document.body.style.overflow = "auto";
 
-      setVector(res.data);
-      // window.location.href = "/search";
+        setVector(res.data);
+        // window.location.href = "/search";
 
-      const v2 = res.data;
+        const v2 = res.data;
 
-      if (!v1) {
-        setV1(v2);
-        alert("Recorded V1");
-      } else {
-        const sim = cosineSimilarity(v1, v2);
-
-        if (sim >= 0.8) {
-          console.log("Similar");
+        if (!v1) {
+          setV1(v2);
+          alert("Recorded V1");
         } else {
-          console.log("Different");
+          const sim = cosineSimilarity(v1, v2);
+
+          if (sim >= 0.8) {
+            console.log("Similar");
+          } else {
+            console.log("Different");
+          }
         }
       }
+    } catch (error) {
+      setIsErrorCallAI(true);
+      console.log(error);
+    }
+  };
+
+  // Check authentication status and redirect if not authenticated
+  const checkAuthentication = () => {
+    axiosInstance.get(API_URL_Auth).catch((err) => {
+      console.error(err);
+    });
+  };
+
+  const signOut = async () => {
+    // e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        `https://localhost:44306/api/Users/sign-out`,
+        null,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status == 200) {
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -87,6 +133,34 @@ export default function Header() {
     return dot / (Math.sqrt(magA) * Math.sqrt(magB));
   }
 
+  const getMyProfile = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.get(
+        "https://localhost:44306/api/Users/profile",
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        setUser(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  // UseEffect
+  useEffect(() => {
+    getMyProfile();
+  }, []);
+
   return (
     <>
       <div
@@ -94,7 +168,7 @@ export default function Header() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "10px 20px",
+          padding: "0 20px",
           backgroundColor: "#fffde3ff",
           position: "sticky",
           top: "0",
@@ -179,6 +253,9 @@ export default function Header() {
           <a href="/lost-and-found" style={{ marginRight: "40px" }}>
             Lost & Found
           </a>
+          <a href="/support" style={{ marginRight: "40px" }}>
+            Support
+          </a>
           <div className="profile-menu">
             <button
               className="avatar-btn"
@@ -187,25 +264,47 @@ export default function Header() {
                 document.getElementById("dropdown").classList.toggle("hidden");
               }}
             >
-              <img src="./Image/user_icon.png" width="45" alt="avatar" />
+              {isInProcessing ? (
+                <Skeleton
+                  width={45}
+                  height={45}
+                  style={{ borderRadius: "50%" }}
+                />
+              ) : user?.avatar ? (
+                <img src={`${user.urlAvatar}`} alt="avatar" width={45} />
+              ) : (
+                <img src="./Image/user_icon.png" alt="avatar" width={45} />
+              )}
             </button>
 
             <div id="dropdown" className="dropdown hidden">
-              <a href="/authentication">Sign In</a>
+              {Cookies.get("Username") != null ? (
+                <>
+                  <a
+                    href=""
+                    onClick={(e) => {
+                      e.preventDefault();
+
+                      signOut();
+                    }}
+                  >
+                    Sign Out
+                  </a>
+                  <a href="/me">Profile</a>
+                </>
+              ) : (
+                <a href="/authentication">Sign In</a>
+              )}
             </div>
           </div>
           <button
             style={{
               marginLeft: "60px",
-              backgroundColor: "#ec7207",
-              color: "white",
-              padding: "10px 20px",
-              borderRadius: "8px",
-              cursor: "pointer",
-              border: "none",
             }}
             className="btn btn-create-post"
             onClick={() => {
+              checkAuthentication();
+
               const modal = document.querySelector(".modal-report-stuff");
               const overlay = document.querySelector(
                 ".modal-overlay-report-stuff"
@@ -236,10 +335,16 @@ export default function Header() {
         </Suspense>
 
         <p
-          style={{ marginTop: "-150px", marginBottom: "200px" }}
+          style={{
+            marginTop: "-150px",
+            marginBottom: "200px",
+            textAlign: "center",
+          }}
           className="analyzing-text"
         >
-          Analyzing...
+          {isErrorCallAI
+            ? "Something went wrong. Please try again."
+            : "Analyzing..."}
         </p>
       </div>
 
