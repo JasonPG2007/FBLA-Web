@@ -58,6 +58,8 @@
   /* FAQ */
   .faq-container {
     margin-top: 100px;
+  }
+  
   /* Home */
   .hero {
     grid-template-rows: 55% 30% !important;
