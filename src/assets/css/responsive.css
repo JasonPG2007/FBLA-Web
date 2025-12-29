@@ -59,10 +59,100 @@
   .faq-container {
     margin-top: 100px;
   /* Home */
+  .hero {
+    grid-template-rows: 55% 30% !important;
+    grid-template-columns: unset !important;
+  }
+
+  .hero-text {
+    order: 2 !important;
+  }
+
+  .hero-text p:nth-child(1) {
+    font-size: 20px !important;
+    margin-top: -52px !important;
+    margin-left: -2% !important;
+    width: 104% !important;
+  }
+
+  .hero-text p strong {
+    font-size: 21px !important;
+  }
+
+  .hero img {
+    width: 100% !important;
+    margin-left: -3px !important;
+    margin-top: 60px !important;
+  }
+
+  .number-buttons {
+    margin-left: 6% !important;
+    padding: 5px !important;
+    width: 310px !important;
+    margin-top: 25px !important;
+  }
+
+  .number-buttons button strong {
+    font-size: 14px !important;
+  }
+
+
+  .number-buttons button span {
+    font-size: 18px !important;
+  }
+
+  .pipe {
+    display: block !important;
+    font-weight: 400 !important;
+  }
+
+  .easy {
+    font-size: 11px !important;
+    width: 122% !important;
+    margin-left: -11% !important;
+  }
+
+  .learn-how-it-works {
+    font-size: 25px !important;
+  }
+
+  .how-it-works {
+    margin-left: 16px !important;
+    grid-template-columns: auto !important;
+    gap: 50px !important;
+  }
+
+  .report {
+    width: 60% !important;
+    top: -29px !important;
+    left: 22% !important;
+    padding: 8px 17px !important;
+  }
+
+  .paddingp {
+    grid-template-columns: 50% 50% !important;
+
+  }
+
+  .paddingp-bottom {
+    grid-template-columns: auto !important;
+    margin: 50px 15px auto !important;
+    gap: 50px !important;
+  }
+
+  .paddingp p {
+    left: 20% !important;
+  }
+
+  .learn-how-it-works {
+    margin-top: -10px !important;
+  }
+
+
   .newest-post-container {
     display: grid;
     grid-template-columns: auto;
-    gap: 20px;
+    gap: 16px;
     padding: 0 10px;
     margin-bottom: 100px;
   }
@@ -83,7 +173,7 @@
     margin: auto;
     display: grid;
     grid-template-columns: auto auto;
-    gap: 20px;
+    gap: 16px;
     padding: 20px 20px 70px;
     border-radius: 20px;
     background-color: #fff;
@@ -139,7 +229,7 @@
 
   .big-block-about .content {
     grid-template-columns: auto;
-    gap: 20px;
+    gap: 16px;
     font-size: 14px;
   }
 
@@ -147,7 +237,7 @@
   .newest-post-container {
     display: grid;
     grid-template-columns: 50% 50%;
-    gap: 20px;
+    gap: 16px;
     padding: 0 15px;
     margin-bottom: 100px;
     margin-left: -20px;
@@ -195,17 +285,209 @@
 }
 
 /* SMALL TABLET */
-@media (min-width: 577px) and (max-width: 768px) {}
+@media (min-width: 577px) and (max-width: 768px) {
+
+  /* Home */
+  .hero {
+    grid-template-rows: 55% 30% !important;
+    grid-template-columns: unset !important;
+  }
+
+  .hero img {
+    width: 100% !important;
+  }
+
+  .hero-text {
+    order: 2 !important;
+  }
+
+  .hero-text p:nth-child(1) {
+    font-size: 35px !important;
+    margin-top: -50px !important;
+    margin-left: 0% !important;
+    width: 100% !important;
+  }
+
+  .hero-text p strong {
+    font-size: 45px !important;
+  }
+
+  .number-buttons {
+    margin-left: 22% !important;
+    padding: 0px !important;
+  }
+
+  .how-it-works {
+    grid-template-columns: 50% 50% !important;
+    margin-left: 16px !important;
+  }
+
+  .report {
+    width: 60% !important;
+    top: -29px !important;
+    left: 22% !important;
+    padding: 8px 17px !important;
+  }
+
+  .paddingp {
+    grid-template-columns: 50% 50% !important;
+
+  }
+
+  .paddingp-bottom {
+    grid-template-columns: 50% 50% !important;
+    margin: 50px 15px auto !important;
+  }
+
+  .paddingp p {
+    left: 20% !important;
+  }
+
+  .easy {
+    margin-left: 2% !important;
+  }
+
+  .learn-how-it-works {
+    margin-top: -10px !important;
+  }
+
+  .newest-post-container {
+    display: grid;
+    grid-template-columns: 33.3333333333% 33.3333333333% 33.3333333333%;
+    gap: 20px;
+    padding: 16px 24px;
+    margin-bottom: 10px;
+    margin-left: -40px;
+  }
+
+  .title-newest-post {
+    padding: 60px 10px !important;
+  }
+
+  .card img {
+    height: 235px !important;
+  }
+
+  .modal-content {
+    max-width: 90%;
+  }
+
+  .offer-middle label {
+    width: max-content;
+    padding: 7px 40px;
+    margin-left: -16px;
+  }
+
+  .offer label {
+    padding: 6px 20px;
+    margin-left: -16px;
+    width: max-content;
+  }
+
+  .offer-block {
+    margin-top: 8%;
+  }
+
+  /* Profile*/
+  .profile-page {
+    grid-template-rows: 50% 50% !important;
+    gap: 70px !important;
+  }
+
+  .avatar {
+    margin-bottom: 40px !important;
+  }
+
+
+
+
+}
 
 /* BIG TABLET */
 @media (min-width: 769px) and (max-width: 992px) {
 
   /* Home */
+
+  .how-it-works {
+    grid-template-columns: 50% 50% !important;
+    margin-left: 16px !important;
+  }
+
+  .report {
+    width: 60% !important;
+    top: -29px !important;
+    left: 22% !important;
+    padding: 8px 17px !important;
+  }
+
+  .paddingp {
+    grid-template-columns: 50% 50% !important;
+
+  }
+
+  .paddingp-bottom {
+    grid-template-columns: 50% 50% !important;
+    margin: 50px 15px auto !important;
+  }
+
+  .report {
+    width: 50% !important;
+  }
+
+  .paddingp p {
+    left: 20% !important;
+  }
+
+  .easy {
+    margin-left: 2% !important;
+  }
+
+  .number-buttons {
+    margin-left: 24% !important;
+    padding: 0px !important;
+  }
+
+  .number-buttons button strong {
+    font-size: 18px !important;
+  }
+
+  .number-buttons button strong span {
+    font-size: 20px !important;
+  }
+
+  .hero {
+    grid-template-columns: auto !important;
+  }
+
+  .hero img {
+    width: 100% !important;
+  }
+
+  .hero-text {
+    order: 2 !important;
+  }
+
+  .hero-text p:nth-child(1) {
+    font-size: 35px !important;
+    margin-top: -80px !important;
+    margin-left: 0% !important;
+    width: 100% !important;
+  }
+
+  .hero-text p strong {
+    font-size: 45px !important;
+  }
+
+  .title-quick-search {
+    margin-top: -80px !important;
+  }
+
+  /* About us */
   .newest-post-container {
     display: grid;
     grid-template-columns: 33.3333333333% 33.3333333333% 33.3333333333%;
     gap: 20px;
-    padding: 0 20px;
+    padding: 16px 24px;
     margin-bottom: 100px;
     margin-left: -40px;
   }
@@ -213,14 +495,36 @@
   .card img {
     height: 235px !important;
   }
+
+  .modal-content {
+    max-width: 90%;
+  }
+
+  .offer-middle label {
+    width: max-content;
+    padding: 7px 40px;
+    margin-left: -16px;
+  }
+
+  .offer label {
+    padding: 6px 20px;
+    margin-left: -16px;
+    width: max-content;
+  }
+
+  .offer-block {
+    margin-top: 8%;
+  }
+
+
 }
 
 /* SMALL LAPTOP */
-@media (min-width: 993px) and (max-width: 1200px) {
-  /* Code here */
-}
+@media (min-width: 993px) and (max-width: 1200px) {}
 
 /* BIG LAPTOP (Desktop screen) */
 @media (min-width: 1201px) {
-  /* Code here */
+  .hero img {
+    /* width: 90% !important; */
+  }
 }
