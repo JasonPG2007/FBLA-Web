@@ -2,6 +2,7 @@ export default function Profile() {
     return (
         <>
             <div
+                className="profile-page"
                 style={{
                     display: "grid",
                     gridTemplateColumns: "15% 50% 15%",
@@ -168,7 +169,9 @@ export default function Profile() {
                 </div>
 
                 {/* Avatar */}
-                <div style={{ marginLeft: "100px", }}>
+                <div
+                    className="avatar"
+                    style={{ marginLeft: "100px", }}>
                     <img src="./Image/keychain.avif" alt="avatar"
                         style={{
                             borderRadius: "12px",

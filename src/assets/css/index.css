@@ -388,6 +388,7 @@ footer .right button {
 }
 
 @keyframes moveUpDown {
+
   0%,
   100% {
     transform: translateY(0);
@@ -500,7 +501,7 @@ footer .right button {
   background-color: #fc8a26;
 }
 
-.status-filter input[type="radio"] + label {
+.status-filter input[type="radio"]+label {
   padding: 5px 10px;
   margin-right: 5px;
   color: #fdcc4b;
@@ -1192,6 +1193,7 @@ th {
     opacity: 0;
     transform: translateY(-6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1245,6 +1247,7 @@ th {
   35% {
     transform: translateY(-56px);
   }
+
   45% {
     transform: translateY(-56px);
   }
