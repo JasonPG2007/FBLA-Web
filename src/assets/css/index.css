@@ -410,7 +410,6 @@ footer .right button {
 }
 
 @keyframes moveUpDown {
-
   0%,
   100% {
     transform: translateY(0);
