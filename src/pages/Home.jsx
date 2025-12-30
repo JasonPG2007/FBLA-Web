@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import Skeleton from "react-loading-skeleton";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
@@ -410,64 +411,91 @@ export default function Home() {
       {/* Newest images */}
       <div className="newest-post-container">
         {/* Cards */}
-        {newestPosts.map((item) => (
-          <div className="card suggestion-card" key={item.postId}>
-            {item.image ? (
-              <img
-                src={item.urlImage}
-                alt="picture of stuff"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-                loading="lazy"
-              />
-            ) : (
-              <div className="image-placeholder">
-                <i className="icon-image"></i>
-                <span>No image</span>
+        {isInProcessing ? (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "auto auto auto auto",
+              gap: "16px",
+            }}
+          >
+            {Array.from({ length: 8 }).map((_, index) => (
+              <div className="" key={index} style={{ marginBottom: "60px" }}>
+                <Skeleton
+                  height={290}
+                  style={{ marginBottom: "10px", borderRadius: "20px" }}
+                />
+                <div className="">
+                  <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                    <Skeleton height={35} width={405} />
+                  </h3>
+                  <p>
+                    <Skeleton count={3} />
+                  </p>
+                </div>
               </div>
-            )}
-            <div
-              className="card-text suggestion-card-text"
-              style={{ marginBottom: "40px" }}
-            >
-              <div className="info-user-suggestion">
+            ))}
+          </div>
+        ) : (
+          newestPosts.map((item) => (
+            <div className="card suggestion-card" key={item.postId}>
+              {item.image ? (
                 <img
-                  src={item.user.urlAvatar}
-                  alt="avatar"
-                  width={50}
-                  height={50}
-                  style={{ borderRadius: "50%" }}
+                  src={item.urlImage}
+                  alt="picture of stuff"
+                  style={{
+                    width: "100%",
+                    height: "300px",
+                    objectFit: "cover",
+                    backgroundColor: "white",
+                  }}
                   loading="lazy"
                 />
-                <span>{`${item.user.firstName} ${item.user.lastName}`}</span>
+              ) : (
+                <div className="image-placeholder">
+                  <i className="icon-image"></i>
+                  <span>No image</span>
+                </div>
+              )}
+              <div
+                className="card-text suggestion-card-text"
+                style={{ marginBottom: "40px" }}
+              >
+                <div className="info-user-suggestion">
+                  <img
+                    src={item.user.urlAvatar}
+                    alt="avatar"
+                    width={50}
+                    height={50}
+                    style={{ borderRadius: "50%" }}
+                    loading="lazy"
+                  />
+                  <span>{`${item.user.firstName} ${item.user.lastName}`}</span>
+                </div>
+                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                  <a href={`/detail-post/${item.postId}`}>{item.title}</a>
+                </h3>
+                <a href={`/detail-post/${item.postId}`}>
+                  <ReactMarkdown
+                    children={item.description}
+                    rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                  ></ReactMarkdown>
+                </a>
               </div>
-              <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                <a href={`/detail-post/${item.postId}`}>{item.title}</a>
-              </h3>
-              <a href={`/detail-post/${item.postId}`}>
-                <ReactMarkdown
-                  children={item.description}
-                  rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                ></ReactMarkdown>
-              </a>
-            </div>
 
-            {/* Status */}
-            <div
-              className={
-                item.typePost === "Found"
-                  ? "status-post-found"
-                  : "status-post-lost"
-              }
-            >
-              {item.typePost}
+              {/* Status */}
+              <div
+                className={
+                  item.typePost === "Found"
+                    ? "status-post-found"
+                    : "status-post-lost"
+                }
+              >
+                {item.typePost}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {/* Quick Search */}
