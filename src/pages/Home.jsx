@@ -97,8 +97,12 @@ export default function Home() {
         <title>Lost & Found | Back2Me </title>
       </Helmet>
 
-      <div style={{ display: "grid", gridTemplateColumns: "55% 30%" }}>
-        <div style={{ marginTop: "83px" }}>
+      <div
+        className="hero"
+        style={{ display: "grid", gridTemplateColumns: "55% 30%" }}>
+        <div
+          className="hero-text"
+          style={{ marginTop: "83px" }}>
           <p
             style={{
               fontSize: "50px",
@@ -134,6 +138,7 @@ export default function Home() {
           </p>
 
           <div
+            className="number-buttons"
             style={{
               display: "flex",
               justifyContent: "center",
@@ -164,7 +169,7 @@ export default function Home() {
             </button>
             <p style={{ fontSize: "20px" }}>
               {" "}
-              <strong>|</strong>
+              <strong className="pipe">|</strong>
             </p>
             <button
               style={{
@@ -182,6 +187,7 @@ export default function Home() {
           </div>
 
           <p
+            className="easy"
             style={{
               fontSize: "18px",
               textAlign: "center",
@@ -206,6 +212,7 @@ export default function Home() {
         />
       </div>
       <p
+        className="learn-how-it-works"
         style={{
           fontSize: "40px",
           marginTop: "35px",
@@ -224,6 +231,7 @@ export default function Home() {
 
       {/* Learn how it works */}
       <div
+        className="how-it-works"
         style={{
           display: "grid",
           gridTemplateColumns: "30% 70%",
@@ -278,6 +286,7 @@ export default function Home() {
           className="paddingp"
         >
           <p
+            className="report"
             style={{
               fontSize: "20px",
               width: "30%",
@@ -314,6 +323,8 @@ export default function Home() {
           margin: "auto",
           marginTop: "50px",
         }}
+
+        className="paddingp-bottom"
       >
         {/* Card 1 */}
         <div
@@ -360,6 +371,7 @@ export default function Home() {
           className="paddingp"
         >
           <p
+            className="report"
             style={{
               fontSize: "20px",
               width: "30%",
@@ -472,6 +484,7 @@ export default function Home() {
 
       {/* Quick Search */}
       <p
+        className="title-quick-search"
         style={{ fontSize: "30px", textAlign: "center", marginBottom: "30px" }}
       >
         <span
