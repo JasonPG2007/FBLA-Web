@@ -3,7 +3,7 @@ import SidebarProfile from "../components/SidebarProfile";
 export default function MyPost() {
   return (
     <>
-      <div
+      <div className="sidebar-and-content"
         style={{
           display: "grid",
           gridTemplateColumns: "15% 85%",

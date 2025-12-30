@@ -81,6 +81,7 @@ export default function SidebarProfile() {
 
       <div className="sidebarProfile">
         <div
+          className="side-bar-infor-user"
           style={{
             display: "flex",
             alignItems: "center",
@@ -104,6 +105,7 @@ export default function SidebarProfile() {
             />
           ) : (
             <img
+              className="user-avatar"
               src="./Image/user_icon.png"
               alt="avatar"
               style={{
@@ -150,6 +152,7 @@ export default function SidebarProfile() {
         <br />
         {/* My post */}
         <a
+          className="personal-info"
           href="/my-post"
           style={{
             fontWeight: "400",
