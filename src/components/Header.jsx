@@ -6,22 +6,24 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import axiosInstance from "../api/axiosInstance";
 import Skeleton from "react-loading-skeleton";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 
 export default function Header() {
   // Variables
   let [user, setUser] = useState("");
-  const [v1, setV1] = useState(null);
-  const [vector, setVector] = useState([]);
+  const [resultByAI, setResultByAI] = useState([]);
   let [isInProcessing, setIsInProcessing] = useState(false);
   let [showMenu, setShowMenu] = useState(false);
-  let [isErrorCallAI, setIsErrorCallAI] = useState(false);
+  let [msgErrorAI, setMsgErrorAI] = useState("");
 
   // APIs
   const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
 
   // Functions
   const handleSearchByImage = async (e) => {
-    // alert(e.target.value);
+    console.log("Searching by image...");
 
     const file = e.target.files[0];
     if (!file) return;
@@ -40,6 +42,12 @@ export default function Header() {
       return;
     }
 
+    // Close result modal
+    const modal = document.querySelector(".modal-result-by-ai");
+    modal.style.visibility = "hidden";
+    modal.style.opacity = "0";
+    document.body.style.overflow = "auto";
+
     const overlay = document.getElementById("overlay-search-image");
     overlay.style.visibility = "visible";
     overlay.style.opacity = "1";
@@ -56,32 +64,45 @@ export default function Header() {
       });
 
       if (res.status === 200) {
-        const overlay = document.getElementById("overlay-search-image");
-        overlay.style.visibility = "hidden";
-        overlay.style.opacity = "0";
-        document.body.style.overflow = "auto";
+        // Call search API
+        searchImageSimilarity(res.data);
 
-        setVector(res.data);
-        // window.location.href = "/search";
-
-        const v2 = res.data;
-
-        if (!v1) {
-          setV1(v2);
-          alert("Recorded V1");
-        } else {
-          const sim = cosineSimilarity(v1, v2);
-
-          if (sim >= 0.8) {
-            console.log("Similar");
-          } else {
-            console.log("Different");
-          }
-        }
+        // Reset input file
+        e.target.value = null;
       }
     } catch (error) {
-      setIsErrorCallAI(true);
-      console.log(error);
+      // Reset input file
+      e.target.value = null;
+
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data?.message || "Server error";
+
+        setMsgErrorAI({
+          msg: message,
+          status: status,
+        });
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          setMsgErrorAI({
+            msg: "Network error. Please check your internet connection",
+            status: 0,
+          });
+        } else {
+          // Server offline
+          setMsgErrorAI({
+            msg: "Server is currently unavailable. Please try again later.",
+            status: 503,
+          });
+        }
+      } else {
+        // Other errors
+        setMsgErrorAI({
+          msg: "Something went wrong. Please try again",
+          status: 500,
+        });
+      }
     }
   };
 
@@ -117,22 +138,6 @@ export default function Header() {
     }
   };
 
-  // Find similar image function
-  function cosineSimilarity(v1, v2) {
-    let dot = 0;
-    let magA = 0;
-    let magB = 0;
-
-    for (let i = 0; i < v1.length; i++) {
-      // Mathematical formulas
-      dot += v1[i] * v2[i];
-      magA += v1[i] * v1[i];
-      magB += v2[i] * v2[i];
-    }
-
-    return dot / (Math.sqrt(magA) * Math.sqrt(magB));
-  }
-
   const getMyProfile = async () => {
     setIsInProcessing(true);
 
@@ -148,6 +153,62 @@ export default function Header() {
 
       if (response.status === 200) {
         setUser(response.data);
+      }
+
+      if (response.status === 401) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Unauthorized access. Please sign in again.",
+              status: "warning",
+            },
+          })
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  const searchImageSimilarity = async (vector) => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.post(
+        "https://localhost:44306/api/Post/search-image-similarity",
+        vector,
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        const overlay = document.getElementById("overlay-search-image");
+        overlay.style.visibility = "hidden";
+        overlay.style.opacity = "0";
+        document.body.style.overflow = "auto";
+
+        document.getElementById("modal-result-by-ai").style.visibility =
+          "visible";
+        document.getElementById("modal-result-by-ai").style.opacity = "1";
+        document.body.style.overflow = "hidden";
+
+        setResultByAI(response.data);
+      }
+
+      if (response.status === 401) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Unauthorized access. Please sign in again.",
+              status: "warning",
+            },
+          })
+        );
       }
     } catch (error) {
       console.log(error);
@@ -271,15 +332,30 @@ export default function Header() {
                   style={{ borderRadius: "50%" }}
                 />
               ) : user?.avatar ? (
-                <img src={`${user.urlAvatar}`} alt="avatar" width={45} />
+                <img
+                  src={`${user.urlAvatar}`}
+                  alt="avatar"
+                  width={45}
+                  height={45}
+                  style={{ objectFit: "cover" }}
+                  loading="lazy"
+                />
               ) : (
-                <img src="./Image/user_icon.png" alt="avatar" width={45} />
+                <img
+                  src="./Image/user_icon.png"
+                  alt="avatar"
+                  width={45}
+                  loading="lazy"
+                />
               )}
             </button>
 
             <div id="dropdown" className="dropdown hidden">
               {Cookies.get("Username") != null ? (
                 <>
+                  <a href="/me">
+                    <i className="fa-solid fa-user"></i> Profile
+                  </a>
                   <a
                     href=""
                     onClick={(e) => {
@@ -288,9 +364,9 @@ export default function Header() {
                       signOut();
                     }}
                   >
+                    <i className="fa-solid fa-arrow-right-from-bracket"></i>{" "}
                     Sign Out
                   </a>
-                  <a href="/me">Profile</a>
                 </>
               ) : (
                 <a href="/authentication">Sign In</a>
@@ -342,9 +418,7 @@ export default function Header() {
           }}
           className="analyzing-text"
         >
-          {isErrorCallAI
-            ? "Something went wrong. Please try again."
-            : "Analyzing..."}
+          {msgErrorAI.msg ? msgErrorAI.msg : "Analyzing..."}
         </p>
       </div>
 
@@ -440,6 +514,141 @@ export default function Header() {
           >
             I got it
           </a>
+        </div>
+      </div>
+
+      <div className="modal-result-by-ai" id="modal-result-by-ai">
+        <div className="modal-content-result-by-ai">
+          <h2>Are any of these your lost items?</h2>
+          <div
+            className="results-container"
+            style={{
+              gridTemplateColumns: resultByAI.length == 0 ? "unset" : "",
+            }}
+          >
+            {resultByAI.length > 0 ? (
+              resultByAI.map((item) => (
+                <div className="card card-search-by-image" key={item.postId}>
+                  {item.post.image ? (
+                    <img
+                      src={item.post.urlImage}
+                      alt="picture of stuff"
+                      style={{
+                        width: "100%",
+                        height: "300px",
+                        objectFit: "cover",
+                        backgroundColor: "white",
+                      }}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="image-placeholder">
+                      <i className="icon-image"></i>
+                      <span>No image</span>
+                    </div>
+                  )}
+                  <div
+                    className="card-text suggestion-card-text"
+                    style={{ marginBottom: "30px" }}
+                  >
+                    <div className="info-user-suggestion">
+                      <img
+                        src={item.post.user.urlAvatar}
+                        alt="avatar"
+                        width={50}
+                        height={50}
+                        style={{ borderRadius: "50%" }}
+                        loading="lazy"
+                      />
+                      <span>{`${item.post.user.firstName} ${item.post.user.lastName}`}</span>
+                    </div>
+                    <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                      <a href={`/detail-post/${item.post.postId}`}>
+                        {item.post.title}
+                      </a>
+                    </h3>
+                    <a href={`/detail-post/${item.post.postId}`}>
+                      <ReactMarkdown
+                        children={item.post.description}
+                        rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                      ></ReactMarkdown>
+                    </a>
+                  </div>
+
+                  <button className="btn" style={{ width: "100%" }}>
+                    This is my item
+                  </button>
+
+                  {/* Status */}
+                  <div
+                    className={
+                      item.post.typePost === "Found"
+                        ? "status-post-found"
+                        : "status-post-lost"
+                    }
+                  >
+                    {item.post.typePost}
+                  </div>
+
+                  {/* Show score */}
+                  <div className="show-code">
+                    {Math.round(item.score * 100)}%
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  margin: "auto",
+                }}
+              >
+                <p>No similar items found.</p>
+                <div className="btn-with-border search-by-image-again">
+                  <div>
+                    <label htmlFor="search-by-image">
+                      Please try another image{" "}
+                      <i className="fa-solid fa-cloud-arrow-up"></i>
+                    </label>
+                  </div>
+                  <input
+                    type="file"
+                    hidden
+                    id="search-by-image"
+                    onChange={handleSearchByImage}
+                  />
+
+                  <i
+                    className="fa-solid fa-magnifying-glass"
+                    style={{
+                      position: "absolute",
+                      top: "7px",
+                      left: "10px",
+                      fontSize: "18px",
+                    }}
+                  ></i>
+                </div>
+              </div>
+            )}
+          </div>
+          <button
+            className="btn-yellow close-result-by-ai"
+            style={{
+              width: "90%",
+            }}
+            href="#"
+            onClick={() => {
+              const modal = document.querySelector(".modal-result-by-ai");
+              modal.style.visibility = "hidden";
+              modal.style.opacity = "0";
+              document.body.style.overflow = "auto";
+            }}
+          >
+            Close
+          </button>
         </div>
       </div>
     </>

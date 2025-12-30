@@ -1,6 +1,5 @@
 /* MOBILE */
 @media (max-width: 576px) {
-
   /* Navbar */
   .bar {
     display: block;
@@ -241,6 +240,7 @@
     grid-template-columns: 50% 50%;
     gap: 16px;
     padding: 0 15px;
+    width: unset;
     margin-bottom: 100px;
     margin-left: -20px;
   }
@@ -283,6 +283,22 @@
 
   .title-lost-and-found p {
     font-size: 18px !important;
+  }
+
+  /* Authentication page */
+  .form-box {
+    width: 100%;
+  }
+
+  .img-right {
+    display: none;
+  }
+
+  /* Toast */
+  .toast {
+    max-width: 95%;
+    top: 130px;
+    right: 10px;
   }
 }
 
@@ -407,7 +423,6 @@
 
 /* BIG TABLET */
 @media (min-width: 769px) and (max-width: 992px) {
-
   /* Home */
 
   .how-it-works {
@@ -526,6 +541,7 @@
 
 /* BIG LAPTOP (Desktop screen) */
 @media (min-width: 1201px) {
+  /* Code here */
   .hero img {
     /* width: 90% !important; */
   }
