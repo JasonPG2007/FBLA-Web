@@ -1,5 +1,6 @@
 /* MOBILE */
 @media (max-width: 576px) {
+
   /* Navbar */
   .bar {
     display: block;
@@ -108,9 +109,7 @@
   }
 
   .easy {
-    font-size: 11px !important;
-    width: 122% !important;
-    margin-left: -11% !important;
+    display: none !important;
   }
 
   .learn-how-it-works {
@@ -637,6 +636,7 @@
 
 /* BIG LAPTOP (Desktop screen) */
 @media (min-width: 1201px) {
+
   /* Code here */
   .hero img {
     /* width: 90% !important; */
