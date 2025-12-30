@@ -8,6 +8,7 @@ export default function SidebarProfile() {
   // Variables
   let [user, setUser] = useState("");
   let [isInProcessing, setIsInProcessing] = useState(false);
+  const isActive = (path) => location.pathname === path;
 
   // APIs
 
@@ -74,7 +75,7 @@ export default function SidebarProfile() {
         <title>
           {user.firstName && user.lastName
             ? `${user.firstName} ${user.lastName}`
-            : "Loading..."}{" "}
+            : "Profile"}{" "}
           | Back2Me{" "}
         </title>
       </Helmet>
@@ -102,6 +103,7 @@ export default function SidebarProfile() {
                 height: "60px",
                 objectFit: "cover",
               }}
+              loading="lazy"
             />
           ) : (
             <img
@@ -114,6 +116,7 @@ export default function SidebarProfile() {
                 height: "60px",
                 objectFit: "cover",
               }}
+              loading="lazy"
             />
           )}
           <div className="user-info">
@@ -126,7 +129,7 @@ export default function SidebarProfile() {
             </h3>
             <h4 className="user-sub">
               {user.role ? (
-                user.student.studentId ? (
+                user.student?.studentId ? (
                   `ID: ${user.student.studentId}`
                 ) : (
                   user.role
@@ -140,39 +143,61 @@ export default function SidebarProfile() {
 
         {/* Personal information  */}
         <a
-          href="/profile"
+          href="/me"
           style={{
             fontWeight: "400",
             lineHeight: "50px",
           }}
+          className={`${isActive("/me") ? "active" : ""}`}
         >
           {" "}
           <i className="fa-solid fa-user"></i> Personal information
         </a>
         <br />
+
+        {/* Dashboard */}
+        {user.role === "Admin" && (
+          <>
+            <a
+              href="/dashboard"
+              style={{
+                fontWeight: "400",
+                lineHeight: "50px",
+              }}
+              className={`${isActive("/dashboard") ? "active" : ""}`}
+            >
+              {" "}
+              <i className="fa-solid fa-house"></i> Dashboard
+            </a>
+            <br />
+          </>
+        )}
+
         {/* My post */}
         <a
-          className="personal-info"
-          href="/my-post"
+          href="/my-posts"
           style={{
             fontWeight: "400",
             lineHeight: "50px",
           }}
+          className={`${isActive("/my-posts") ? "active" : ""}`}
         >
           {" "}
           <i className="fa-solid fa-sim-card"></i> My post
         </a>
         <br />
-        {/* Messeges */}
+
+        {/* Messages */}
         <a
-          href="/messeges"
+          href="/messages"
           style={{
             fontWeight: "400",
             lineHeight: "50px",
           }}
+          className={`${isActive("/messages") ? "active" : ""}`}
         >
           {" "}
-          <i className="fa-solid fa-envelope"></i> Messeges
+          <i className="fa-solid fa-envelope"></i> Messages
         </a>
         <br />
         {/* Notifications */}
@@ -182,6 +207,7 @@ export default function SidebarProfile() {
             fontWeight: "400",
             lineHeight: "50px",
           }}
+          className={`${isActive("/notifications") ? "active" : ""}`}
         >
           {" "}
           <i className="fa-solid fa-bell"></i> Notifications

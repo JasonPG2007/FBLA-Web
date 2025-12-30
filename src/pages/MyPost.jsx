@@ -1,6 +1,135 @@
+import { Suspense, useEffect, useState } from "react";
 import SidebarProfile from "../components/SidebarProfile";
+import axios from "axios";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import Skeleton from "react-loading-skeleton";
+import Lottie from "lottie-react";
+import NotFoundPost from "../assets/animations/Not-Found-Post.json";
 
 export default function MyPost() {
+  // Variables
+  const [posts, setPosts] = useState([]);
+  const [isInProcessing, setIsInProcessing] = useState(false);
+  const [user, setUser] = useState("");
+
+  // APIs
+
+  // Functions
+  // Get my profile
+  const getMyProfile = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.get(
+        "https://localhost:44306/api/Users/profile",
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        setUser(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  // Get posts
+  const handleFetchPosts = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.get(
+        "https://localhost:44306/api/Post/my-posts",
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        setPosts(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  // Fetch data from API
+  useEffect(() => {
+    handleFetchPosts();
+    getMyProfile();
+  }, []);
+
+  useEffect(() => {
+    const handleCodeToPrint = (event) => {
+      const code = event.detail;
+
+      document.getElementById("print-code").innerHTML = code;
+      window.print();
+    };
+
+    window.addEventListener("codeToPrint", handleCodeToPrint);
+
+    return () => {
+      window.removeEventListener("codeToPrint", handleCodeToPrint);
+    };
+  }, []);
+
   return (
     <>
       <div className="sidebar-and-content"
@@ -59,216 +188,119 @@ export default function MyPost() {
             </label>
           </div>
 
-          {/* Card */}
+          {/* Cards */}
           <div className="newest-post-container">
-            {/* Card img 1 */}
-            <div className="card">
-              <img
-                src="./Image/ipad.webp"
-                alt="picture of stuffs"
-                loading="lazy"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
-                  <a href="/detail-post">Ipad 11th Gen</a>
-                </h3>
-                <p>
-                  <a href="/detail-post">
-                    Lost my Ipad 11th Gen last week near Central Park. If found,
-                    please contact me!
-                  </a>
-                </p>
+            {isInProcessing ? (
+              <div style={{ display: "flex", gap: "20px" }}>
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div className="" key={index}>
+                    <Skeleton
+                      height={290}
+                      style={{ marginBottom: "10px", borderRadius: "20px" }}
+                    />
+                    <div className="">
+                      <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                        <Skeleton height={35} width={345} />
+                      </h3>
+                      <p>
+                        <Skeleton count={3} />
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
+            ) : posts.length > 0 ? (
+              posts.map((post) => (
+                <div className="card card-my-post" key={post.postId}>
+                  {/* Image */}
+                  {post.image ? (
+                    <img
+                      src={post.image ? post.urlImage : ""}
+                      alt="picture of stuff"
+                      loading="lazy"
+                      style={{
+                        width: "100%",
+                        height: "300px",
+                        objectFit: "cover",
+                        backgroundColor: "white",
+                      }}
+                    />
+                  ) : (
+                    <div className="image-placeholder">
+                      <i className="icon-image"></i>
+                      <span>No image</span>
+                    </div>
+                  )}
 
-              {/* Status */}
-              <div className="status-post-lost">Lost</div>
-            </div>
+                  {/* Content */}
+                  <div className="card-text" style={{ marginBottom: "20px" }}>
+                    <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                      <a href={`/detail-post/${post.postId}`}>{post.title}</a>
+                    </h3>
+                    <a href={`/detail-post/${post.postId}`}>
+                      <ReactMarkdown
+                        children={post.description}
+                        rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                      ></ReactMarkdown>
+                    </a>
+                  </div>
 
-            {/* Card img 2 */}
-            <div className="card">
-              <img
-                src="./Image/charger.webp"
-                alt="picture of stuffs"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  Charger USB-C
-                </h3>
-                <p>
-                  Lost my charger USB-C last week near Central Park. If found,
-                  please contact me!
-                </p>
-              </div>
+                  {/* Status */}
+                  <div
+                    className={
+                      post.typePost === "Lost"
+                        ? "status-post-lost"
+                        : "status-post-found"
+                    }
+                  >
+                    {post.typePost}
+                  </div>
 
-              {/* Status */}
-              <div className="status-post-found">Found</div>
-            </div>
+                  {/* Show Code */}
+                  <div className="show-code">Code: {post.code}</div>
 
-            {/* Card img 3 */}
-            <div className="card">
-              <img
-                src="./Image/chromebook.jpg"
-                alt="picture of stuffs"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  Chromebook
-                </h3>
-                <p>
-                  Lost my chromebook last week near Central Park. If found,
-                  please contact me!
-                </p>
-              </div>
+                  {user.role === "Admin" && post.typePost === "Found" && (
+                    <button
+                      className="btn"
+                      style={{ width: "100%" }}
+                      onClick={() => {
+                        const code = `Code: ${post.code}`;
 
-              {/* Status */}
-              <div className="status-post-lost">Lost</div>
-            </div>
+                        window.dispatchEvent(
+                          new CustomEvent("codeToPrint", {
+                            detail: code,
+                          })
+                        );
+                      }}
+                    >
+                      Print Code
+                    </button>
+                  )}
+                </div>
+              ))
+            ) : (
+              <>
+                <div
+                  style={{
+                    marginLeft: "100%",
+                    width: "100%",
+                    textAlign: "center",
+                    marginTop: "50px",
+                  }}
+                >
+                  <Suspense fallback={<p>Loading animation...</p>}>
+                    <Lottie
+                      animationData={NotFoundPost}
+                      className="m-auto"
+                      style={{ width: "60%", margin: "auto" }}
+                    />
+                  </Suspense>
+                  <h1>No posts yet</h1>
+                </div>
+              </>
+            )}
 
-            {/* Card img 4 */}
-            <div className="card">
-              <img
-                src="./Image/earbuds.webp"
-                alt="picture of stuffs"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  Earbuds
-                </h3>
-                <p>
-                  Lost my earbuds last week near Central Park. If found, please
-                  contact me!
-                </p>
-              </div>
-
-              {/* Status */}
-              <div className="status-post-lost">Lost</div>
-            </div>
-
-            {/* Card img 1 */}
-            <div className="card">
-              <img
-                src="./Image/phone.webp"
-                alt="picture of stuffs"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  Sponebob
-                </h3>
-                <p>
-                  Lost my sponebob plush toy last week near Central Park. If
-                  found, please contact me!
-                </p>
-              </div>
-
-              {/* Status */}
-              <div className="status-post-found">Found</div>
-            </div>
-
-            {/* Card img 2 */}
-            <div className="card">
-              <img
-                src="./Image/key.jpg"
-                alt="picture of stuffs"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Key</h3>
-                <p>
-                  Lost my sponebob plush toy last week near Central Park. If
-                  found, please contact me!
-                </p>
-              </div>
-
-              {/* Status */}
-              <div className="status-post-lost">Lost</div>
-            </div>
-
-            {/* Card img 3 */}
-            <div className="card">
-              <img
-                src="./Image/wallet.jpg"
-                alt="picture of stuffs"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  Wallet
-                </h3>
-                <p>
-                  Lost my wallet last week near Central Park. If found, please
-                  contact me!
-                </p>
-              </div>
-
-              {/* Status */}
-              <div className="status-post-found">Found</div>
-            </div>
-
-            {/* Card img 4 */}
-            <div className="card">
-              <img
-                src="./Image/keychain.avif"
-                alt="picture of stuffs"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  Keychain
-                </h3>
-                <p>
-                  Lost my keychain last week near Central Park. If found, please
-                  contact me!
-                </p>
-              </div>
-
-              {/* Status */}
-              <div className="status-post-found">Found</div>
-            </div>
+            <div className="print-code" id="print-code"></div>
           </div>
         </div>
       </div>

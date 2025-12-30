@@ -1,12 +1,95 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import Skeleton from "react-loading-skeleton";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 
 export default function Home() {
+  // Variables
+  let [newestPosts, setNewestPosts] = useState([]);
+  let [isInProcessing, setIsInProcessing] = useState(false);
+
   // Functions
   function handleSearch(e) {
     e.preventDefault();
 
     window.location.href = "/search";
   }
+
+  // Get Newest Posts
+  const getNewestPosts = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.get(
+        "https://localhost:44306/api/Post/newest-posts",
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        setNewestPosts(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  // UseEffect
+  useEffect(() => {
+    getNewestPosts();
+  }, []);
 
   return (
     <>
@@ -188,7 +271,9 @@ export default function Home() {
             Register
           </p>
           <p>
-            This step allows you to have a personalized space for managing your stuff. You can edit and update your profile, contact other users, and access useful tools.
+            This step allows you to have a personalized space for managing your
+            stuff. You can edit and update your profile, contact other users,
+            and access useful tools.
           </p>
         </div>
 
@@ -222,7 +307,9 @@ export default function Home() {
             Report a stuff
           </p>
           <p>
-            Share the details of your lost or found items by creating a post. Provide essential information about your items. This step helps us match lost and found items more effectively.
+            Share the details of your lost or found items by creating a post.
+            Provide essential information about your items. This step helps us
+            match lost and found items more effectively.
           </p>
         </div>
       </div>
@@ -269,7 +356,9 @@ export default function Home() {
             Promote
           </p>
           <p>
-            Our platform offers options to share your listing on social media, reaching a wider audience. The more you promote your listing, the higher the chances of reuniting with your items.
+            Our platform offers options to share your listing on social media,
+            reaching a wider audience. The more you promote your listing, the
+            higher the chances of reuniting with your items.
           </p>
         </div>
 
@@ -303,7 +392,9 @@ export default function Home() {
             Reunite
           </p>
           <p>
-            This is the ultimate goal. With a strong user community and effective promotion, the chances of reuniting with your lost items or finding the item’s owner become much higher.
+            This is the ultimate goal. With a strong user community and
+            effective promotion, the chances of reuniting with your lost items
+            or finding the item’s owner become much higher.
           </p>
         </div>
       </div>
@@ -331,216 +422,92 @@ export default function Home() {
 
       {/* Newest images */}
       <div className="newest-post-container">
-        {/* Card img 1 */}
-        <div className="card">
-          <img
-            src="./Image/ipad.webp"
-            alt="picture of stuff"
-            loading="lazy"
+        {/* Cards */}
+        {isInProcessing ? (
+          <div
             style={{
-              width: "100%",
-              height: "300px",
-              objectFit: "cover",
-              backgroundColor: "white",
+              display: "grid",
+              gridTemplateColumns: "auto auto auto auto",
+              gap: "16px",
             }}
-          />
-          <div className="card-text">
-            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-              <a href="/detail-post">Ipad 11th Gen</a>
-            </h3>
-            <p>
-              <a href="/detail-post">
-                Lost my Ipad 11th Gen last week near Central Park. If found,
-                please contact me!
-              </a>
-            </p>
+          >
+            {Array.from({ length: 8 }).map((_, index) => (
+              <div className="" key={index} style={{ marginBottom: "60px" }}>
+                <Skeleton
+                  height={290}
+                  style={{ marginBottom: "10px", borderRadius: "20px" }}
+                />
+                <div className="">
+                  <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                    <Skeleton height={35} width={405} />
+                  </h3>
+                  <p>
+                    <Skeleton count={3} />
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
+        ) : (
+          newestPosts.map((item) => (
+            <div className="card suggestion-card" key={item.postId}>
+              {item.image ? (
+                <img
+                  src={item.urlImage}
+                  alt="picture of stuff"
+                  style={{
+                    width: "100%",
+                    height: "300px",
+                    objectFit: "cover",
+                    backgroundColor: "white",
+                  }}
+                  loading="lazy"
+                />
+              ) : (
+                <div className="image-placeholder">
+                  <i className="icon-image"></i>
+                  <span>No image</span>
+                </div>
+              )}
+              <div
+                className="card-text suggestion-card-text"
+                style={{ marginBottom: "40px" }}
+              >
+                <div className="info-user-suggestion">
+                  <img
+                    src={item.user.urlAvatar}
+                    alt="avatar"
+                    width={50}
+                    height={50}
+                    style={{ borderRadius: "50%" }}
+                    loading="lazy"
+                  />
+                  <span>{`${item.user.firstName} ${item.user.lastName}`}</span>
+                </div>
+                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                  <a href={`/detail-post/${item.postId}`}>{item.title}</a>
+                </h3>
+                <a href={`/detail-post/${item.postId}`}>
+                  <ReactMarkdown
+                    children={item.description}
+                    rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                  ></ReactMarkdown>
+                </a>
+              </div>
 
-          {/* Status */}
-          <div className="status-post-lost">Lost</div>
-        </div>
-
-        {/* Card img 2 */}
-        <div className="card">
-          <img
-            src="./Image/charger.webp"
-            alt="picture of stuff"
-            style={{
-              width: "100%",
-              height: "300px",
-              objectFit: "cover",
-              backgroundColor: "white",
-            }}
-            loading="lazy"
-          />
-          <div className="card-text">
-            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-              Charger USB-C
-            </h3>
-            <p>
-              Lost my charger USB-C last week near Central Park. If found,
-              please contact me!
-            </p>
-          </div>
-
-          {/* Status */}
-          <div className="status-post-found">Found</div>
-        </div>
-
-        {/* Card img 3 */}
-        <div className="card">
-          <img
-            src="./Image/chromebook.jpg"
-            alt="picture of stuff"
-            style={{
-              width: "100%",
-              height: "300px",
-              objectFit: "cover",
-              backgroundColor: "white",
-            }}
-            loading="lazy"
-          />
-          <div className="card-text">
-            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-              Chromebook
-            </h3>
-            <p>
-              Lost my chromebook last week near Central Park. If found, please
-              contact me!
-            </p>
-          </div>
-
-          {/* Status */}
-          <div className="status-post-lost">Lost</div>
-        </div>
-
-        {/* Card img 4 */}
-        <div className="card">
-          <img
-            src="./Image/earbuds.webp"
-            alt="picture of stuff"
-            style={{
-              width: "100%",
-              height: "300px",
-              objectFit: "cover",
-              backgroundColor: "white",
-            }}
-            loading="lazy"
-          />
-          <div className="card-text">
-            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Earbuds</h3>
-            <p>
-              Lost my earbuds last week near Central Park. If found, please
-              contact me!
-            </p>
-          </div>
-
-          {/* Status */}
-          <div className="status-post-lost">Lost</div>
-        </div>
-
-        {/* Card img 1 */}
-        <div className="card">
-          <img
-            src="./Image/phone.webp"
-            alt="picture of stuff"
-            style={{
-              width: "100%",
-              height: "300px",
-              objectFit: "cover",
-              backgroundColor: "white",
-            }}
-            loading="lazy"
-          />
-          <div className="card-text">
-            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-              Phone
-            </h3>
-            <p>
-              Lost my phone last Monday near Center Park. If found, please contact me!
-            </p>
-          </div>
-
-          {/* Status */}
-          <div className="status-post-found">Found</div>
-        </div>
-
-        {/* Card img 2 */}
-        <div className="card">
-          <img
-            src="./Image/key.jpg"
-            alt="picture of stuff"
-            style={{
-              width: "100%",
-              height: "300px",
-              objectFit: "cover",
-              backgroundColor: "white",
-            }}
-            loading="lazy"
-          />
-          <div className="card-text">
-            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Key</h3>
-            <p>
-              Lost my key last week near Central Park. If found,
-              please contact me!
-            </p>
-          </div>
-
-          {/* Status */}
-          <div className="status-post-lost">Lost</div>
-        </div>
-
-        {/* Card img 3 */}
-        <div className="card">
-          <img
-            src="./Image/wallet.jpg"
-            alt="picture of stuff"
-            style={{
-              width: "100%",
-              height: "300px",
-              objectFit: "cover",
-              backgroundColor: "white",
-            }}
-            loading="lazy"
-          />
-          <div className="card-text">
-            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Wallet</h3>
-            <p>
-              Lost my wallet last week near Central Park. If found, please
-              contact me!
-            </p>
-          </div>
-
-          {/* Status */}
-          <div className="status-post-found">Found</div>
-        </div>
-
-        {/* Card img 4 */}
-        <div className="card">
-          <img
-            src="./Image/keychain.avif"
-            alt="picture of stuff"
-            style={{
-              width: "100%",
-              height: "300px",
-              objectFit: "cover",
-              backgroundColor: "white",
-            }}
-            loading="lazy"
-          />
-          <div className="card-text">
-            <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-              Keychain
-            </h3>
-            <p>
-              Lost my keychain last week near Central Park. If found, please
-              contact me!
-            </p>
-          </div>
-
-          {/* Status */}
-          <div className="status-post-found">Found</div>
-        </div>
+              {/* Status */}
+              <div
+                className={
+                  item.typePost === "Found"
+                    ? "status-post-found"
+                    : "status-post-lost"
+                }
+              >
+                {item.typePost}
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Quick Search */}

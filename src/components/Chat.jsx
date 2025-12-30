@@ -49,9 +49,9 @@ export default function Chat() {
 
   return (
     <>
-      <div class="chat-container">
+      <div className="chat-container">
         <div
-          class="chat-bubble"
+          className="chat-bubble"
           id="chatBubble"
           onClick={() => {
             const chatBubble = document.getElementById("chatBubble");
@@ -93,7 +93,12 @@ export default function Chat() {
                     setIsMoveToDetailsChat(true);
                   }}
                 >
-                  <img src={chat.avatar} alt={chat.name} className="avatar" />
+                  <img
+                    src={chat.avatar}
+                    alt={chat.name}
+                    loading="lazy"
+                    className="avatar"
+                  />
                   <div className="chat-info">
                     <div className="chat-name">{chat.name}</div>
                     <div className="chat-message">{chat.message}</div>
@@ -116,7 +121,11 @@ export default function Chat() {
                     }}
                   ></i>
 
-                  <img src={selectedChat.avatar} className="avatar" />
+                  <img
+                    src={selectedChat.avatar}
+                    loading="lazy"
+                    className="avatar"
+                  />
                   <span>{selectedChat.name}</span>
                 </div>
 
