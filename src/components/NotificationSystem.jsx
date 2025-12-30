@@ -19,8 +19,13 @@ export default function NotificationSystem() {
           break;
 
         case "warning":
-          setColorBackground("yellow");
+          setColorBackground("#ec7207");
           setIcon("fa-solid fa-triangle-exclamation");
+          break;
+
+        case "success":
+          setColorBackground("green");
+          setIcon("fa-solid fa-check");
           break;
       }
 

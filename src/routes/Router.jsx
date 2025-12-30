@@ -12,6 +12,7 @@ import Notifications from "../pages/Notifications";
 import MyPost from "../pages/MyPost";
 import { SkeletonTheme } from "react-loading-skeleton";
 import Support from "../pages/Support";
+import Dashboard from "../pages/Dashboard";
 
 export default function Router() {
   return (
@@ -30,7 +31,8 @@ export default function Router() {
             <Route path="/authentication" element={<Authentication />} />
             <Route path="/lost-and-found" element={<LostAndFound />} />
             <Route path="/notifications" element={<Notifications />} />
-            <Route path="/my-post" element={<MyPost />} />
+            <Route path="/my-posts" element={<MyPost />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </Suspense>
       </SkeletonTheme>

@@ -50,7 +50,7 @@ export default function Notifications() {
             <div className="card">
               <img
                 src="./Image/ipad.webp"
-                alt="picture of stuffs"
+                alt="picture of stuff"
                 loading="lazy"
                 style={{
                   width: "100%",
@@ -79,7 +79,7 @@ export default function Notifications() {
             <div className="card">
               <img
                 src="./Image/charger.webp"
-                alt="picture of stuffs"
+                alt="picture of stuff"
                 style={{
                   width: "100%",
                   height: "300px",
@@ -105,7 +105,7 @@ export default function Notifications() {
             <div className="card">
               <img
                 src="./Image/chromebook.jpg"
-                alt="picture of stuffs"
+                alt="picture of stuff"
                 style={{
                   width: "100%",
                   height: "300px",
@@ -131,7 +131,7 @@ export default function Notifications() {
             <div className="card">
               <img
                 src="./Image/earbuds.webp"
-                alt="picture of stuffs"
+                alt="picture of stuff"
                 style={{
                   width: "100%",
                   height: "300px",
@@ -157,7 +157,7 @@ export default function Notifications() {
             <div className="card">
               <img
                 src="./Image/phone.webp"
-                alt="picture of stuffs"
+                alt="picture of stuff"
                 style={{
                   width: "100%",
                   height: "300px",
@@ -183,7 +183,7 @@ export default function Notifications() {
             <div className="card">
               <img
                 src="./Image/key.jpg"
-                alt="picture of stuffs"
+                alt="picture of stuff"
                 style={{
                   width: "100%",
                   height: "300px",
@@ -207,7 +207,7 @@ export default function Notifications() {
             <div className="card">
               <img
                 src="./Image/wallet.jpg"
-                alt="picture of stuffs"
+                alt="picture of stuff"
                 style={{
                   width: "100%",
                   height: "300px",
@@ -233,7 +233,7 @@ export default function Notifications() {
             <div className="card">
               <img
                 src="./Image/keychain.avif"
-                alt="picture of stuffs"
+                alt="picture of stuff"
                 style={{
                   width: "100%",
                   height: "300px",

@@ -1,20 +1,61 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import InputMask from "react-input-mask";
 import SidebarProfile from "../components/SidebarProfile";
 import Skeleton from "react-loading-skeleton";
+import dayjs from "dayjs";
 
 export default function Profile() {
   // Variables
   let [user, setUser] = useState("");
   let [firstName, setFirstName] = useState("");
   let [lastName, setLastName] = useState("");
+  let [dateOfBirth, setDateOfBirth] = useState("");
+  let [avatarPreview, setAvatarPreview] = useState(null);
+  let [selectedFileAvatar, setSelectedFileAvatar] = useState(null);
+  let [isChangeDateOfBirth, setIsChangeDateOfBirth] = useState(false);
   let [isModify, setIsModify] = useState(false);
   let [isInProcessing, setIsInProcessing] = useState(false);
 
   // APIs
 
   // Functions
+  // Handle change avatar
+  const handleChangeAvatar = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+    if (file) {
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      const maxSize = 5 * 1014 * 1014; // 5MB
+
+      // Check type of file
+      if (!allowedTypes.includes(file.type)) {
+        alert("Only accept JPG, PNG or WebP files");
+        return;
+      }
+
+      if (file.size > maxSize) {
+        alert("The image exceeds 5MB. Please select a smaller image");
+        return;
+      }
+
+      // To upload to server
+      setSelectedFileAvatar(file);
+
+      // To preview image
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setIsModify(true);
+        setAvatarPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+
+      e.target.value = "";
+    }
+  };
+
   // Get my profile
   const getMyProfile = async () => {
     setIsInProcessing(true);
@@ -35,6 +76,95 @@ export default function Profile() {
         // Set details
         setFirstName(response.data.firstName);
         setLastName(response.data.lastName);
+        setDateOfBirth(response.data.dateOfBirth);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  // Update profile
+  const updateProfile = async (e) => {
+    e.preventDefault();
+
+    setIsInProcessing(true);
+
+    const formData = new FormData();
+    selectedFileAvatar && formData.append("avatarUpload", selectedFileAvatar); // Image
+    formData.append("firstName", firstName);
+    formData.append("lastName", lastName);
+    if (dateOfBirth && dateOfBirth.trim() != "" && !dateOfBirth.includes("_")) {
+      formData.append("dateOfBirth", dateOfBirth);
+    }
+
+    try {
+      const response = await axios.put(
+        "https://localhost:44306/api/Users/update-user",
+        formData,
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        await getMyProfile();
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data,
+              status: "success",
+            },
+          })
+        );
       }
     } catch (error) {
       if (error.response) {
@@ -119,7 +249,7 @@ export default function Profile() {
             >
               My profile
             </h1>
-            <form>
+            <form onSubmit={updateProfile}>
               <table
                 border="0"
                 style={{
@@ -140,7 +270,7 @@ export default function Profile() {
                       First Name:
                     </th>
                     <td style={{ verticalAlign: "top" }} className="table-td">
-                      {user.firstName ? (
+                      {!isInProcessing ? (
                         <input
                           placeholder="Ex: Jennie Nguyen"
                           type="text"
@@ -172,7 +302,7 @@ export default function Profile() {
                       Last Name:
                     </th>
                     <td style={{ verticalAlign: "top" }} className="table-td">
-                      {user.lastName ? (
+                      {!isInProcessing ? (
                         <input
                           placeholder="Ex: Jennie Nguyen"
                           type="text"
@@ -194,9 +324,45 @@ export default function Profile() {
                     </td>
                   </tr>
                   <tr className="table-tr">
+                    <th
+                      style={{
+                        fontWeight: "600",
+                        paddingRight: "100px",
+                        width: "200px",
+                      }}
+                    >
+                      DOB:
+                    </th>
+                    <td style={{ verticalAlign: "top" }} className="table-td">
+                      {!isInProcessing ? (
+                        <InputMask
+                          mask={"99/99/9999"}
+                          placeholder="mm/dd/yyyy"
+                          value={
+                            isChangeDateOfBirth
+                              ? dateOfBirth
+                              : dayjs(dateOfBirth).format("MM/DD/YYYY") || ""
+                          }
+                          className="form-control-input-label-top"
+                          onChange={(e) => {
+                            setDateOfBirth(e.target.value);
+                            setIsChangeDateOfBirth(true);
+                            setIsModify(true);
+                          }}
+                        ></InputMask>
+                      ) : (
+                        <Skeleton
+                          height={45}
+                          width={630}
+                          style={{ marginBottom: "5px" }}
+                        />
+                      )}
+                    </td>
+                  </tr>
+                  <tr className="table-tr">
                     <th style={{ fontWeight: "600" }}>Role: </th>
                     <td style={{ verticalAlign: "top" }} className="table-td">
-                      {user.role ? (
+                      {!isInProcessing ? (
                         <input
                           placeholder="Ex: 123 456 789"
                           type="text"
@@ -216,10 +382,10 @@ export default function Profile() {
                   </tr>
                   <tr className="table-tr">
                     <th style={{ fontWeight: "600" }}>
-                      <label>School Email: </label>
+                      <label>Email: </label>
                     </th>
                     <td style={{ verticalAlign: "top" }} className="table-td">
-                      {user.email ? (
+                      {!isInProcessing ? (
                         <input
                           placeholder="Ex: demo@ex.io"
                           type="email"
@@ -313,15 +479,21 @@ export default function Profile() {
                 className="btn-yellow"
                 style={{
                   width: "100%",
-                  backgroundColor: isModify ? "#ec7207" : "#d3d3d3",
-                  color: isModify ? "#fff" : "#8c8c8c",
-                  cursor: isModify ? "pointer" : "not-allowed",
-                  pointerEvents: isModify ? "auto" : "none",
-                  opacity: isModify ? 1 : 0.6,
+                  backgroundColor:
+                    isModify && !isInProcessing ? "#ec7207" : "#d3d3d3",
+                  color: isModify && !isInProcessing ? "#fff" : "#8c8c8c",
+                  cursor:
+                    isModify && !isInProcessing ? "pointer" : "not-allowed",
+                  pointerEvents: isModify && !isInProcessing ? "auto" : "none",
+                  opacity: isModify && !isInProcessing ? 1 : 0.6,
                 }}
-                disabled={!isModify}
+                disabled={!isModify || isInProcessing}
               >
-                Save changes
+                {isInProcessing ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : (
+                  "Save changes"
+                )}
               </button>
             </form>
           </div>
@@ -338,25 +510,24 @@ export default function Profile() {
                 marginTop: "150px",
               }}
             />
-          ) : user?.avatar ? (
-            <img
-              src={`${user.urlAvatar}`}
-              alt="avatar"
-              style={{
-                borderRadius: "12px",
-                width: "420px",
-                marginTop: "150px",
-              }}
-            />
           ) : (
             <img
-              src="./Image/user_icon.png"
+              src={
+                avatarPreview
+                  ? avatarPreview
+                  : user?.avatar
+                  ? user.urlAvatar
+                  : "./Image/user_icon.png"
+              }
               alt="avatar"
               style={{
                 borderRadius: "12px",
                 width: "420px",
+                height: "420px",
+                objectFit: "cover",
                 marginTop: "150px",
               }}
+              loading="lazy"
             />
           )}
           <div
@@ -366,21 +537,33 @@ export default function Profile() {
               marginLeft: "90px",
             }}
           >
-            <div>
-              <button
+            <div style={{ display: "flex" }}>
+              <label
                 className="btn"
                 style={{
                   borderColor: "#ec7207",
                 }}
+                htmlFor="update-avatar"
               >
                 Change
-              </button>
+              </label>
+              <input
+                type="file"
+                id="update-avatar"
+                style={{ display: "none" }}
+                onChange={handleChangeAvatar}
+              />
             </div>
             <div>
               <button
                 className="btn-with-border"
                 style={{
                   borderColor: "#ec7207",
+                }}
+                type="button"
+                onClick={() => {
+                  setAvatarPreview(null);
+                  setIsModify(false);
                 }}
               >
                 Delete

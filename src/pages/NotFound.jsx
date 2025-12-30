@@ -15,18 +15,12 @@ export default function NotFound() {
         <Suspense fallback={<p>Loading animation...</p>}>
           <Lottie
             animationData={Lonely404}
-            className="m-auto"
             style={{ width: "50%", margin: "auto" }}
           />
         </Suspense>
-        <h1
-          className="text-2xl mt-4 text-gray-600"
-          style={{ fontSize: "40px" }}
-        >
-          Page Not Found
-        </h1>
+        <h1 style={{ fontSize: "40px" }}>Page Not Found</h1>
         <p style={{ color: "", marginBottom: "20px" }}>
-          Sorry, the page you are looking for doesn’t exist or has been moved.
+          Sorry, the page you are looking for doesn't exist or has been moved.
         </p>
         <button
           className="btn"
