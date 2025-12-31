@@ -435,7 +435,7 @@ export default function DetailPost() {
             style={{
               display: "grid",
               gridTemplateColumns: "auto auto",
-              gap: "200px",
+              gap: "100px",
             }}
           >
             <div

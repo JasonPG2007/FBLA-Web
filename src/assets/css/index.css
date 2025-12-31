@@ -81,21 +81,14 @@ a {
 .form-control-input-label-top {
   width: 100%;
   padding: 12px 15px;
-  margin-top: 8px;
   border: 1px solid #ccc;
-  border-radius: 8px;
+  border-radius: 20px;
   outline: none;
+  transition: all 0.2s ease-in-out;
 }
 
-.label-top {
-  position: absolute;
-  left: 13px;
-  padding: 0 70px 0 5px;
-  top: 20px;
-  font-size: 14px;
-  background-color: #fff;
-  transition: all 0.2s ease-in-out;
-  pointer-events: none;
+.form-control-input-label-top:focus {
+  border: 1px solid #ec7207;
 }
 
 .form-control-input-label-top:focus~label,
@@ -106,8 +99,20 @@ a {
   left: 13px;
   padding: 0 5px;
   background-color: #fff;
-  top: -3px;
+  top: -11px;
+  color: #ec7207;
   font-size: 14px;
+}
+
+.label-top {
+  position: absolute;
+  left: 13px;
+  padding: 0 70px 0 5px;
+  top: 13px;
+  font-size: 14px;
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+  pointer-events: none;
 }
 
 .btn {
@@ -574,7 +579,7 @@ footer .right button {
   background-color: #fc8a26;
 }
 
-.status-filter input[type="radio"]+label {
+.status-filter input[type="radio"] + label {
   padding: 5px 10px;
   margin-right: 5px;
   color: #fdcc4b;
@@ -693,14 +698,14 @@ footer .right button {
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 40px;
-  border-radius: 8px;
+  border-radius: 20px;
   overflow: hidden;
 }
 
 .authentication-container .img-right {
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
+  border-radius: 20px;
   width: 70%;
   margin: auto;
 }
@@ -718,14 +723,6 @@ footer .right button {
   position: relative;
 }
 
-.form-control-authentication .form-control-input {
-  width: 100%;
-  padding: 12px 15px;
-  margin-top: 8px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-}
-
 .form-control-authentication .fa-solid {
   position: absolute;
   background-color: #fff;
@@ -737,22 +734,23 @@ footer .right button {
   position: absolute;
   left: 13px;
   padding: 0 70px 0 5px;
-  top: 20px;
+  top: 13px;
   font-size: 14px;
   background-color: #fff;
   transition: all 0.2s ease-in-out;
   pointer-events: none;
 }
 
-.form-control-authentication .form-control-input:focus~label,
-.form-control-authentication .form-control-input:not(:placeholder-shown)
+.form-control-input:focus~label,
+.form-control-input:not(:placeholder-shown)
 
 /* When input has value */
 ~label {
   left: 13px;
   padding: 0 5px;
   background-color: #fff;
-  top: -3px;
+  top: -11px;
+  color: #ec7207;
   font-size: 14px;
 }
 
@@ -766,7 +764,7 @@ footer .right button {
   cursor: pointer;
   font-size: 16px;
   padding: 12px 25px;
-  border-radius: 10px;
+  border-radius: 20px;
   margin-top: 10px;
   margin-bottom: 10px;
   transition: all 0.3s ease-in-out;
@@ -1017,6 +1015,10 @@ footer .right button {
   transition: all 0.3s ease-in-out;
 }
 
+.stuff-information-right-container {
+  height: 70vh;
+}
+
 .close-modal-report {
   position: absolute;
   top: -45px;
@@ -1143,15 +1145,15 @@ footer .right button {
 
 .preview-img {
   border-radius: 20px;
-  margin-left: -20px;
+  /* margin-left: -20px; */
   object-fit: cover;
 }
 
 .btn-change-img {
-  /* margin-left: -20px; */
+  margin-left: 5px;
   display: grid;
-  grid-template-columns: auto auto;
-  gap: 10px;
+  grid-template-columns: auto;
+  /* gap: 10px; */
   justify-content: center;
   align-items: center;
   /* width: 100%; */
@@ -1176,12 +1178,17 @@ footer .right button {
   overflow-y: scroll;
 }
 
-.form-control-authentication .form-control-input {
+.form-control-input {
   width: 100%;
   padding: 12px 15px;
-  margin-top: 8px;
   border: 1px solid #ccc;
-  border-radius: 8px;
+  border-radius: 20px;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+}
+
+.form-control-input:focus {
+  border: 1px solid #ec7207;
 }
 
 .form-control-authentication .fa-solid {
@@ -1202,7 +1209,7 @@ footer .right button {
 }
 
 .stuff-information-box {
-  max-height: 660px;
+  max-height: 62vh;
   overflow-y: scroll;
 }
 
@@ -1218,7 +1225,8 @@ footer .right button {
 /* Detail image */
 .post-image-container {
   background: linear-gradient(135deg, rgb(241, 177, 67), rgb(252, 248, 172));
-  max-width: 432px;
+  max-width: 100%;
+  height: 100px;
   height: max-content;
   border-radius: 20px;
 }
@@ -1249,6 +1257,9 @@ th {
 /* Post image mini */
 .post-image-mini {
   margin-top: 75%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .post-image-mini img {
@@ -1361,14 +1372,14 @@ th {
 .sidebarProfile {
   background: linear-gradient(
     -135deg,
-    rgba(255, 165, 86, 0.8),
+    rgba(253, 149, 58, 0.8),
     rgba(255, 119, 0, 0.4)
   );
   margin-left: -100px;
-  border-top-right-radius: 12px;
+  border-top-right-radius: 20px;
   padding: 40px 20px;
   margin-top: 100px;
-  border-bottom-right-radius: 12px;
+  border-bottom-right-radius: 20px;
   position: relative;
   height: 700px;
   width: 100%;
@@ -1386,6 +1397,43 @@ th {
   color: #fff;
 }
 
+.submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background: #fff;
+  border-radius: 20px;
+}
+
+.submenu.show {
+  max-height: 300px;
+}
+
+.submenu a {
+  display: block;
+  padding: 10px 32px;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+}
+
+.submenu a:hover {
+  color: #fc8a26;
+}
+
+.submenu a.active {
+  color: #fc8a26;
+  font-weight: 500;
+}
+
+.arrow {
+  transition: transform 0.3s ease;
+}
+
+.arrow.rotate {
+  transform: rotate(180deg);
+}
+
+/* Search by image */
 .search-by-image {
   text-align: center;
   border: 1px solid #ec7207;
@@ -1999,4 +2047,70 @@ th {
 .ck-editor {
   max-width: 396px;
   width: 100%; /* responsive in container */
+}
+
+/* Verification codes for admin */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.custom-table {
+  min-width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  font-size: 15px;
+}
+
+.custom-table thead {
+  background: #f5f7fa;
+}
+
+.custom-table th,
+.custom-table td {
+  padding: 14px 16px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+.custom-table th {
+  font-weight: 600;
+  color: #333;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+.custom-table tbody tr:hover {
+  background: #f9fbff;
+}
+
+/* Status badge */
+.status {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.status.active {
+  background: #e7f7ee;
+  color: #1a7f37;
+}
+
+.status.inactive {
+  background: #fdecec;
+  color: #c62828;
+}
+
+.search-codes-container {
+  width: 50%;
+  position: relative;
+}
+
+.search-codes-container i {
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
 }

@@ -58,7 +58,7 @@
   .faq-container {
     margin-top: 100px;
   }
-  
+
   /* Home */
   .hero {
     grid-template-rows: 55% 30% !important;
@@ -97,7 +97,6 @@
     font-size: 14px !important;
   }
 
-
   .number-buttons button span {
     font-size: 18px !important;
   }
@@ -132,7 +131,6 @@
 
   .paddingp {
     grid-template-columns: 50% 50% !important;
-
   }
 
   .paddingp-bottom {
@@ -148,7 +146,6 @@
   .learn-how-it-works {
     margin-top: -10px !important;
   }
-
 
   .newest-post-container {
     display: grid;
@@ -300,11 +297,69 @@
     top: 130px;
     right: 10px;
   }
+
+  /* Modal report stuff */
+  .modal-report-stuff {
+    width: 90%;
+  }
+
+  .modal-header-report-stuff .tab {
+    font-size: 18px;
+  }
+
+  .modal-header-report-stuff .active {
+    font-size: 14px;
+  }
+
+  .modal-header-report-stuff .stuff-header {
+    display: none;
+  }
+
+  .modal-content-container {
+    display: grid;
+    grid-template-columns: auto;
+    gap: 5%;
+    width: 94%;
+  }
+
+  /* Modal report */
+  .form-lost-found-container {
+    height: 65vh;
+    width: 100%;
+    overflow-y: auto;
+  }
+
+  .upload-img-container {
+    /* width: 100%; */
+  }
+
+  .upload-img-box {
+    width: 100%;
+    height: 90%;
+    margin-top: 10px;
+  }
+
+  .upload-img-box i {
+    margin-bottom: 0;
+    font-size: 30px;
+  }
+
+  .upload-img-box .label-or {
+    margin-bottom: 20px !important;
+    margin-top: 0px !important;
+  }
+
+  .stuff-information-right-container {
+    width: 106%;
+  }
+
+  .stuff-information {
+    grid-template-columns: auto;
+  }
 }
 
 /* SMALL TABLET */
 @media (min-width: 577px) and (max-width: 768px) {
-
   /* Home */
   .hero {
     grid-template-rows: 55% 30% !important;
@@ -349,7 +404,6 @@
 
   .paddingp {
     grid-template-columns: 50% 50% !important;
-
   }
 
   .paddingp-bottom {
@@ -415,10 +469,6 @@
   .avatar {
     margin-bottom: 40px !important;
   }
-
-
-
-
 }
 
 /* BIG TABLET */
@@ -439,7 +489,6 @@
 
   .paddingp {
     grid-template-columns: 50% 50% !important;
-
   }
 
   .paddingp-bottom {
@@ -532,12 +581,11 @@
   .offer-block {
     margin-top: 8%;
   }
-
-
 }
 
 /* SMALL LAPTOP */
-@media (min-width: 993px) and (max-width: 1200px) {}
+@media (min-width: 993px) and (max-width: 1200px) {
+}
 
 /* BIG LAPTOP (Desktop screen) */
 @media (min-width: 1201px) {

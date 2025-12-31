@@ -13,6 +13,8 @@ import MyPost from "../pages/MyPost";
 import { SkeletonTheme } from "react-loading-skeleton";
 import Support from "../pages/Support";
 import Dashboard from "../pages/Dashboard";
+import VerificationCodes from "../pages/VerificationCodes";
+import Users from "../pages/Users";
 
 export default function Router() {
   return (
@@ -32,7 +34,12 @@ export default function Router() {
             <Route path="/lost-and-found" element={<LostAndFound />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/my-posts" element={<MyPost />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/overview" element={<Dashboard />} />
+            <Route
+              path="/dashboard/verification-codes"
+              element={<VerificationCodes />}
+            />
+            <Route path="/dashboard/users" element={<Users />} />
           </Routes>
         </Suspense>
       </SkeletonTheme>
