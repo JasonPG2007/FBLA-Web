@@ -234,6 +234,7 @@ export default function Profile() {
   return (
     <>
       <div
+        className="sidebar-and-content"
         style={{
           display: "grid",
           gridTemplateColumns: "15% 50% 15%",
@@ -246,7 +247,7 @@ export default function Profile() {
         <SidebarProfile></SidebarProfile>
 
         {/* Name of profile */}
-        <div style={{ display: "flex", marginTop: "100px" }}>
+        <div className="profile-info-container" style={{ display: "flex", marginTop: "100px" }}>
           <div style={{ width: "100%" }}>
             <h1
               style={{
@@ -293,6 +294,7 @@ export default function Profile() {
                         />
                       ) : (
                         <Skeleton
+                          className="skeleton-input"
                           height={45}
                           width={630}
                           style={{ marginBottom: "5px" }}
@@ -325,6 +327,7 @@ export default function Profile() {
                         />
                       ) : (
                         <Skeleton
+                          className="skeleton-input"
                           height={45}
                           width={630}
                           style={{ marginBottom: "5px" }}
@@ -382,6 +385,7 @@ export default function Profile() {
                         />
                       ) : (
                         <Skeleton
+                          className="skeleton-input"
                           height={45}
                           width={630}
                           style={{ marginBottom: "5px" }}
@@ -405,6 +409,7 @@ export default function Profile() {
                         />
                       ) : (
                         <Skeleton
+                          className="skeleton-input"
                           height={45}
                           width={630}
                           style={{ marginBottom: "5px" }}
@@ -417,6 +422,7 @@ export default function Profile() {
 
               {/* Notify me */}
               <div
+                className="notify-me-section"
                 style={{
                   padding: "10px 10px 30px",
                 }}

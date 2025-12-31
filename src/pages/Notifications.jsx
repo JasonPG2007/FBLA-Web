@@ -4,6 +4,7 @@ export default function Notifications() {
   return (
     <>
       <div
+        className="sidebar-and-content"
         style={{
           display: "grid",
           gridTemplateColumns: "15% 85%",
