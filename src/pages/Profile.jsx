@@ -22,9 +22,7 @@ export default function Profile() {
 
   // Functions
   // Handle change avatar
-  const handleChangeAvatar = (e) => {
-    const file = e.target.files[0];
-
+  const handleChangeAvatar = (file) => {
     if (!file) return;
     if (file) {
       const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
@@ -52,8 +50,19 @@ export default function Profile() {
       };
       reader.readAsDataURL(file);
 
-      e.target.value = "";
+      file.target.value = "";
     }
+  };
+
+  const handleUploadAvatar = (e) => {
+    const file = e.target.files[0];
+    handleChangeAvatar(file);
+  };
+
+  const handleDropAvatar = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    handleChangeAvatar(file);
   };
 
   // Get my profile
@@ -506,7 +515,11 @@ export default function Profile() {
         </div>
 
         {/* Avatar */}
-        <div className="big-avatar" style={{ marginLeft: "100px" }}>
+        <div
+          style={{ marginLeft: "100px" }}
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={handleDropAvatar}
+        >
           {isInProcessing ? (
             <Skeleton
               height={420}
@@ -557,7 +570,7 @@ export default function Profile() {
                 type="file"
                 id="update-avatar"
                 style={{ display: "none" }}
-                onChange={handleChangeAvatar}
+                onChange={handleUploadAvatar}
               />
             </div>
             <div>

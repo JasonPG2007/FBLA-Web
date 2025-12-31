@@ -7,6 +7,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 export default function SidebarProfile() {
   // Variables
   let [user, setUser] = useState("");
+  const [openDashboard, setOpenDashboard] = useState(false);
   let [isInProcessing, setIsInProcessing] = useState(false);
   const isActive = (path) => location.pathname === path;
 
@@ -155,24 +156,6 @@ export default function SidebarProfile() {
         </a>
         <br />
 
-        {/* Dashboard */}
-        {user.role === "Admin" && (
-          <>
-            <a
-              href="/dashboard"
-              style={{
-                fontWeight: "400",
-                lineHeight: "50px",
-              }}
-              className={`${isActive("/dashboard") ? "active" : ""}`}
-            >
-              {" "}
-              <i className="fa-solid fa-house"></i> Dashboard
-            </a>
-            <br />
-          </>
-        )}
-
         {/* My post */}
         <a
           href="/my-posts"
@@ -213,6 +196,64 @@ export default function SidebarProfile() {
           <i className="fa-solid fa-bell"></i> Notifications
         </a>
         <br />
+
+        {/* Dashboard */}
+        {user.role === "Admin" && (
+          <>
+            <a
+              href="/dashboard"
+              style={{
+                fontWeight: "400",
+                lineHeight: "50px",
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenDashboard(!openDashboard);
+              }}
+              className={`${isActive("/dashboard") ? "active" : ""}`}
+            >
+              <i className="fa-solid fa-house"></i> Dashboard{" "}
+              <i
+                className={`fa-solid fa-chevron-down arrow ${
+                  openDashboard ? "rotate" : ""
+                }`}
+              ></i>
+            </a>
+
+            {/* Sub Menu */}
+            <div
+              className={`submenu ${
+                openDashboard || location.pathname.startsWith("/dashboard")
+                  ? "show"
+                  : ""
+              }`}
+            >
+              <a
+                href="/dashboard/overview"
+                className={isActive("/dashboard/overview") ? "active" : ""}
+              >
+                Overview
+              </a>
+
+              <a
+                href="/dashboard/verification-codes"
+                className={
+                  isActive("/dashboard/verification-codes") ? "active" : ""
+                }
+              >
+                Verification Codes
+              </a>
+
+              <a
+                href="/dashboard/users"
+                className={isActive("/dashboard/users") ? "active" : ""}
+              >
+                Users
+              </a>
+            </div>
+            <br />
+          </>
+        )}
 
         {/* Log out */}
         <a

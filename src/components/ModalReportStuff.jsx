@@ -594,7 +594,7 @@ export default function ModalReportStuff() {
                 setLostOrFound("Lost");
               }}
             >
-              Lost Stuff
+              Lost <span className="stuff-header">Stuff</span>
             </h2>
           </div>
 
@@ -613,7 +613,7 @@ export default function ModalReportStuff() {
                 setLostOrFound("Found");
               }}
             >
-              Found Stuff
+              Found <span className="stuff-header">Stuff</span>
             </h2>
           </div>
 
@@ -631,7 +631,10 @@ export default function ModalReportStuff() {
                 encType="multipart/form-data"
               >
                 <div className="modal-content-container">
-                  <div style={{ textAlign: "center" }}>
+                  <div
+                    style={{ textAlign: "center" }}
+                    className="upload-img-container"
+                  >
                     <div
                       className={!imageLostPreview ? "upload-img-box" : ""}
                       onClick={() => {
@@ -646,6 +649,7 @@ export default function ModalReportStuff() {
                           <p>Drag and Drop here</p>
                           <p
                             style={{ marginBottom: "30px", marginTop: "10px" }}
+                            className="label-or"
                           >
                             or
                           </p>
@@ -697,7 +701,7 @@ export default function ModalReportStuff() {
                     )}
                   </div>
 
-                  <div>
+                  <div className="stuff-information-right-container">
                     <div className="stuff-information-box">
                       {/* Stuff info */}
                       <h2 style={{ marginBottom: "20px" }}>
@@ -721,7 +725,6 @@ export default function ModalReportStuff() {
                               id="stuff-name"
                               placeholder="Ex: IPhone 16"
                               className="form-control-input-label-top"
-                              autoFocus
                               required
                               value={stuffNameLost}
                               onChange={(e) => {
@@ -750,7 +753,6 @@ export default function ModalReportStuff() {
                               id="category"
                               placeholder="Ex: IPhone"
                               className="form-control-input-label-top"
-                              autoFocus
                               value={categoryLost}
                               required
                               onChange={(e) => {
@@ -872,7 +874,6 @@ export default function ModalReportStuff() {
                                 name=""
                                 id="stuff-name"
                                 className="form-control-input-label-top input-read-only"
-                                autoFocus
                                 value={`${user.firstName} ${user.lastName}`}
                                 required
                                 readOnly
@@ -899,7 +900,6 @@ export default function ModalReportStuff() {
                                   name=""
                                   id="student-id-lost"
                                   className="form-control-input-label-top"
-                                  autoFocus
                                   value={user.student?.studentId || ""}
                                   readOnly
                                 />
@@ -925,7 +925,6 @@ export default function ModalReportStuff() {
                                 name=""
                                 id="school-email"
                                 className="form-control-input-label-top"
-                                autoFocus
                                 required
                                 value={user.email || ""}
                                 readOnly
@@ -976,6 +975,7 @@ export default function ModalReportStuff() {
                           <p>Drag and Drop here</p>
                           <p
                             style={{ marginBottom: "30px", marginTop: "10px" }}
+                            className="label-or"
                           >
                             or
                           </p>
@@ -1027,7 +1027,7 @@ export default function ModalReportStuff() {
                     )}
                   </div>
 
-                  <div>
+                  <div className="stuff-information-right-container">
                     <div className="stuff-information-box">
                       {/* Stuff info */}
                       <h2 style={{ marginBottom: "20px" }}>
@@ -1051,7 +1051,6 @@ export default function ModalReportStuff() {
                               id="stuff-name"
                               placeholder="Ex: IPhone 16"
                               className="form-control-input-label-top"
-                              autoFocus
                               required
                               value={stuffNameLost}
                               onChange={(e) => {
@@ -1080,7 +1079,6 @@ export default function ModalReportStuff() {
                               id="category"
                               placeholder="Ex: IPhone"
                               className="form-control-input-label-top"
-                              autoFocus
                               value={categoryLost}
                               required
                               onChange={(e) => {
@@ -1202,7 +1200,6 @@ export default function ModalReportStuff() {
                                 name=""
                                 id="stuff-name"
                                 className="form-control-input-label-top input-read-only"
-                                autoFocus
                                 value={`${user.firstName} ${user.lastName}`}
                                 required
                                 readOnly
@@ -1229,7 +1226,6 @@ export default function ModalReportStuff() {
                                   name=""
                                   id="student-id-lost"
                                   className="form-control-input-label-top"
-                                  autoFocus
                                   value={user.student?.studentId || ""}
                                   readOnly
                                 />
@@ -1255,7 +1251,6 @@ export default function ModalReportStuff() {
                                 name=""
                                 id="school-email"
                                 className="form-control-input-label-top"
-                                autoFocus
                                 required
                                 value={user.email || ""}
                                 readOnly
