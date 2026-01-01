@@ -30,7 +30,7 @@ export default function DetailPost() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -122,7 +122,7 @@ export default function DetailPost() {
 
     try {
       const response = await axios.post(
-        "https://localhost:44306/api/Match",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Match",
         payload,
         {
           withCredentials: true,
@@ -203,7 +203,7 @@ export default function DetailPost() {
 
     try {
       const response = await axios.get(
-        `https://localhost:44306/api/Post/${postId}`,
+        `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Post/${postId}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -271,7 +271,7 @@ export default function DetailPost() {
 
     try {
       const response = await axios.get(
-        `https://localhost:44306/api/Post/suggest-post/${postId}`,
+        `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Post/suggest-post/${postId}`,
         {
           withCredentials: true,
           validateStatus: (status) =>

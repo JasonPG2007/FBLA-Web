@@ -20,7 +20,7 @@ export default function SidebarProfile() {
 
     try {
       const response = await axios.post(
-        `https://localhost:44306/api/Users/sign-out`,
+        `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/sign-out`,
         null,
         {
           headers: {
@@ -46,7 +46,7 @@ export default function SidebarProfile() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>

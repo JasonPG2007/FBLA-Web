@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 
 // Create an axios instance with default configurations
 const axiosInstance = axios.create({
-  baseURL: "https://localhost:44306/api",
+  baseURL: "https://subtle-lake-certificate-tiffany.trycloudflare.com/api",
   withCredentials: true, // Allow sending cookies with requests
 });
 

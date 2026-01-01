@@ -62,7 +62,7 @@ export default function Dashboard() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -145,7 +145,7 @@ export default function Dashboard() {
 
     try {
       const response = await axios.put(
-        "https://localhost:44306/api/Users/update-user",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/update-user",
         formData,
         {
           withCredentials: true,

@@ -91,7 +91,7 @@ export default function Authentication() {
       };
 
       const response = await axios.post(
-        "https://localhost:44306/api/Users/sign-up",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/sign-up",
         payload,
         {
           headers: {
@@ -167,7 +167,7 @@ export default function Authentication() {
     setIsInProcessing(true);
     try {
       const responseSignInUser = await axios.post(
-        `https://localhost:44306/api/Users/sign-in`,
+        `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/sign-in`,
         {
           studentId: studentIdOrEmailForSignIn.includes("@")
             ? 0
@@ -251,7 +251,7 @@ export default function Authentication() {
 
     try {
       const responseSignInUser = await axios.post(
-        `https://localhost:44306/api/Users/select-image`,
+        `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/select-image`,
         {
           studentId: studentIdOrEmailForSignIn.includes("@")
             ? 0

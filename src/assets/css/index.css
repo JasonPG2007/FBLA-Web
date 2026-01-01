@@ -467,7 +467,7 @@ footer .right button {
   /* aspect-ratio: 1 / 1; */
   height: 300px;
   background: #f2f2f2;
-  border-radius: 8px;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1194,7 +1194,7 @@ footer .right button {
 .form-control-authentication .fa-solid {
   position: absolute;
   right: 15px;
-  top: 44%;
+  top: 34%;
 }
 
 .stuff-name {

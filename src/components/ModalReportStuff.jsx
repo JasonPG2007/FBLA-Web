@@ -29,7 +29,7 @@ export default function ModalReportStuff() {
   let [isSearchingCategory, setIsSearchingCategory] = useState(false);
 
   // APIs
-  const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/CheckAuth/check-auth`;
 
   // Functions
   // Close modal report
@@ -49,7 +49,7 @@ export default function ModalReportStuff() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -124,7 +124,7 @@ export default function ModalReportStuff() {
 
     try {
       const response = await axios.get(
-        `https://localhost:44306/api/CategoryPost/search-category-post?query=${query}`,
+        `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/CategoryPost/search-category-post?query=${query}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -297,7 +297,7 @@ export default function ModalReportStuff() {
 
     try {
       const response = await axios.post(
-        "https://localhost:44306/api/Post",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Post",
         formData,
         {
           withCredentials: true,
@@ -395,7 +395,7 @@ export default function ModalReportStuff() {
 
     try {
       const response = await axios.post(
-        "https://localhost:44306/api/Post",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Post",
         formData,
         {
           withCredentials: true,
