@@ -2,22 +2,135 @@ import { useEffect, useState } from "react";
 import SidebarProfile from "../components/SidebarProfile";
 import axios from "axios";
 import dayjs from "dayjs";
+import { HubConnectionBuilder } from "@microsoft/signalr";
+import { debounce } from "lodash";
 
 export default function VerificationCodes() {
   // Variables
   const [codes, setCodes] = useState([]);
+  const [query, setQuery] = useState("");
   const [isInProcessing, setIsInProcessing] = useState(false);
 
   // APIs
 
   // Functions
+  // Realtime
+  const connectToSignalR = async () => {
+    try {
+      const connection = new HubConnectionBuilder()
+        .withUrl(
+          "https://subtle-lake-certificate-tiffany.trycloudflare.com/SystemHub"
+        )
+        .withAutomaticReconnect()
+        .build();
+
+      // Listen event from backend
+      // Get new lost post code
+      connection.on("ReceiveNewLostPostCode", (data) => {
+        setCodes((preCodes) => {
+          if (preCodes.some((p) => p.postId == data.postId)) return preCodes;
+
+          return [data, ...preCodes];
+        });
+      });
+
+      // Get status mark post
+      connection.on("ReceiveStatusMarkPost", (data) => {
+        setCodes((preCodes) => {
+          return preCodes.map((p) => {
+            return p.postId === data.postId
+              ? { ...p, isReceived: data.isReceived }
+              : p;
+          });
+        });
+      });
+
+      // Start realtime
+      await connection.start();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Get category posts
+  const searchCodes = async (query) => {
+    if (query.trim() == "") return null;
+
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.get(
+        `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Post/search-codes?query=${query}`,
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        setCodes(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  const debouncedFetch = debounce(searchCodes, 500);
+
   // Handle mark received
   const handleMarkReceived = async (postId) => {
     setIsInProcessing(true);
 
     try {
       const response = await axios.post(
-        `https://localhost:44306/api/Post/mark-received/${postId}`,
+        `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Post/mark-received/${postId}`,
         null,
         {
           withCredentials: true,
@@ -107,7 +220,7 @@ export default function VerificationCodes() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Post/lost-post-codes",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Post/lost-post-codes",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -188,6 +301,11 @@ export default function VerificationCodes() {
     handleCodeLost();
   }, []);
 
+  // Run realtime
+  useEffect(() => {
+    connectToSignalR();
+  }, []);
+
   useEffect(() => {
     const handleCodeToPrint = (event) => {
       const code = event.detail;
@@ -202,6 +320,11 @@ export default function VerificationCodes() {
       window.removeEventListener("codeToPrint", handleCodeToPrint);
     };
   }, []);
+
+  useEffect(() => {
+    debouncedFetch(query);
+    return debouncedFetch.cancel; // Cleanup
+  }, [query]);
 
   return (
     <>
@@ -229,7 +352,7 @@ export default function VerificationCodes() {
           <div className="search-codes-container">
             <input
               type="text"
-              placeholder="Search codes..."
+              placeholder="Search code..."
               className="form-control-input search-codes"
               onChange={(e) => {
                 setQuery(e.target.value);
@@ -253,44 +376,56 @@ export default function VerificationCodes() {
                 </tr>
               </thead>
               <tbody>
-                {codes.map((item, index) => (
-                  <tr key={item.postId}>
-                    <td>{index + 1}</td>
-                    <td>{item.code}</td>
-                    <td>{item.typePost}</td>
-                    <td>
-                      {item.user.firstName} {item.user.lastName}
-                    </td>
-                    <td>{dayjs(item.createdAt).format("MM/DD/YYYY")}</td>
-                    <td>
-                      <span
-                        className={`status ${
-                          item.isReceived ? "active" : "inactive"
-                        }`}
-                      >
-                        {item.isReceived ? "Received" : "Not Receive"}
-                      </span>
-                    </td>
-                    <td>
-                      <button
-                        className="btn"
-                        type="button"
-                        onClick={() => {
-                          handleMarkReceived(item.postId);
-                        }}
-                        disabled={isInProcessing || item.isReceived}
-                      >
-                        {isInProcessing ? (
-                          <i className="fas fa-spinner fa-spin"></i>
-                        ) : item.isReceived ? (
-                          "Received"
-                        ) : (
-                          "Mark as received"
-                        )}
-                      </button>
+                {isInProcessing ? (
+                  <tr>
+                    <td colSpan={7}>
+                      <i className="fas fa-spinner fa-spin"></i>
                     </td>
                   </tr>
-                ))}
+                ) : codes.length > 0 ? (
+                  codes.map((item, index) => (
+                    <tr key={item.postId}>
+                      <td>{index + 1}</td>
+                      <td>{item.code}</td>
+                      <td>{item.typePost}</td>
+                      <td>
+                        {item.user.firstName} {item.user.lastName}
+                      </td>
+                      <td>{dayjs(item.createdAt).format("MM/DD/YYYY")}</td>
+                      <td>
+                        <span
+                          className={`status ${
+                            item.isReceived ? "active" : "inactive"
+                          }`}
+                        >
+                          {item.isReceived ? "Received" : "Not Receive"}
+                        </span>
+                      </td>
+                      <td>
+                        <button
+                          className="btn"
+                          type="button"
+                          onClick={() => {
+                            handleMarkReceived(item.postId);
+                          }}
+                          disabled={isInProcessing || item.isReceived}
+                        >
+                          {isInProcessing ? (
+                            <i className="fas fa-spinner fa-spin"></i>
+                          ) : item.isReceived ? (
+                            "Received"
+                          ) : (
+                            "Mark as received"
+                          )}
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={7}>No results</td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

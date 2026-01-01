@@ -24,7 +24,7 @@ export default function Home() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Post/newest-posts",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Post/newest-posts",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -100,10 +100,9 @@ export default function Home() {
 
       <div
         className="hero"
-        style={{ display: "grid", gridTemplateColumns: "55% 30%" }}>
-        <div
-          className="hero-text"
-          style={{ marginTop: "83px" }}>
+        style={{ display: "grid", gridTemplateColumns: "55% 30%" }}
+      >
+        <div className="hero-text" style={{ marginTop: "83px" }}>
           <p
             style={{
               fontSize: "50px",
@@ -324,7 +323,6 @@ export default function Home() {
           margin: "auto",
           marginTop: "50px",
         }}
-
         className="paddingp-bottom"
       >
         {/* Card 1 */}

@@ -1,6 +1,5 @@
 /* MOBILE */
 @media (max-width: 576px) {
-
   /* Navbar */
   .bar {
     display: block;
@@ -376,7 +375,7 @@
   .btn-yellow {
     width: 186% !important;
   }
-  
+
   /* Authentication page */
   .form-box {
     width: 100%;
@@ -450,6 +449,27 @@
 
   .stuff-information {
     grid-template-columns: auto;
+  }
+
+  /* Suggestion */
+  .info-user-suggestion img {
+    height: unset !important;
+  }
+
+  .info-user-suggestion span {
+    font-size: 14px;
+  }
+
+  .suggestion-card {
+    height: 400px !important;
+  }
+
+  .suggestion-card .image-placeholder {
+    height: 200px !important;
+  }
+
+  .suggestion-card-text {
+    height: 183px !important;
   }
 }
 
@@ -684,7 +704,6 @@
 
 /* BIG LAPTOP (Desktop screen) */
 @media (min-width: 1201px) {
-
   /* Code here */
   .hero img {
     /* width: 90% !important; */

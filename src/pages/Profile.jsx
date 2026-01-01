@@ -71,7 +71,7 @@ export default function Profile() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -154,7 +154,7 @@ export default function Profile() {
 
     try {
       const response = await axios.put(
-        "https://localhost:44306/api/Users/update-user",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/update-user",
         formData,
         {
           withCredentials: true,
@@ -247,7 +247,10 @@ export default function Profile() {
         <SidebarProfile></SidebarProfile>
 
         {/* Name of profile */}
-        <div className="profile-info-container" style={{ display: "flex", marginTop: "100px" }}>
+        <div
+          className="profile-info-container"
+          style={{ display: "flex", marginTop: "100px" }}
+        >
           <div style={{ width: "100%" }}>
             <h1
               style={{

@@ -16,11 +16,14 @@ export default function LostAndFound() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get("https://localhost:44306/api/Post/", {
-        withCredentials: true,
-        validateStatus: (status) =>
-          status === 200 || status === 401 || status === 404,
-      });
+      const response = await axios.get(
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Post/",
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
 
       if (response.status === 200) {
         setPosts(response.data);

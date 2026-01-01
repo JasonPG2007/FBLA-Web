@@ -19,7 +19,7 @@ export default function Header() {
   let [msgErrorAI, setMsgErrorAI] = useState("");
 
   // APIs
-  const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/CheckAuth/check-auth`;
 
   // Functions
   const handleSearchByImage = async (e) => {
@@ -118,7 +118,7 @@ export default function Header() {
 
     try {
       const response = await axios.post(
-        `https://localhost:44306/api/Users/sign-out`,
+        `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/sign-out`,
         null,
         {
           headers: {
@@ -143,7 +143,7 @@ export default function Header() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -177,7 +177,7 @@ export default function Header() {
 
     try {
       const response = await axios.post(
-        "https://localhost:44306/api/Post/search-image-similarity",
+        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Post/search-image-similarity",
         vector,
         {
           withCredentials: true,
