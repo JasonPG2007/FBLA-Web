@@ -351,7 +351,8 @@ export default function Header() {
             </button>
 
             <div id="dropdown" className="dropdown hidden">
-              {Cookies.get("Username") != null ? (
+              {console.log(Cookies.get("Username"))}
+              {Cookies.get("Username") ? (
                 <>
                   <a href="/me">
                     <i className="fa-solid fa-user"></i> Profile
