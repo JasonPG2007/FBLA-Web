@@ -71,7 +71,7 @@ export default function Profile() {
 
     try {
       const response = await axios.get(
-        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/profile",
+        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -154,7 +154,7 @@ export default function Profile() {
 
     try {
       const response = await axios.put(
-        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/update-user",
+        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/update-user",
         formData,
         {
           withCredentials: true,

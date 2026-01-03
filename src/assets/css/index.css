@@ -1928,6 +1928,10 @@ th {
   margin-bottom: 20px;
 }
 
+.info-user-suggestion img {
+  object-fit: cover;
+}
+
 /* Modal container */
 .modal-result-by-ai {
   position: fixed;
@@ -2102,6 +2106,11 @@ th {
 .status.inactive {
   background: #fdecec;
   color: #c62828;
+}
+
+.status.warning {
+  background: #fdcc4b;
+  color: #072138;
 }
 
 .search-codes-container {

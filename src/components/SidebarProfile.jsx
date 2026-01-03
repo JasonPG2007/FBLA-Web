@@ -20,7 +20,7 @@ export default function SidebarProfile() {
 
     try {
       const response = await axios.post(
-        `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/sign-out`,
+        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/sign-out`,
         null,
         {
           headers: {
@@ -46,7 +46,7 @@ export default function SidebarProfile() {
 
     try {
       const response = await axios.get(
-        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/profile",
+        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -249,6 +249,14 @@ export default function SidebarProfile() {
                 className={isActive("/dashboard/users") ? "active" : ""}
               >
                 Users
+              </a>
+              <a
+                href="/dashboard/waiting-requests"
+                className={
+                  isActive("/dashboard/waiting-requests") ? "active" : ""
+                }
+              >
+                Requests
               </a>
             </div>
             <br />

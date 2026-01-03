@@ -9,6 +9,7 @@ import Skeleton from "react-loading-skeleton";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 export default function Header() {
   // Variables
@@ -19,12 +20,40 @@ export default function Header() {
   let [msgErrorAI, setMsgErrorAI] = useState("");
 
   // APIs
-  const API_URL_Auth = `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `https://constitutes-considered-expected-cutting.trycloudflare.com/api/CheckAuth/check-auth`;
 
   // Functions
-  const handleSearchByImage = async (e) => {
-    console.log("Searching by image...");
+  // Realtime
+  const connectToSignalR = async () => {
+    try {
+      const connection = new HubConnectionBuilder()
+        .withUrl(
+          "https://constitutes-considered-expected-cutting.trycloudflare.com/SystemHub"
+        )
+        .withAutomaticReconnect()
+        .build();
 
+      // Listen event from backend
+      // Get new lost post code
+      connection.on("ReceiveNewRequest", (data) => {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: data.message,
+              status: "success",
+            },
+          })
+        );
+      });
+
+      // Start realtime
+      await connection.start();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSearchByImage = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -57,11 +86,15 @@ export default function Header() {
     formData.append("image", file);
 
     try {
-      const res = await axios.post("http://localhost:5001/embed", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const res = await axios.post(
+        "https://fascinating-marco-thereafter-using.trycloudflare.com/embed",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (res.status === 200) {
         // Call search API
@@ -118,7 +151,7 @@ export default function Header() {
 
     try {
       const response = await axios.post(
-        `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/sign-out`,
+        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/sign-out`,
         null,
         {
           headers: {
@@ -143,7 +176,7 @@ export default function Header() {
 
     try {
       const response = await axios.get(
-        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/profile",
+        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -177,7 +210,7 @@ export default function Header() {
 
     try {
       const response = await axios.post(
-        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Post/search-image-similarity",
+        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/search-image-similarity",
         vector,
         {
           withCredentials: true,
@@ -220,6 +253,7 @@ export default function Header() {
   // UseEffect
   useEffect(() => {
     getMyProfile();
+    connectToSignalR();
   }, []);
 
   return (
@@ -351,7 +385,6 @@ export default function Header() {
             </button>
 
             <div id="dropdown" className="dropdown hidden">
-              {console.log(Cookies.get("Username"))}
               {Cookies.get("Username") ? (
                 <>
                   <a href="/me">
@@ -529,7 +562,10 @@ export default function Header() {
           >
             {resultByAI.length > 0 ? (
               resultByAI.map((item) => (
-                <div className="card card-search-by-image" key={item.postId}>
+                <div
+                  className="card card-search-by-image"
+                  key={item.post.postId}
+                >
                   {item.post.image ? (
                     <img
                       src={item.post.urlImage}

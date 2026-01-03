@@ -7,23 +7,149 @@ import rehypeSanitize from "rehype-sanitize";
 import Skeleton from "react-loading-skeleton";
 import Lottie from "lottie-react";
 import NotFoundPost from "../assets/animations/Not-Found-Post.json";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 export default function MyPost() {
   // Variables
   const [posts, setPosts] = useState([]);
   const [isInProcessing, setIsInProcessing] = useState(false);
   const [user, setUser] = useState("");
+  const [handoverStatus, setHandoverStatus] = useState({});
+  const [objectToShowPopup, setObjectToShowPopup] = useState({
+    name: "",
+    code: "",
+    postId: "",
+  });
 
   // APIs
 
   // Functions
+  // Realtime
+  const connectToSignalR = async () => {
+    try {
+      const connection = new HubConnectionBuilder()
+        .withUrl(
+          "https://constitutes-considered-expected-cutting.trycloudflare.com/SystemHub"
+        )
+        .withAutomaticReconnect()
+        .build();
+
+      // Listen event from backend
+      // Get new lost post code
+      connection.on("ReceivePostHandedOver", (data) => {
+        setPosts((prePosts) => {
+          return prePosts.filter((p) => p.postId !== data.postId);
+        });
+      });
+
+      connection.on("ReceiveStatusPost", (data) => {
+        setHandoverStatus((preStatus) => {
+          return {
+            ...preStatus,
+            [data.postId]: {
+              ...preStatus[data.postId],
+              status: data.status,
+            },
+          };
+        });
+      });
+
+      // Start realtime
+      await connection.start();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // Handle Handover to admin
+  const handleCreateRequest = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.post(
+        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/TransferRequests",
+        {
+          postId: objectToShowPopup.postId,
+          oldUserId: user.userId,
+        },
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data?.message,
+              status: "success",
+            },
+          })
+        );
+
+        document.getElementById("popup-confirm-handover").style.display =
+          "none";
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
   // Get my profile
   const getMyProfile = async () => {
     setIsInProcessing(true);
 
     try {
       const response = await axios.get(
-        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/profile",
+        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -47,7 +173,7 @@ export default function MyPost() {
 
     try {
       const response = await axios.get(
-        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Post/my-posts",
+        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/my-posts",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -109,11 +235,93 @@ export default function MyPost() {
     }
   };
 
+  // Get posts
+  const handleGetStatusHandover = async () => {
+    setIsInProcessing(true);
+
+    const results = {};
+
+    for (const post of posts) {
+      if (post.typePost === "Found") {
+        try {
+          const response = await axios.get(
+            `https://constitutes-considered-expected-cutting.trycloudflare.com/api/TransferRequests/status-request-post/${post.postId}`,
+            {
+              withCredentials: true,
+              validateStatus: (status) =>
+                status === 200 || status === 401 || status === 404,
+            }
+          );
+
+          results[post.postId] = response.data;
+        } catch (error) {
+          console.log(error);
+
+          if (error.response) {
+            const message = error.response.data?.message || "Server error";
+
+            window.dispatchEvent(
+              new CustomEvent("app-error", {
+                detail: {
+                  message: message,
+                  status: "error",
+                },
+              })
+            );
+          } else if (error.request) {
+            // If offline
+            if (!navigator.onLine) {
+              window.dispatchEvent(
+                new CustomEvent("app-error", {
+                  detail: {
+                    message:
+                      "Network error. Please check your internet connection",
+                    status: "error",
+                  },
+                })
+              );
+            } else {
+              // Server offline
+              window.dispatchEvent(
+                new CustomEvent("app-error", {
+                  detail: {
+                    message:
+                      "Server is currently unavailable. Please try again later.",
+                    status: "error",
+                  },
+                })
+              );
+            }
+          } else {
+            // Other errors
+            window.dispatchEvent(
+              new CustomEvent("app-error", {
+                detail: {
+                  message: "Something went wrong. Please try again",
+                  status: "error",
+                },
+              })
+            );
+          }
+        } finally {
+          setIsInProcessing(false);
+        }
+      }
+    }
+
+    setHandoverStatus(results);
+  };
+
   // Fetch data from API
   useEffect(() => {
     handleFetchPosts();
     getMyProfile();
+    connectToSignalR(); // Run realtime
   }, []);
+
+  useEffect(() => {
+    handleGetStatusHandover();
+  }, [posts]);
 
   useEffect(() => {
     const handleCodeToPrint = (event) => {
@@ -258,7 +466,33 @@ export default function MyPost() {
                   </div>
 
                   {/* Show Code */}
-                  <div className="show-code">Code: {post.code}</div>
+                  <div className="show-code">{post.code}</div>
+
+                  {post.typePost === "Found" && user.role !== "Admin" && (
+                    <button
+                      className="btn"
+                      style={{ width: "100%" }}
+                      onClick={() => {
+                        document.getElementById(
+                          "popup-confirm-handover"
+                        ).style.display = "flex";
+                        document.body.style.overflow = "hidden";
+
+                        setObjectToShowPopup({
+                          name: post.title,
+                          code: post.code,
+                          postId: post.postId,
+                        });
+                      }}
+                      disabled={
+                        handoverStatus[post.postId]?.status === "Pending"
+                      }
+                    >
+                      {handoverStatus[post.postId]?.status === "Pending"
+                        ? "Pending"
+                        : "Handed over to admin"}
+                    </button>
+                  )}
 
                   {user.role === "Admin" && post.typePost === "Found" && (
                     <button
@@ -302,6 +536,54 @@ export default function MyPost() {
             )}
 
             <div className="print-code" id="print-code"></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Popup confirm handover to admin */}
+      <div className="modal" id="popup-confirm-handover">
+        <div className="modal-content">
+          <h2 style={{ backgroundColor: "transparent" }}>
+            Have you handed{" "}
+            <span style={{ color: "#ec7207" }}>{objectToShowPopup.name}</span>{" "}
+            over to the admin?
+          </h2>
+
+          <div className="policy-section">
+            <p
+              style={{
+                fontSize: "16px",
+                color: "#555",
+                fontStyle: "italic",
+                marginTop: "4px",
+              }}
+            >
+              Please confirm that you have handed the {objectToShowPopup.name}{" "}
+              (code: {objectToShowPopup.code}) over to the admin.
+            </p>
+          </div>
+
+          <div style={{ marginTop: "40px" }}>
+            <button
+              className="btn"
+              onClick={() => {
+                handleCreateRequest();
+              }}
+            >
+              Confirm
+            </button>
+            <button
+              className="btn-yellow"
+              onClick={() => {
+                document.getElementById(
+                  "popup-confirm-handover"
+                ).style.display = "none";
+                document.body.style.overflow = "auto";
+              }}
+              style={{ marginLeft: "10px", cursor: "pointer" }}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </div>
