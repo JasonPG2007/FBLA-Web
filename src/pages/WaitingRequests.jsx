@@ -5,47 +5,67 @@ import dayjs from "dayjs";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { debounce } from "lodash";
 
-export default function VerificationCodes() {
+export default function WaitingRequests() {
   // Variables
-  const [codes, setCodes] = useState([]);
+  const [requests, setRequests] = useState([]);
   const [query, setQuery] = useState("");
+  const [user, setUser] = useState("");
   const [isInProcessing, setIsInProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   // APIs
 
   // Functions
+  // Get my profile
+  const getMyProfile = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.get(
+        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/profile",
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        setUser(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
   // Realtime
   const connectToSignalR = async () => {
     try {
       const connection = new HubConnectionBuilder()
         .withUrl(
-          "https://constitutes-considered-expected-cutting.trycloudflare.com/SystemHub",
-          {
-            withCredentials: true,
-          }
+          "https://constitutes-considered-expected-cutting.trycloudflare.com/SystemHub"
         )
         .withAutomaticReconnect()
         .build();
 
       // Listen event from backend
       // Get new lost post code
-      connection.on("ReceiveNewLostPostCode", (data) => {
-        setCodes((preCodes) => {
-          if (preCodes.some((p) => p.postId == data.postId)) return preCodes;
+      connection.on("ReceiveNewRequest", (data) => {
+        setRequests((preRequests) => {
+          if (preRequests.some((p) => p.requestId == data.requests.requestId))
+            return preRequests;
 
-          return [data, ...preCodes];
+          return [data.requests, ...preRequests];
         });
       });
 
-      // Get status mark post
-      connection.on("ReceiveStatusMarkPost", (data) => {
-        setCodes((preCodes) => {
-          return preCodes.map((p) => {
-            return p.postId === data.postId
-              ? { ...p, isReceived: data.isReceived }
-              : p;
-          });
+      connection.on("ReceivedStatusRequestMarked", (data) => {
+        setRequests((preRequests) => {
+          return preRequests.map((r) =>
+            r.requestId === data.requestId ? { ...r, status: data.status } : r
+          );
         });
       });
 
@@ -57,14 +77,14 @@ export default function VerificationCodes() {
   };
 
   // Get category posts
-  const searchCodes = async (query) => {
+  const searchEmail = async (query) => {
     if (query.trim() == "") return null;
 
     setIsInProcessing(true);
 
     try {
       const response = await axios.get(
-        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/search-codes?query=${query}`,
+        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/TransferRequests`,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -73,7 +93,7 @@ export default function VerificationCodes() {
       );
 
       if (response.status === 200) {
-        setCodes(response.data);
+        setRequests(response.data);
       }
     } catch (error) {
       if (error.response) {
@@ -126,16 +146,20 @@ export default function VerificationCodes() {
     }
   };
 
-  const debouncedFetch = debounce(searchCodes, 500);
+  const debouncedFetch = debounce(searchEmail, 500);
 
   // Handle mark received
-  const handleMarkReceived = async (postId) => {
+  const handleMarkReceived = async (requestId, postId) => {
     setIsInProcessing(true);
 
     try {
       const response = await axios.post(
-        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/mark-received/${postId}`,
-        null,
+        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/TransferRequests/mark-received`,
+        {
+          requestId: requestId,
+          postId: postId,
+          oldUserId: user.userId,
+        },
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -218,13 +242,13 @@ export default function VerificationCodes() {
     }
   };
 
-  // Get codes of lost items
-  const handleCodeLost = async () => {
+  // Get all requests
+  const handleGetAllRequests = async () => {
     setIsLoading(true);
 
     try {
       const response = await axios.get(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/lost-post-codes",
+        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/TransferRequests",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -236,7 +260,7 @@ export default function VerificationCodes() {
       );
 
       if (response.status === 200) {
-        setCodes(response.data);
+        setRequests(response.data);
       }
 
       if (response.status === 403) {
@@ -302,11 +326,12 @@ export default function VerificationCodes() {
 
   // Fetch data from API
   useEffect(() => {
-    handleCodeLost();
+    handleGetAllRequests();
   }, []);
 
   // Run realtime
   useEffect(() => {
+    getMyProfile();
     connectToSignalR();
   }, []);
 
@@ -356,7 +381,7 @@ export default function VerificationCodes() {
           <div className="search-codes-container">
             <input
               type="text"
-              placeholder="Search code..."
+              placeholder="Search request..."
               className="form-control-input search-codes"
               onChange={(e) => {
                 setQuery(e.target.value);
@@ -371,10 +396,10 @@ export default function VerificationCodes() {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Code</th>
-                  <th>Type</th>
+                  <th>Item</th>
                   <th>Account Name</th>
-                  <th>Date Posted</th>
+                  <th>Role</th>
+                  <th>Date Created</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
@@ -386,42 +411,67 @@ export default function VerificationCodes() {
                       <i className="fas fa-spinner fa-spin"></i>
                     </td>
                   </tr>
-                ) : codes.length > 0 ? (
-                  codes.map((item, index) => (
-                    <tr key={item.postId}>
+                ) : requests.length > 0 ? (
+                  requests.map((item, index) => (
+                    <tr key={item.requestId}>
                       <td>{index + 1}</td>
-                      <td>{item.code}</td>
-                      <td>{item.typePost}</td>
+                      <td>{item.nameItem}</td>
                       <td>
-                        {item.user.firstName} {item.user.lastName}
+                        {item.firstName} {item.lastName}
                       </td>
+                      <td>{item.role}</td>
                       <td>{dayjs(item.createdAt).format("MM/DD/YYYY")}</td>
                       <td>
                         <span
                           className={`status ${
-                            item.isReceived ? "active" : "inactive"
+                            item.status === "Pending"
+                              ? "warning"
+                              : item.status === "Cancelled"
+                              ? "inactive"
+                              : "active"
                           }`}
                         >
-                          {item.isReceived ? "Received" : "Not Receive"}
+                          {item.status}
                         </span>
                       </td>
-                      <td>
+                      <td
+                        style={{
+                          display: "flex",
+                          gap: "10px",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
                         <button
                           className="btn"
+                          style={{
+                            backgroundColor: item.isActive ? "red" : "",
+                          }}
                           type="button"
                           onClick={() => {
-                            handleMarkReceived(item.postId);
+                            handleMarkReceived(item.requestId, item.postId);
                           }}
-                          disabled={isInProcessing || item.isReceived}
+                          disabled={item.status !== "Pending"}
                         >
-                          {isInProcessing ? (
-                            <i className="fas fa-spinner fa-spin"></i>
-                          ) : item.isReceived ? (
-                            "Received"
-                          ) : (
-                            "Mark as received"
-                          )}
+                          {item.status === "Pending"
+                            ? "Mark as received"
+                            : "Confirmed"}
                         </button>
+                        {item.status === "Pending" && (
+                          <button
+                            className="btn-yellow"
+                            type="button"
+                            onClick={() => {
+                              handleCancelHandOver(item.requestId);
+                            }}
+                          >
+                            {isInProcessing ? (
+                              <i className="fas fa-spinner fa-spin"></i>
+                            ) : (
+                              "Cancel handover"
+                            )}
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))

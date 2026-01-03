@@ -15,6 +15,7 @@ import Support from "../pages/Support";
 import Dashboard from "../pages/Dashboard";
 import VerificationCodes from "../pages/VerificationCodes";
 import Users from "../pages/Users";
+import WaitingRequests from "../pages/WaitingRequests";
 
 export default function Router() {
   return (
@@ -40,6 +41,10 @@ export default function Router() {
               element={<VerificationCodes />}
             />
             <Route path="/dashboard/users" element={<Users />} />
+            <Route
+              path="/dashboard/waiting-requests"
+              element={<WaitingRequests />}
+            />
           </Routes>
         </Suspense>
       </SkeletonTheme>

@@ -24,7 +24,7 @@ export default function Home() {
 
     try {
       const response = await axios.get(
-        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Post/newest-posts",
+        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/newest-posts",
         {
           withCredentials: true,
           validateStatus: (status) =>

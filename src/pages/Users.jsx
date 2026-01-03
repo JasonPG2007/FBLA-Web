@@ -19,7 +19,7 @@ export default function Users() {
     try {
       const connection = new HubConnectionBuilder()
         .withUrl(
-          "https://subtle-lake-certificate-tiffany.trycloudflare.com/SystemHub"
+          "https://constitutes-considered-expected-cutting.trycloudflare.com/SystemHub"
         )
         .withAutomaticReconnect()
         .build();
@@ -60,7 +60,7 @@ export default function Users() {
 
     try {
       const response = await axios.get(
-        `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users/search-email?query=${query}`,
+        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/search-email?query=${query}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -130,7 +130,7 @@ export default function Users() {
 
     try {
       const response = await axios.post(
-        `https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Post/mark-received/${postId}`,
+        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/mark-received/${postId}`,
         null,
         {
           withCredentials: true,
@@ -220,7 +220,7 @@ export default function Users() {
 
     try {
       const response = await axios.get(
-        "https://subtle-lake-certificate-tiffany.trycloudflare.com/api/Users",
+        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users",
         {
           withCredentials: true,
           validateStatus: (status) =>
