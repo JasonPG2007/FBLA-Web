@@ -29,7 +29,7 @@ export default function MyPost() {
     try {
       const connection = new HubConnectionBuilder()
         .withUrl(
-          "https://constitutes-considered-expected-cutting.trycloudflare.com/SystemHub"
+          "https://coat-responsible-frank-crm.trycloudflare.com/SystemHub"
         )
         .withAutomaticReconnect()
         .build();
@@ -54,6 +54,27 @@ export default function MyPost() {
         });
       });
 
+      connection.on("ReceiveStatusPostCancelled", (data) => {
+        setHandoverStatus((preStatus) => {
+          return {
+            ...preStatus,
+            [data.postId]: {
+              ...preStatus[data.postId],
+              status: data.status,
+            },
+          };
+        });
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Your request was not approved by the admin",
+              status: "warning",
+            },
+          })
+        );
+      });
+
       // Start realtime
       await connection.start();
     } catch (error) {
@@ -67,7 +88,7 @@ export default function MyPost() {
 
     try {
       const response = await axios.post(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/TransferRequests",
+        "https://coat-responsible-frank-crm.trycloudflare.com/api/TransferRequests",
         {
           postId: objectToShowPopup.postId,
           oldUserId: user.userId,
@@ -149,7 +170,7 @@ export default function MyPost() {
 
     try {
       const response = await axios.get(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/profile",
+        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -173,7 +194,7 @@ export default function MyPost() {
 
     try {
       const response = await axios.get(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/my-posts",
+        "https://coat-responsible-frank-crm.trycloudflare.com/api/Post/my-posts",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -245,7 +266,7 @@ export default function MyPost() {
       if (post.typePost === "Found") {
         try {
           const response = await axios.get(
-            `https://constitutes-considered-expected-cutting.trycloudflare.com/api/TransferRequests/status-request-post/${post.postId}`,
+            `https://coat-responsible-frank-crm.trycloudflare.com/api/TransferRequests/status-request-post/${post.postId}`,
             {
               withCredentials: true,
               validateStatus: (status) =>
@@ -308,7 +329,7 @@ export default function MyPost() {
         }
       }
     }
-
+    console.log(isInProcessing);
     setHandoverStatus(results);
   };
 
@@ -443,9 +464,27 @@ export default function MyPost() {
 
                   {/* Content */}
                   <div className="card-text" style={{ marginBottom: "20px" }}>
-                    <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                      <a href={`/detail-post/${post.postId}`}>{post.title}</a>
-                    </h3>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                        <a href={`/detail-post/${post.postId}`}>{post.title}</a>
+                      </h3>
+                      {post.oldUserId && (
+                        <label
+                          style={{
+                            fontSize: "13px",
+                            fontWeight: 500,
+                            color: "#6b7280",
+                          }}
+                        >
+                          (Transferred)
+                        </label>
+                      )}
+                    </div>
                     <a href={`/detail-post/${post.postId}`}>
                       <ReactMarkdown
                         children={post.description}

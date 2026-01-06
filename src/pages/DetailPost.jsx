@@ -31,7 +31,7 @@ export default function DetailPost() {
 
     try {
       const response = await axios.get(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/profile",
+        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -123,7 +123,7 @@ export default function DetailPost() {
 
     try {
       const response = await axios.post(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Match",
+        "https://coat-responsible-frank-crm.trycloudflare.com/api/Match",
         payload,
         {
           withCredentials: true,
@@ -203,7 +203,7 @@ export default function DetailPost() {
 
     try {
       const response = await axios.get(
-        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/${postId}`,
+        `https://coat-responsible-frank-crm.trycloudflare.com/api/Post/${postId}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -271,7 +271,7 @@ export default function DetailPost() {
 
     try {
       const response = await axios.get(
-        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/suggest-post/${postId}`,
+        `https://coat-responsible-frank-crm.trycloudflare.com/api/Post/suggest-post/${postId}`,
         {
           withCredentials: true,
           validateStatus: (status) =>

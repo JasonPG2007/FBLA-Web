@@ -42,7 +42,7 @@ export default function Router() {
             />
             <Route path="/dashboard/users" element={<Users />} />
             <Route
-              path="/dashboard/waiting-requests"
+              path="/dashboard/transfer-requests"
               element={<WaitingRequests />}
             />
           </Routes>

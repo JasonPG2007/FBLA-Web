@@ -471,6 +471,11 @@
   .suggestion-card-text {
     height: 183px !important;
   }
+
+  /* Chart */
+  .chart-pending-found-percent {
+    flex-direction: column;
+  }
 }
 
 /* SMALL TABLET */

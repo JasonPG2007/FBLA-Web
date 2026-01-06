@@ -91,7 +91,7 @@ export default function Authentication() {
       };
 
       const response = await axios.post(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/sign-up",
+        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/sign-up",
         payload,
         {
           headers: {
@@ -104,10 +104,25 @@ export default function Authentication() {
 
       // Success
       if (response.status == 200) {
-        setIsInProcessing(false);
+        sessionStorage.removeItem("requiredSignIn");
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data,
+              status: "success",
+            },
+          })
+        );
+
+        setMsgSignIn({
+          msg: "Sign up successfully",
+          status: response.status,
+        });
+
+        window.location.href = "/";
       }
     } catch (error) {
-      setIsInProcessing(false);
       handleCloseSelectImage();
 
       if (error.response) {
@@ -139,6 +154,8 @@ export default function Authentication() {
           status: 500,
         });
       }
+    } finally {
+      setIsInProcessing(false);
     }
   };
 
@@ -167,7 +184,7 @@ export default function Authentication() {
     setIsInProcessing(true);
     try {
       const responseSignInUser = await axios.post(
-        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/sign-in`,
+        `https://coat-responsible-frank-crm.trycloudflare.com/api/Users/sign-in`,
         {
           studentId: studentIdOrEmailForSignIn.includes("@")
             ? 0
@@ -188,6 +205,7 @@ export default function Authentication() {
       // Success, then pick image
       if (responseSignInUser.status == 200) {
         handleChangeToSelectImage(e);
+
         setMsgSignIn({
           msg: responseSignInUser.data,
           status: responseSignInUser.status,
@@ -251,7 +269,7 @@ export default function Authentication() {
 
     try {
       const responseSignInUser = await axios.post(
-        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/select-image`,
+        `https://coat-responsible-frank-crm.trycloudflare.com/api/Users/select-image`,
         {
           studentId: studentIdOrEmailForSignIn.includes("@")
             ? 0
@@ -274,6 +292,15 @@ export default function Authentication() {
       if (responseSignInUser.status == 200) {
         handleChangeToSelectImage(e);
         sessionStorage.removeItem("requiredSignIn");
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: responseSignInUser.data,
+              status: "success",
+            },
+          })
+        );
 
         setMsgSignIn({
           msg: "Sign in successfully",

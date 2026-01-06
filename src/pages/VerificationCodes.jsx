@@ -20,7 +20,7 @@ export default function VerificationCodes() {
     try {
       const connection = new HubConnectionBuilder()
         .withUrl(
-          "https://constitutes-considered-expected-cutting.trycloudflare.com/SystemHub",
+          "https://coat-responsible-frank-crm.trycloudflare.com/SystemHub",
           {
             withCredentials: true,
           }
@@ -64,7 +64,7 @@ export default function VerificationCodes() {
 
     try {
       const response = await axios.get(
-        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/search-codes?query=${query}`,
+        `https://coat-responsible-frank-crm.trycloudflare.com/api/Post/search-codes?query=${query}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -134,7 +134,7 @@ export default function VerificationCodes() {
 
     try {
       const response = await axios.post(
-        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/mark-received/${postId}`,
+        `https://coat-responsible-frank-crm.trycloudflare.com/api/Post/mark-received/${postId}`,
         null,
         {
           withCredentials: true,
@@ -224,7 +224,7 @@ export default function VerificationCodes() {
 
     try {
       const response = await axios.get(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/lost-post-codes",
+        "https://coat-responsible-frank-crm.trycloudflare.com/api/Post/lost-post-codes",
         {
           withCredentials: true,
           validateStatus: (status) =>

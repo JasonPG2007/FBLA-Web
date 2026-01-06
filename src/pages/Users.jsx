@@ -19,31 +19,12 @@ export default function Users() {
     try {
       const connection = new HubConnectionBuilder()
         .withUrl(
-          "https://constitutes-considered-expected-cutting.trycloudflare.com/SystemHub"
+          "https://coat-responsible-frank-crm.trycloudflare.com/SystemHub"
         )
         .withAutomaticReconnect()
         .build();
 
       // Listen event from backend
-      // Get new lost post code
-      connection.on("ReceiveNewLostPostCode", (data) => {
-        setUsers((preCodes) => {
-          if (preCodes.some((p) => p.postId == data.postId)) return preCodes;
-
-          return [data, ...preCodes];
-        });
-      });
-
-      // Get status mark post
-      connection.on("ReceiveStatusMarkPost", (data) => {
-        setUsers((preCodes) => {
-          return preCodes.map((p) => {
-            return p.postId === data.postId
-              ? { ...p, isReceived: data.isReceived }
-              : p;
-          });
-        });
-      });
 
       // Start realtime
       await connection.start();
@@ -60,7 +41,7 @@ export default function Users() {
 
     try {
       const response = await axios.get(
-        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/search-email?query=${query}`,
+        `https://coat-responsible-frank-crm.trycloudflare.com/api/Users/search-email?query=${query}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -130,7 +111,7 @@ export default function Users() {
 
     try {
       const response = await axios.post(
-        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/mark-received/${postId}`,
+        `https://coat-responsible-frank-crm.trycloudflare.com/api/Post/mark-received/${postId}`,
         null,
         {
           withCredentials: true,
@@ -220,7 +201,7 @@ export default function Users() {
 
     try {
       const response = await axios.get(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users",
+        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users",
         {
           withCredentials: true,
           validateStatus: (status) =>
