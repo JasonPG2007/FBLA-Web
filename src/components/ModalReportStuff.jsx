@@ -473,11 +473,15 @@ export default function ModalReportStuff() {
     formData.append("image", imageFile);
 
     try {
-      const res = await axios.post("http://localhost:5001/embed", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const res = await axios.post(
+        "https://contamination-final-heated-gradually.trycloudflare.com/embed",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (res.status === 200) {
         const overlay = document.getElementById("overlay-search-image");
