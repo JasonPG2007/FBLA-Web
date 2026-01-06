@@ -20,7 +20,7 @@ export default function SidebarProfile() {
 
     try {
       const response = await axios.post(
-        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/sign-out`,
+        `https://coat-responsible-frank-crm.trycloudflare.com/api/Users/sign-out`,
         null,
         {
           headers: {
@@ -46,7 +46,7 @@ export default function SidebarProfile() {
 
     try {
       const response = await axios.get(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/profile",
+        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -251,12 +251,12 @@ export default function SidebarProfile() {
                 Users
               </a>
               <a
-                href="/dashboard/waiting-requests"
+                href="/dashboard/transfer-requests"
                 className={
-                  isActive("/dashboard/waiting-requests") ? "active" : ""
+                  isActive("/dashboard/transfer-requests") ? "active" : ""
                 }
               >
-                Requests
+                Transfer Requests
               </a>
             </div>
             <br />

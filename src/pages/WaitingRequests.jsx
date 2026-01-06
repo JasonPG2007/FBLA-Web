@@ -22,7 +22,7 @@ export default function WaitingRequests() {
 
     try {
       const response = await axios.get(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/profile",
+        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -45,7 +45,7 @@ export default function WaitingRequests() {
     try {
       const connection = new HubConnectionBuilder()
         .withUrl(
-          "https://constitutes-considered-expected-cutting.trycloudflare.com/SystemHub"
+          "https://coat-responsible-frank-crm.trycloudflare.com/SystemHub"
         )
         .withAutomaticReconnect()
         .build();
@@ -69,6 +69,14 @@ export default function WaitingRequests() {
         });
       });
 
+      connection.on("ReceivedStatusRequestCancelled", (data) => {
+        setRequests((preRequests) => {
+          return preRequests.map((r) =>
+            r.requestId === data.requestId ? { ...r, status: data.status } : r
+          );
+        });
+      });
+
       // Start realtime
       await connection.start();
     } catch (error) {
@@ -84,7 +92,7 @@ export default function WaitingRequests() {
 
     try {
       const response = await axios.get(
-        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/TransferRequests`,
+        `https://coat-responsible-frank-crm.trycloudflare.com/api/TransferRequests`,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -154,7 +162,101 @@ export default function WaitingRequests() {
 
     try {
       const response = await axios.post(
-        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/TransferRequests/mark-received`,
+        `https://coat-responsible-frank-crm.trycloudflare.com/api/TransferRequests/mark-received`,
+        {
+          requestId: requestId,
+          postId: postId,
+          oldUserId: user.userId,
+        },
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 403,
+        }
+      );
+
+      if (response.status === 200) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data?.message,
+              status: "success",
+            },
+          })
+        );
+      }
+
+      if (response.status === 403) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "You don't have permission to perform this action",
+              status: "error",
+            },
+          })
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  // Handle cancel hand over
+  const handleCancelHandOver = async (requestId, postId) => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.post(
+        `https://coat-responsible-frank-crm.trycloudflare.com/api/TransferRequests/cancel-handover`,
         {
           requestId: requestId,
           postId: postId,
@@ -248,7 +350,7 @@ export default function WaitingRequests() {
 
     try {
       const response = await axios.get(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/TransferRequests",
+        "https://coat-responsible-frank-crm.trycloudflare.com/api/TransferRequests",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -451,11 +553,17 @@ export default function WaitingRequests() {
                           onClick={() => {
                             handleMarkReceived(item.requestId, item.postId);
                           }}
-                          disabled={item.status !== "Pending"}
+                          disabled={item.status !== "Pending" || isInProcessing}
                         >
-                          {item.status === "Pending"
-                            ? "Mark as received"
-                            : "Confirmed"}
+                          {item.status === "Pending" ? (
+                            isInProcessing ? (
+                              <i className="fas fa-spinner fa-spin"></i>
+                            ) : (
+                              "Mark as received"
+                            )
+                          ) : (
+                            item.status
+                          )}
                         </button>
                         {item.status === "Pending" && (
                           <button
@@ -464,6 +572,7 @@ export default function WaitingRequests() {
                             onClick={() => {
                               handleCancelHandOver(item.requestId);
                             }}
+                            disabled={isInProcessing}
                           >
                             {isInProcessing ? (
                               <i className="fas fa-spinner fa-spin"></i>

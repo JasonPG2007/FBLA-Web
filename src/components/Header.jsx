@@ -20,7 +20,7 @@ export default function Header() {
   let [msgErrorAI, setMsgErrorAI] = useState("");
 
   // APIs
-  const API_URL_Auth = `https://constitutes-considered-expected-cutting.trycloudflare.com/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `https://coat-responsible-frank-crm.trycloudflare.com/api/CheckAuth/check-auth`;
 
   // Functions
   // Realtime
@@ -28,7 +28,7 @@ export default function Header() {
     try {
       const connection = new HubConnectionBuilder()
         .withUrl(
-          "https://constitutes-considered-expected-cutting.trycloudflare.com/SystemHub"
+          "https://coat-responsible-frank-crm.trycloudflare.com/SystemHub"
         )
         .withAutomaticReconnect()
         .build();
@@ -87,7 +87,7 @@ export default function Header() {
 
     try {
       const res = await axios.post(
-        "https://hiv-sellers-redeem-intention.trycloudflare.com/embed",
+        "https://fascinating-marco-thereafter-using.trycloudflare.com/embed",
         formData,
         {
           headers: {
@@ -151,7 +151,7 @@ export default function Header() {
 
     try {
       const response = await axios.post(
-        `https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/sign-out`,
+        `https://coat-responsible-frank-crm.trycloudflare.com/api/Users/sign-out`,
         null,
         {
           headers: {
@@ -176,7 +176,7 @@ export default function Header() {
 
     try {
       const response = await axios.get(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Users/profile",
+        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -210,7 +210,7 @@ export default function Header() {
 
     try {
       const response = await axios.post(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/search-image-similarity",
+        "https://coat-responsible-frank-crm.trycloudflare.com/api/Post/search-image-similarity",
         vector,
         {
           withCredentials: true,
@@ -390,6 +390,11 @@ export default function Header() {
                   <a href="/me">
                     <i className="fa-solid fa-user"></i> Profile
                   </a>
+                  {user.role === "Admin" && (
+                    <a href="/dashboard/overview">
+                      <i className="fa-solid fa-home"></i> Dashboard
+                    </a>
+                  )}
                   <a
                     href=""
                     onClick={(e) => {

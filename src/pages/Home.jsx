@@ -24,7 +24,7 @@ export default function Home() {
 
     try {
       const response = await axios.get(
-        "https://constitutes-considered-expected-cutting.trycloudflare.com/api/Post/newest-posts",
+        "https://coat-responsible-frank-crm.trycloudflare.com/api/Post/newest-posts",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -181,7 +181,8 @@ export default function Home() {
             >
               {" "}
               <strong>
-                <span style={{ fontSize: "25px" }}>60</span> <br /> Found Stuffs
+                <span style={{ fontSize: "25px" }}>60</span> <br /> Receive
+                Stuffs
               </strong>
             </button>
           </div>
