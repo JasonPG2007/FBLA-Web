@@ -109,14 +109,14 @@ export default function Authentication() {
         window.dispatchEvent(
           new CustomEvent("app-error", {
             detail: {
-              message: response.data,
+              message: "Signed up successfully",
               status: "success",
             },
           })
         );
 
         setMsgSignIn({
-          msg: "Sign up successfully",
+          msg: "Signed up successfully",
           status: response.status,
         });
 
@@ -296,14 +296,14 @@ export default function Authentication() {
         window.dispatchEvent(
           new CustomEvent("app-error", {
             detail: {
-              message: responseSignInUser.data,
+              message: "Signed in successfully",
               status: "success",
             },
           })
         );
 
         setMsgSignIn({
-          msg: "Sign in successfully",
+          msg: "Signed in successfully",
           status: responseSignInUser.status,
         });
 

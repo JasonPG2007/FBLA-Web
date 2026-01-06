@@ -2016,9 +2016,18 @@ th {
 
 /* Print */
 @media print {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+
   body * {
     visibility: hidden;
   }
+
   .print-code {
     visibility: visible;
     position: absolute;

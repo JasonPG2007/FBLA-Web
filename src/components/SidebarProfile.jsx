@@ -166,7 +166,7 @@ export default function SidebarProfile() {
           className={`${isActive("/my-posts") ? "active" : ""}`}
         >
           {" "}
-          <i className="fa-solid fa-sim-card"></i> My post
+          <i className="fa-solid fa-file-lines"></i> My post
         </a>
         <br />
 
@@ -229,10 +229,10 @@ export default function SidebarProfile() {
               }`}
             >
               <a
-                href="/dashboard/overview"
-                className={isActive("/dashboard/overview") ? "active" : ""}
+                href="/dashboard/report"
+                className={isActive("/dashboard/report") ? "active" : ""}
               >
-                Overview
+                Report
               </a>
 
               <a
