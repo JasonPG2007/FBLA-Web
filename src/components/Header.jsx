@@ -390,8 +390,11 @@ export default function Header() {
                   <a href="/me">
                     <i className="fa-solid fa-user"></i> Profile
                   </a>
+                  <a href="/my-posts">
+                    <i className="fa-solid fa-file-lines"></i> My Post
+                  </a>
                   {user.role === "Admin" && (
-                    <a href="/dashboard/overview">
+                    <a href="/dashboard/report">
                       <i className="fa-solid fa-home"></i> Dashboard
                     </a>
                   )}

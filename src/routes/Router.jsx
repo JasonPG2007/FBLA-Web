@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
 import About from "../pages/About";
@@ -12,7 +12,7 @@ import Notifications from "../pages/Notifications";
 import MyPost from "../pages/MyPost";
 import { SkeletonTheme } from "react-loading-skeleton";
 import Support from "../pages/Support";
-import Dashboard from "../pages/Dashboard";
+const Dashboard = lazy(() => import("../pages/Dashboard"));
 import VerificationCodes from "../pages/VerificationCodes";
 import Users from "../pages/Users";
 import WaitingRequests from "../pages/WaitingRequests";
@@ -35,7 +35,7 @@ export default function Router() {
             <Route path="/lost-and-found" element={<LostAndFound />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/my-posts" element={<MyPost />} />
-            <Route path="/dashboard/overview" element={<Dashboard />} />
+            <Route path="/dashboard/report" element={<Dashboard />} />
             <Route
               path="/dashboard/verification-codes"
               element={<VerificationCodes />}

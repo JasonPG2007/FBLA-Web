@@ -505,7 +505,7 @@ export default function MyPost() {
                   </div>
 
                   {/* Show Code */}
-                  {post.typePost === "Lost" && (
+                  {(post.typePost === "Lost" || user.role === "Admin") && (
                     <div className="show-code">{post.code}</div>
                   )}
 
@@ -575,11 +575,10 @@ export default function MyPost() {
                 </div>
               </>
             )}
-
-            <div className="print-code" id="print-code"></div>
           </div>
         </div>
       </div>
+      <div className="print-code" id="print-code"></div>
 
       {/* Popup confirm handover to admin */}
       <div className="modal" id="popup-confirm-handover">
@@ -600,7 +599,7 @@ export default function MyPost() {
               }}
             >
               Please confirm that you have handed the {objectToShowPopup.name}{" "}
-              (code: {objectToShowPopup.code}) over to the admin.
+              over to the admin.
             </p>
           </div>
 

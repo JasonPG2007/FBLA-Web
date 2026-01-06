@@ -393,7 +393,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     // Render Chart.js chart
-    import("chart.js/auto").then(({ default: Chart }) => {
+    import("chart.js/auto").then(async ({ default: Chart }) => {
       // Posts overview
       if (chartRef.current) {
         const ctx = chartRef.current.getContext("2d");
@@ -488,6 +488,9 @@ export default function Dashboard() {
 
       // Post Status Distribution
       if (chartRef2.current) {
+        const ChartDateLabels = (await import("chartjs-plugin-datalabels"))
+          .default;
+
         const ctx = chartRef2.current.getContext("2d");
         const gradient = ctx.createLinearGradient(0, 0, 0, 300);
         gradient.addColorStop(0, "rgba(236, 114, 7, 0.3)"); // Top: light blue
@@ -522,14 +525,8 @@ export default function Dashboard() {
           },
           options: {
             interaction: {
-              mode: "nearest",
+              mode: "point",
               intersect: false,
-            },
-            animation: {
-              animateRotate: true, // xoay slice khi load
-              animateScale: true, // mở rộng từ tâm ra
-              duration: 1500,
-              easing: "easeOutCubic",
             },
             responsive: true,
             maintainAspectRatio: false,
@@ -537,7 +534,6 @@ export default function Dashboard() {
               tooltip: {
                 callbacks: {
                   label: function (context) {
-                    const label = context.label; // Get label of each data set
                     const value = context.raw; // Get y value
                     const total = context.dataset.data.reduce(
                       (a, b) => a + b,
@@ -546,12 +542,25 @@ export default function Dashboard() {
                     const percent = total
                       ? ((value / total) * 100).toFixed(1)
                       : 0;
-                    return `${context.label}: ${percent}% (${value} posts)`; // Display as $xxx
+                    return `${context.label}: ${percent}% (${value} posts)`;
                   },
+                },
+              },
+              // Set up for text on each slice
+              datalabels: {
+                color: "#fff",
+                font: { weight: "bold", size: 14 },
+                formatter: (value, context) => {
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const percent = total
+                    ? ((value / total) * 100).toFixed(1)
+                    : 0;
+                  return `${percent}%`;
                 },
               },
             },
           },
+          plugins: [ChartDateLabels],
         });
       }
 
@@ -640,7 +649,13 @@ export default function Dashboard() {
       chartInstanceRef2.current?.destroy();
       chartInstanceRef3.current?.destroy();
     };
-  }, [countLostPosts, countFoundPosts, countReceivedPosts]);
+  }, [
+    countLostPosts,
+    countFoundPosts,
+    countReceivedPosts,
+    totalPendingFoundItems,
+    countFoundPostsNotReceived,
+  ]);
 
   return (
     <>
