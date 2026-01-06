@@ -57,12 +57,12 @@ export default function Header() {
     const file = e.target.files[0];
     if (!file) return;
 
-    const allowedTypes = ["image/jpeg", "image/png"];
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
     const maxSize = 5 * 1014 * 1014;
 
     // Check type of file
     if (!allowedTypes.includes(file.type)) {
-      alert("Only accept JPG or PNG files");
+      alert("Only accept JPG, PNG or WebP files");
       return;
     }
 
@@ -385,7 +385,7 @@ export default function Header() {
             </button>
 
             <div id="dropdown" className="dropdown hidden">
-              {Cookies.get("Username") ? (
+              {user.role ? (
                 <>
                   <a href="/me">
                     <i className="fa-solid fa-user"></i> Profile
