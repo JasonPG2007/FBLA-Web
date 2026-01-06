@@ -1292,22 +1292,47 @@ export default function ModalReportStuff() {
       {/* Popup notice code */}
       <div className="modal" id="popup-notice-code">
         <div className="modal-content">
-          <h2 style={{ backgroundColor: "transparent" }}>Your Code:</h2>
+          {lostOrFound === "Lost" ? (
+            <>
+              <h2 style={{ backgroundColor: "transparent" }}>Your Code:</h2>
 
-          <div className="policy-section">
-            <h3>{code || "Not available"}</h3>
-            <p
-              style={{
-                fontSize: "16px",
-                color: "#555",
-                fontStyle: "italic",
-                marginTop: "4px",
-              }}
-            >
-              This code is used to retrieve your lost item. Keep it private. You
-              can view it again in your profile post.
-            </p>
-          </div>
+              <div className="policy-section">
+                <h3>{code || "Not available"}</h3>
+                <p
+                  style={{
+                    fontSize: "16px",
+                    color: "#555",
+                    fontStyle: "italic",
+                    marginTop: "4px",
+                  }}
+                >
+                  This code is used to retrieve your lost item. Keep it private.
+                  You can view it again in your profile post.
+                </p>
+              </div>
+            </>
+          ) : (
+            user.role !== "Admin" && (
+              <>
+                <h2 style={{ backgroundColor: "transparent" }}>Instruction:</h2>
+
+                <div className="policy-section">
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      color: "#555",
+                      fontStyle: "italic",
+                      marginTop: "4px",
+                    }}
+                  >
+                    Please bring this item to the <strong>Media Center</strong>{" "}
+                    within <strong> 2 days</strong> to complete the found item
+                    process.
+                  </p>
+                </div>
+              </>
+            )
+          )}
 
           <div style={{ marginTop: "40px" }}>
             <button

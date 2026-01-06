@@ -505,7 +505,9 @@ export default function MyPost() {
                   </div>
 
                   {/* Show Code */}
-                  <div className="show-code">{post.code}</div>
+                  {post.typePost === "Lost" && (
+                    <div className="show-code">{post.code}</div>
+                  )}
 
                   {post.typePost === "Found" && user.role !== "Admin" && (
                     <button
