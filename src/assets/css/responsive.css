@@ -1,6 +1,5 @@
 /* MOBILE */
 @media (max-width: 576px) {
-
   /* Navbar */
   .bar {
     display: block;
@@ -100,7 +99,6 @@
     font-size: 14px !important;
   }
 
-
   .number-buttons button span {
     font-size: 18px !important;
   }
@@ -133,7 +131,6 @@
 
   .paddingp {
     grid-template-columns: 50% 50% !important;
-
   }
 
   .paddingp-bottom {
@@ -149,7 +146,6 @@
   .learn-how-it-works {
     margin-top: -10px !important;
   }
-
 
   .newest-post-container {
     display: grid;
@@ -273,6 +269,10 @@
     height: 200px !important;
   }
 
+  .image-placeholder {
+    height: 200px;
+  }
+
   /* Card text */
   .card-text h3 {
     font-size: 16px;
@@ -383,6 +383,10 @@
     width: 186% !important;
   }
 
+  .btn-cancel-pick-up {
+    width: unset !important;
+  }
+
   /* Authentication page */
   .form-box {
     width: 100%;
@@ -398,11 +402,95 @@
     top: 130px;
     right: 10px;
   }
+
+  /* Modal report stuff */
+  .modal-report-stuff {
+    width: 90%;
+  }
+
+  .modal-header-report-stuff .tab {
+    font-size: 18px;
+  }
+
+  .modal-header-report-stuff .active {
+    font-size: 14px;
+  }
+
+  .modal-header-report-stuff .stuff-header {
+    display: none;
+  }
+
+  .modal-content-container {
+    display: grid;
+    grid-template-columns: auto;
+    gap: 5%;
+    width: 94%;
+  }
+
+  /* Modal report */
+  .form-lost-found-container {
+    height: 65vh;
+    width: 100%;
+    overflow-y: auto;
+  }
+
+  .upload-img-container {
+    /* width: 100%; */
+  }
+
+  .upload-img-box {
+    width: 100%;
+    height: 90%;
+    margin-top: 10px;
+  }
+
+  .upload-img-box i {
+    margin-bottom: 0;
+    font-size: 30px;
+  }
+
+  .upload-img-box .label-or {
+    margin-bottom: 20px !important;
+    margin-top: 0px !important;
+  }
+
+  .stuff-information-right-container {
+    width: 106%;
+  }
+
+  .stuff-information {
+    grid-template-columns: auto;
+  }
+
+  /* Suggestion */
+  .info-user-suggestion img {
+    height: unset !important;
+  }
+
+  .info-user-suggestion span {
+    font-size: 14px;
+  }
+
+  .suggestion-card {
+    height: 400px !important;
+  }
+
+  .suggestion-card .image-placeholder {
+    height: 200px !important;
+  }
+
+  .suggestion-card-text {
+    height: 183px !important;
+  }
+
+  /* Chart */
+  .chart-pending-found-percent {
+    flex-direction: column;
+  }
 }
 
 /* SMALL TABLET */
 @media (min-width: 577px) and (max-width: 768px) {
-
   /* Home */
   .hero {
     display: grid !important;
@@ -447,7 +535,6 @@
 
   .paddingp {
     grid-template-columns: 50% 50% !important;
-
   }
 
   .paddingp-bottom {
@@ -594,11 +681,6 @@
   .btn-yellow {
     width: 186% !important;
   }
-
-
-
-
-
 }
 
 /* BIG TABLET */
@@ -619,7 +701,6 @@
 
   .paddingp {
     grid-template-columns: 50% 50% !important;
-
   }
 
   .paddingp-bottom {
@@ -800,7 +881,8 @@
 }
 
 /* SMALL LAPTOP */
-@media (min-width: 993px) and (max-width: 1200px) {}
+@media (min-width: 993px) and (max-width: 1200px) {
+}
 
 /* BIG LAPTOP (Desktop screen) */
 @media (min-width: 1200px) {

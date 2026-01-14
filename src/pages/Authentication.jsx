@@ -104,10 +104,25 @@ export default function Authentication() {
 
       // Success
       if (response.status == 200) {
-        setIsInProcessing(false);
+        sessionStorage.removeItem("requiredSignIn");
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Signed up successfully",
+              status: "success",
+            },
+          })
+        );
+
+        setMsgSignIn({
+          msg: "Signed up successfully",
+          status: response.status,
+        });
+
+        window.location.href = "/";
       }
     } catch (error) {
-      setIsInProcessing(false);
       handleCloseSelectImage();
 
       if (error.response) {
@@ -139,6 +154,8 @@ export default function Authentication() {
           status: 500,
         });
       }
+    } finally {
+      setIsInProcessing(false);
     }
   };
 
@@ -188,6 +205,7 @@ export default function Authentication() {
       // Success, then pick image
       if (responseSignInUser.status == 200) {
         handleChangeToSelectImage(e);
+
         setMsgSignIn({
           msg: responseSignInUser.data,
           status: responseSignInUser.status,
@@ -275,8 +293,17 @@ export default function Authentication() {
         handleChangeToSelectImage(e);
         sessionStorage.removeItem("requiredSignIn");
 
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Signed in successfully",
+              status: "success",
+            },
+          })
+        );
+
         setMsgSignIn({
-          msg: "Sign in successfully",
+          msg: "Signed in successfully",
           status: responseSignInUser.status,
         });
 

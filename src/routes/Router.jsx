@@ -1,4 +1,4 @@
-import { Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "../pages/Home";
 import About from "../pages/About";
@@ -12,7 +12,12 @@ import Notifications from "../pages/Notifications";
 import MyPost from "../pages/MyPost";
 import { SkeletonTheme } from "react-loading-skeleton";
 import Support from "../pages/Support";
-import Dashboard from "../pages/Dashboard";
+const Dashboard = lazy(() => import("../pages/Dashboard"));
+import ConfirmReceived from "../pages/ConfirmReceived";
+import Users from "../pages/Users";
+import TransferRequests from "../pages/TransferRequests";
+import VerificationCodes from "../pages/VerificationCodes";
+import PickUpRequest from "../pages/PickUpRequest";
 
 export default function Router() {
   return (
@@ -32,7 +37,21 @@ export default function Router() {
             <Route path="/lost-and-found" element={<LostAndFound />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/my-posts" element={<MyPost />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/verification-codes" element={<VerificationCodes />} />
+            <Route path="/dashboard/report" element={<Dashboard />} />
+            <Route
+              path="/dashboard/confirm-received"
+              element={<ConfirmReceived />}
+            />
+            <Route path="/dashboard/users" element={<Users />} />
+            <Route
+              path="/dashboard/transfer-requests"
+              element={<TransferRequests />}
+            />
+            <Route
+              path="/dashboard/pick-up-requests"
+              element={<PickUpRequest />}
+            />
           </Routes>
         </Suspense>
       </SkeletonTheme>

@@ -9,6 +9,7 @@ import Skeleton from "react-loading-skeleton";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
 export default function Header() {
   // Variables
@@ -22,18 +23,61 @@ export default function Header() {
   const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
 
   // Functions
-  const handleSearchByImage = async (e) => {
-    console.log("Searching by image...");
+  // Realtime
+  const connectToSignalR = async () => {
+    try {
+      const connection = new HubConnectionBuilder()
+        .withUrl("https://localhost:44306/SystemHub")
+        .withAutomaticReconnect()
+        .build();
 
+      // Listen event from backend
+      // Get new lost post code
+      connection.on("ReceiveNewRequest", (data) => {
+        // notice admin toast
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: data.message,
+              status: "success",
+            },
+          })
+        );
+      });
+
+      connection.on("ReceiveNewPickUpRequest", (data) => {
+        // notice admin toast
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: data.message,
+              status: "success",
+            },
+          })
+        );
+      });
+
+      // Start realtime
+      await connection.start();
+
+      return () => {
+        connection.stop(); // Ignore leaks memory
+      };
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSearchByImage = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    const allowedTypes = ["image/jpeg", "image/png"];
+    const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
     const maxSize = 5 * 1014 * 1014;
 
     // Check type of file
     if (!allowedTypes.includes(file.type)) {
-      alert("Only accept JPG or PNG files");
+      alert("Only accept JPG, PNG or WebP files");
       return;
     }
 
@@ -57,11 +101,15 @@ export default function Header() {
     formData.append("image", file);
 
     try {
-      const res = await axios.post("http://localhost:5001/embed", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const res = await axios.post(
+        "https://contamination-final-heated-gradually.trycloudflare.com/embed",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (res.status === 200) {
         // Call search API
@@ -220,6 +268,7 @@ export default function Header() {
   // UseEffect
   useEffect(() => {
     getMyProfile();
+    connectToSignalR();
   }, []);
 
   return (
@@ -269,13 +318,13 @@ export default function Header() {
         <div className="btn-with-border search-by-image">
           <div style={{ display: "flex", flexDirection: "column" }}>
             <label htmlFor="search-by-image">
-              Search by image <i className="fa-solid fa-cloud-arrow-up"></i>
+              <i className="fa-solid fa-cloud-arrow-up"></i> Search by image
             </label>
             <label htmlFor="search-by-image">
-              Super Quick <i className="fa-solid fa-bolt"></i>
+              <i className="fa-solid fa-bolt"></i> Super Quick
             </label>
             <label htmlFor="search-by-image">
-              Just 1 Click <i className="fa-solid fa-hand-pointer"></i>
+              <i className="fa-solid fa-hand-pointer"></i> Just 1 Click
             </label>
           </div>
           <input
@@ -320,7 +369,7 @@ export default function Header() {
           <div className="profile-menu">
             <button
               className="avatar-btn"
-              aria-label="button login"
+              aria-label="Sign in button"
               onClick={() => {
                 document.getElementById("dropdown").classList.toggle("hidden");
               }}
@@ -351,11 +400,19 @@ export default function Header() {
             </button>
 
             <div id="dropdown" className="dropdown hidden">
-              {Cookies.get("Username") != null ? (
+              {user.role ? (
                 <>
                   <a href="/me">
                     <i className="fa-solid fa-user"></i> Profile
                   </a>
+                  <a href="/my-posts">
+                    <i className="fa-solid fa-file-lines"></i> My Post
+                  </a>
+                  {user.role === "Admin" && (
+                    <a href="/dashboard/report">
+                      <i className="fa-solid fa-home"></i> Dashboard
+                    </a>
+                  )}
                   <a
                     href=""
                     onClick={(e) => {
@@ -374,6 +431,7 @@ export default function Header() {
             </div>
           </div>
           <button
+            aria-label="Create post button"
             style={{
               marginLeft: "60px",
             }}
@@ -392,7 +450,7 @@ export default function Header() {
               document.body.style.overflow = "hidden";
             }}
           >
-            Create a post <i className="fa-solid fa-plus"></i>
+            <i className="fa-solid fa-plus"></i> Create a post
           </button>
         </div>
       </div>
@@ -528,7 +586,10 @@ export default function Header() {
           >
             {resultByAI.length > 0 ? (
               resultByAI.map((item) => (
-                <div className="card card-search-by-image" key={item.postId}>
+                <div
+                  className="card card-search-by-image"
+                  key={item.post.postId}
+                >
                   {item.post.image ? (
                     <img
                       src={item.post.urlImage}
@@ -575,7 +636,11 @@ export default function Header() {
                     </a>
                   </div>
 
-                  <button className="btn" style={{ width: "100%" }}>
+                  <button
+                    aria-label="This is my item button"
+                    className="btn"
+                    style={{ width: "100%" }}
+                  >
                     This is my item
                   </button>
 
@@ -635,6 +700,7 @@ export default function Header() {
             )}
           </div>
           <button
+            aria-label="Close button"
             className="btn-yellow close-result-by-ai"
             style={{
               width: "90%",

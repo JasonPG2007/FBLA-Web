@@ -7,6 +7,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 export default function SidebarProfile() {
   // Variables
   let [user, setUser] = useState("");
+  const [openDashboard, setOpenDashboard] = useState(false);
   let [isInProcessing, setIsInProcessing] = useState(false);
   const isActive = (path) => location.pathname === path;
 
@@ -155,24 +156,6 @@ export default function SidebarProfile() {
         </a>
         <br />
 
-        {/* Dashboard */}
-        {user.role === "Admin" && (
-          <>
-            <a
-              href="/dashboard"
-              style={{
-                fontWeight: "400",
-                lineHeight: "50px",
-              }}
-              className={`${isActive("/dashboard") ? "active" : ""}`}
-            >
-              {" "}
-              <i className="fa-solid fa-house"></i> Dashboard
-            </a>
-            <br />
-          </>
-        )}
-
         {/* My post */}
         <a
           href="/my-posts"
@@ -183,7 +166,7 @@ export default function SidebarProfile() {
           className={`${isActive("/my-posts") ? "active" : ""}`}
         >
           {" "}
-          <i className="fa-solid fa-sim-card"></i> My post
+          <i className="fa-solid fa-file-lines"></i> My post
         </a>
         <br />
 
@@ -200,6 +183,7 @@ export default function SidebarProfile() {
           <i className="fa-solid fa-envelope"></i> Messages
         </a>
         <br />
+
         {/* Notifications */}
         <a
           href="/notifications"
@@ -213,6 +197,93 @@ export default function SidebarProfile() {
           <i className="fa-solid fa-bell"></i> Notifications
         </a>
         <br />
+
+        {/* Verification Codes */}
+        <a
+          href="/verification-codes"
+          style={{
+            fontWeight: "400",
+            lineHeight: "50px",
+          }}
+          className={`${isActive("/verification-codes") ? "active" : ""}`}
+        >
+          <i className="fa-solid fa-key"></i> Verification Codes
+        </a>
+        <br />
+
+        {/* Dashboard */}
+        {user.role === "Admin" && (
+          <>
+            <a
+              href="/dashboard"
+              style={{
+                fontWeight: "400",
+                lineHeight: "50px",
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                setOpenDashboard(!openDashboard);
+              }}
+              className={`${isActive("/dashboard") ? "active" : ""}`}
+            >
+              <i className="fa-solid fa-house"></i> Dashboard{" "}
+              <i
+                className={`fa-solid fa-chevron-down arrow ${
+                  openDashboard ? "rotate" : ""
+                }`}
+              ></i>
+            </a>
+
+            {/* Sub Menu */}
+            <div
+              className={`submenu ${
+                openDashboard || location.pathname.startsWith("/dashboard")
+                  ? "show"
+                  : ""
+              }`}
+            >
+              <a
+                href="/dashboard/report"
+                className={isActive("/dashboard/report") ? "active" : ""}
+              >
+                Report
+              </a>
+
+              <a
+                href="/dashboard/confirm-received"
+                className={
+                  isActive("/dashboard/confirm-received") ? "active" : ""
+                }
+              >
+                Confirm Received
+              </a>
+
+              <a
+                href="/dashboard/users"
+                className={isActive("/dashboard/users") ? "active" : ""}
+              >
+                Users
+              </a>
+              <a
+                href="/dashboard/transfer-requests"
+                className={
+                  isActive("/dashboard/transfer-requests") ? "active" : ""
+                }
+              >
+                Transfer Requests
+              </a>
+              <a
+                href="/dashboard/pick-up-requests"
+                className={
+                  isActive("/dashboard/pick-up-requests") ? "active" : ""
+                }
+              >
+                Pick-Up Requests
+              </a>
+            </div>
+            <br />
+          </>
+        )}
 
         {/* Log out */}
         <a

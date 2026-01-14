@@ -1,6 +1,17 @@
 import { Helmet } from "react-helmet-async";
+import axiosInstance from "../api/axiosInstance";
 
 export default function About() {
+  // APIs
+  const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
+
+  // Check authentication status and redirect if not authenticated
+  const checkAuthentication = () => {
+    axiosInstance.get(API_URL_Auth).catch((err) => {
+      console.error(err);
+    });
+  };
+
   return (
     <>
       {/* Helmet for setting the page title */}
@@ -14,15 +25,42 @@ export default function About() {
         </h1>
         <div className="content">
           <p>
-            Back 2 Me is a community-driven platform dedicated to helping people reunite with their lost belongings. By making it easy to post lost and found items, connect with others, and share listings across social media, we increase the chances of returning items to their rightful owners. Together, we turn lost moments into found connections.
+            Back 2 Me is a community-driven platform dedicated to helping people
+            reunite with their lost belongings. By making it easy to post lost
+            and found items, connect with others, and share listings across
+            social media, we increase the chances of returning items to their
+            rightful owners. Together, we turn lost moments into found
+            connections.
           </p>
           <p>
-            Through the support of our growing community, Back 2 Me creates a safe and reliable space where users can share information, communicate easily, and help one another. Every post, share, and connection brings us one step closer to reuniting lost items with their owners and strengthening the bond within our community.
+            Through the support of our growing community, Back 2 Me creates a
+            safe and reliable space where users can share information,
+            communicate easily, and help one another. Every post, share, and
+            connection brings us one step closer to reuniting lost items with
+            their owners and strengthening the bond within our community.
           </p>
         </div>
         <div className="content-bottom">
           <p></p>
-          <button className="btn-report">Report a stuff</button>
+          <button
+            aria-label="Report a stuff button"
+            className="btn"
+            onClick={() => {
+              checkAuthentication();
+
+              const modal = document.querySelector(".modal-report-stuff");
+              const overlay = document.querySelector(
+                ".modal-overlay-report-stuff"
+              );
+              modal.style.visibility = "visible";
+              modal.style.opacity = "1";
+              overlay.style.visibility = "visible";
+              overlay.style.opacity = "1";
+              document.body.style.overflow = "hidden";
+            }}
+          >
+            <i className="fa-solid fa-plus"></i> Create a post
+          </button>
         </div>
       </div>
 
@@ -36,7 +74,11 @@ export default function About() {
           <label>Lost & Found Listings</label>
           <div className="offer-content">
             <p>
-              Section allows users to easily post and browse lost or found items. By providing clear descriptions, locations, and images, our platform helps connect people quickly and accurately. Each listing brings us closer to reuniting lost belongings with their rightful owners.
+              Section allows users to easily post and browse lost or found
+              items. By providing clear descriptions, locations, and images, our
+              platform helps connect people quickly and accurately. Each listing
+              brings us closer to reuniting lost belongings with their rightful
+              owners.
             </p>
           </div>
         </div>
@@ -44,7 +86,10 @@ export default function About() {
           <label>Smart Filters</label>
           <div className="offer-content">
             <p>
-              This filter helps users quickly find relevant lost or found items by narrowing results based on category, location, date, and keywords. This feature saves time and improves accuracy, making it easier to match items and reconnect them with their owners.
+              This filter helps users quickly find relevant lost or found items
+              by narrowing results based on category, location, date, and
+              keywords. This feature saves time and improves accuracy, making it
+              easier to match items and reconnect them with their owners.
             </p>
           </div>
         </div>
@@ -52,13 +97,16 @@ export default function About() {
           <label>Interactive Map</label>
           <div className="offer-content">
             <p>
-              This maps allows users to view lost and found items based on location. By displaying listings on a real-time map, users can easily track where items were lost or found and connect with others nearby to improve the chances of recovery.
+              This maps allows users to view lost and found items based on
+              location. By displaying listings on a real-time map, users can
+              easily track where items were lost or found and connect with
+              others nearby to improve the chances of recovery.
             </p>
           </div>
         </div>
       </div>
 
-      <form onSubmit={() => { }}>
+      <form onSubmit={() => {}}>
         <div className="quick-search">
           <div className="categories">
             <div className="left">

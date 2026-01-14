@@ -182,7 +182,8 @@ export default function Home() {
             >
               {" "}
               <strong>
-                <span style={{ fontSize: "25px", color: "#072138" }}>60</span> <br /> Found Stuffs
+                <span style={{ fontSize: "25px" }}>60</span> <br /> Receive
+                Stuffs
               </strong>
             </button>
           </div>
@@ -324,7 +325,6 @@ export default function Home() {
           margin: "auto",
           marginTop: "50px",
         }}
-
         className="paddingp-bottom"
       >
         {/* Card 1 */}
@@ -508,6 +508,12 @@ export default function Home() {
             </div>
           ))
         )}
+      </div>
+
+      <div style={{ textAlign: "center", marginBottom: "100px" }}>
+        <a href="/lost-and-found" className="btn">
+          View all <i className="fa-solid fa-arrow-right"></i>
+        </a>
       </div>
 
       {/* Quick Search */}

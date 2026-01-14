@@ -13,6 +13,7 @@ import LoadingFiles from "../assets/animations/Loading_Files.json";
 export default function DetailPost() {
   // Variables
   let [isInProcessing, setIsInProcessing] = useState(false);
+  const [isShowPopup, setIsShowPopup] = useState(false);
   let [suggestPosts, setSuggestPosts] = useState([]);
   let [post, setPost] = useState("");
   let [user, setUser] = useState("");
@@ -141,11 +142,10 @@ export default function DetailPost() {
           })
         );
 
-        document.getElementById(
-          "popup-notice-verification-code"
-        ).style.display = "flex"; // Show popup notice code
+        setIsShowPopup(true); // Show popup notice code
       }
     } catch (error) {
+      console.log(error);
       if (error.response) {
         console.log(error.response.data?.message);
         const message = error.response.data?.message || "Server error";
@@ -417,7 +417,7 @@ export default function DetailPost() {
                 post.title
               )}
             </h1>
-            {user.email !== post.user?.email && (
+            {user.email !== post.user?.email ? (
               <button
                 style={{
                   marginLeft: "auto",
@@ -425,7 +425,17 @@ export default function DetailPost() {
                 }}
                 className="btn-yellow"
               >
-                Contact owner
+                <i className="fa-solid fa-comments"></i> Contact owner
+              </button>
+            ) : (
+              <button
+                style={{
+                  marginLeft: "auto",
+                  height: "max-content",
+                }}
+                className="btn-yellow"
+              >
+                <i className="fa-solid fa-pen-to-square"></i> Edit
               </button>
             )}
           </div>
@@ -435,7 +445,7 @@ export default function DetailPost() {
             style={{
               display: "grid",
               gridTemplateColumns: "auto auto",
-              gap: "200px",
+              gap: "100px",
             }}
           >
             <div
@@ -760,29 +770,12 @@ export default function DetailPost() {
                 </table>
               </div>
 
-              {/* 2 buttons */}
-              <div className="btn-card-see-more">
-                <a
-                  href="/detail-post/1"
-                  className="btn-yellow"
-                  style={{
-                    marginTop: "20px",
-                    textAlign: "center",
-                    width: "100%",
-                  }}
-                >
-                  Track <i className="fa-regular fa-bookmark"></i>
-                </a>
-                <a
-                  href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fback2me.vercel.app%2Fdetail-post%2F1&amp;quote=Check%20out%20this%20awesome%20stuff!"
-                  className="btn-with-border"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ marginTop: "20px", width: "100%" }}
-                >
-                  Found <i className="fa-solid fa-magnifying-glass"></i>
-                </a>
-              </div>
+              <button
+                className="btn-yellow"
+                style={{ marginTop: "20px", width: "100%" }}
+              >
+                <i className="fa-solid fa-magnifying-glass"></i> I Found It
+              </button>
             </div>
           </div>
 
@@ -901,55 +894,60 @@ export default function DetailPost() {
           )}
 
           {/* Popup notice code */}
-          <div className="modal" id="popup-notice-verification-code">
-            <div className="modal-content">
-              <h2 style={{ backgroundColor: "transparent" }}>Your Code:</h2>
+          {console.log(isShowPopup)}
+          {isShowPopup && (
+            <div
+              className="modal"
+              id="popup-notice-verification-code"
+              style={{ display: "flex" }}
+            >
+              <div className="modal-content">
+                <h2 style={{ backgroundColor: "transparent" }}>Your Code:</h2>
 
-              <div className="policy-section">
-                <h3>{code || "Not available"}</h3>
-                <p
-                  style={{
-                    fontSize: "16px",
-                    color: "#555",
-                    fontStyle: "italic",
-                    marginTop: "4px",
-                  }}
-                >
-                  This code is used to verify ownership when retrieving your
-                  lost item. Share it only with the person who has your item.
-                  Keep it private.
-                </p>
-              </div>
-
-              <div style={{ marginTop: "40px" }}>
-                <button
-                  className="btn"
-                  onClick={() => {
-                    document.getElementById(
-                      "popup-notice-verification-code"
-                    ).style.display = "none";
-                  }}
-                >
-                  Okay
-                </button>
-                {user.role === "Admin" && (
-                  <button
-                    className="btn-yellow"
-                    onClick={() => {
-                      window.print();
-
-                      document.getElementById(
-                        "popup-notice-code"
-                      ).style.display = "none";
+                <div className="policy-section">
+                  <h3>{code || "Not available"}</h3>
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      color: "#555",
+                      fontStyle: "italic",
+                      marginTop: "4px",
                     }}
-                    style={{ marginLeft: "10px" }}
                   >
-                    Print this code
+                    This code is used to verify ownership when retrieving your
+                    lost item. Share it only with the person who has your item.
+                    Keep it private.
+                  </p>
+                </div>
+
+                <div style={{ marginTop: "40px" }}>
+                  <button
+                    className="btn"
+                    onClick={() => {
+                      setIsShowPopup(false);
+                    }}
+                  >
+                    Okay
                   </button>
-                )}
+                  {user.role === "Admin" && (
+                    <button
+                      className="btn-yellow"
+                      onClick={() => {
+                        window.print();
+
+                        document.getElementById(
+                          "popup-notice-code"
+                        ).style.display = "none";
+                      }}
+                      style={{ marginLeft: "10px" }}
+                    >
+                      Print this code
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </>
       ) : (
         <div className="not-found">
