@@ -91,7 +91,7 @@ export default function Authentication() {
       };
 
       const response = await axios.post(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/sign-up",
+        "https://localhost:44306/api/Users/sign-up",
         payload,
         {
           headers: {
@@ -184,7 +184,7 @@ export default function Authentication() {
     setIsInProcessing(true);
     try {
       const responseSignInUser = await axios.post(
-        `https://coat-responsible-frank-crm.trycloudflare.com/api/Users/sign-in`,
+        `https://localhost:44306/api/Users/sign-in`,
         {
           studentId: studentIdOrEmailForSignIn.includes("@")
             ? 0
@@ -269,7 +269,7 @@ export default function Authentication() {
 
     try {
       const responseSignInUser = await axios.post(
-        `https://coat-responsible-frank-crm.trycloudflare.com/api/Users/select-image`,
+        `https://localhost:44306/api/Users/select-image`,
         {
           studentId: studentIdOrEmailForSignIn.includes("@")
             ? 0

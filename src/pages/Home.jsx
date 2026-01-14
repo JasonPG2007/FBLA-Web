@@ -24,7 +24,7 @@ export default function Home() {
 
     try {
       const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Post/newest-posts",
+        "https://localhost:44306/api/Post/newest-posts",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -507,6 +507,12 @@ export default function Home() {
             </div>
           ))
         )}
+      </div>
+
+      <div style={{ textAlign: "center", marginBottom: "100px" }}>
+        <a href="/lost-and-found" className="btn">
+          View all <i className="fa-solid fa-arrow-right"></i>
+        </a>
       </div>
 
       {/* Quick Search */}

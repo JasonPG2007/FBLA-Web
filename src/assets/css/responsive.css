@@ -266,6 +266,10 @@
     height: 200px !important;
   }
 
+  .image-placeholder {
+    height: 200px;
+  }
+
   /* Card text */
   .card-text h3 {
     font-size: 16px;
@@ -374,6 +378,10 @@
 
   .btn-yellow {
     width: 186% !important;
+  }
+
+  .btn-cancel-pick-up {
+    width: unset !important;
   }
 
   /* Authentication page */

@@ -18,9 +18,7 @@ export default function Users() {
   const connectToSignalR = async () => {
     try {
       const connection = new HubConnectionBuilder()
-        .withUrl(
-          "https://coat-responsible-frank-crm.trycloudflare.com/SystemHub"
-        )
+        .withUrl("https://localhost:44306/SystemHub")
         .withAutomaticReconnect()
         .build();
 
@@ -28,6 +26,10 @@ export default function Users() {
 
       // Start realtime
       await connection.start();
+
+      return () => {
+        connection.stop(); // Ignore leaks memory
+      };
     } catch (error) {
       console.log(error);
     }
@@ -41,7 +43,7 @@ export default function Users() {
 
     try {
       const response = await axios.get(
-        `https://coat-responsible-frank-crm.trycloudflare.com/api/Users/search-email?query=${query}`,
+        `https://localhost:44306/api/Users/search-email?query=${query}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -111,7 +113,7 @@ export default function Users() {
 
     try {
       const response = await axios.post(
-        `https://coat-responsible-frank-crm.trycloudflare.com/api/Post/mark-received/${postId}`,
+        `https://localhost:44306/api/Post/mark-received/${postId}`,
         null,
         {
           withCredentials: true,
@@ -200,17 +202,11 @@ export default function Users() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        }
-      );
+      const response = await axios.get("https://localhost:44306/api/Users", {
+        withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         setUsers(response.data);
@@ -310,6 +306,7 @@ export default function Users() {
   return (
     <>
       <div
+        className="sidebar-and-content"
         style={{
           display: "grid",
           gridTemplateColumns: "15% 85%",
@@ -348,7 +345,7 @@ export default function Users() {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Account Name</th>
+                  <th>User</th>
                   <th>Email</th>
                   <th>Role</th>
                   <th>Date Created</th>

@@ -20,22 +20,33 @@ export default function Header() {
   let [msgErrorAI, setMsgErrorAI] = useState("");
 
   // APIs
-  const API_URL_Auth = `https://coat-responsible-frank-crm.trycloudflare.com/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
 
   // Functions
   // Realtime
   const connectToSignalR = async () => {
     try {
       const connection = new HubConnectionBuilder()
-        .withUrl(
-          "https://coat-responsible-frank-crm.trycloudflare.com/SystemHub"
-        )
+        .withUrl("https://localhost:44306/SystemHub")
         .withAutomaticReconnect()
         .build();
 
       // Listen event from backend
       // Get new lost post code
       connection.on("ReceiveNewRequest", (data) => {
+        // notice admin toast
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: data.message,
+              status: "success",
+            },
+          })
+        );
+      });
+
+      connection.on("ReceiveNewPickUpRequest", (data) => {
+        // notice admin toast
         window.dispatchEvent(
           new CustomEvent("app-error", {
             detail: {
@@ -48,6 +59,10 @@ export default function Header() {
 
       // Start realtime
       await connection.start();
+
+      return () => {
+        connection.stop(); // Ignore leaks memory
+      };
     } catch (error) {
       console.log(error);
     }
@@ -151,7 +166,7 @@ export default function Header() {
 
     try {
       const response = await axios.post(
-        `https://coat-responsible-frank-crm.trycloudflare.com/api/Users/sign-out`,
+        `https://localhost:44306/api/Users/sign-out`,
         null,
         {
           headers: {
@@ -176,7 +191,7 @@ export default function Header() {
 
     try {
       const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/profile",
+        "https://localhost:44306/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -210,7 +225,7 @@ export default function Header() {
 
     try {
       const response = await axios.post(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Post/search-image-similarity",
+        "https://localhost:44306/api/Post/search-image-similarity",
         vector,
         {
           withCredentials: true,
@@ -303,13 +318,13 @@ export default function Header() {
         <div className="btn-with-border search-by-image">
           <div style={{ display: "flex", flexDirection: "column" }}>
             <label htmlFor="search-by-image">
-              Search by image <i className="fa-solid fa-cloud-arrow-up"></i>
+              <i className="fa-solid fa-cloud-arrow-up"></i> Search by image
             </label>
             <label htmlFor="search-by-image">
-              Super Quick <i className="fa-solid fa-bolt"></i>
+              <i className="fa-solid fa-bolt"></i> Super Quick
             </label>
             <label htmlFor="search-by-image">
-              Just 1 Click <i className="fa-solid fa-hand-pointer"></i>
+              <i className="fa-solid fa-hand-pointer"></i> Just 1 Click
             </label>
           </div>
           <input
@@ -354,7 +369,7 @@ export default function Header() {
           <div className="profile-menu">
             <button
               className="avatar-btn"
-              aria-label="button login"
+              aria-label="Sign in button"
               onClick={() => {
                 document.getElementById("dropdown").classList.toggle("hidden");
               }}
@@ -416,6 +431,7 @@ export default function Header() {
             </div>
           </div>
           <button
+            aria-label="Create post button"
             style={{
               marginLeft: "60px",
             }}
@@ -434,7 +450,7 @@ export default function Header() {
               document.body.style.overflow = "hidden";
             }}
           >
-            Create a post <i className="fa-solid fa-plus"></i>
+            <i className="fa-solid fa-plus"></i> Create a post
           </button>
         </div>
       </div>
@@ -620,7 +636,11 @@ export default function Header() {
                     </a>
                   </div>
 
-                  <button className="btn" style={{ width: "100%" }}>
+                  <button
+                    aria-label="This is my item button"
+                    className="btn"
+                    style={{ width: "100%" }}
+                  >
                     This is my item
                   </button>
 
@@ -680,6 +700,7 @@ export default function Header() {
             )}
           </div>
           <button
+            aria-label="Close button"
             className="btn-yellow close-result-by-ai"
             style={{
               width: "90%",

@@ -146,7 +146,7 @@ export default function Chat() {
           {isMoveToDetailsChat && selectedChat && (
             <div className="chat-details-footer">
               <input type="text" placeholder="Type a message..." />
-              <button>➤</button>
+              <button aria-label="Send message button">➤</button>
             </div>
           )}
         </div>

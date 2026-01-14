@@ -4,17 +4,50 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { debounce } from "lodash";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 
-export default function VerificationCodes() {
+export default function PickUpRequest() {
   // Variables
-  const [codes, setCodes] = useState([]);
+  const [requests, setRequests] = useState([]);
   const [query, setQuery] = useState("");
+  const [user, setUser] = useState("");
+  const [pickUpDate, setPickUpDate] = useState("");
+  const [objectToShowPopup, setObjectToShowPopup] = useState({
+    requestId: 0,
+    pickUpDate: "",
+  });
   const [isInProcessing, setIsInProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   // APIs
 
   // Functions
+  // Get my profile
+  const getMyProfile = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.get(
+        "https://localhost:44306/api/Users/profile",
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        setUser(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
   // Realtime
   const connectToSignalR = async () => {
     try {
@@ -26,23 +59,14 @@ export default function VerificationCodes() {
         .build();
 
       // Listen event from backend
-      // Get new lost post code
-      connection.on("ReceiveNewLostPostCode", (data) => {
-        setCodes((preCodes) => {
-          if (preCodes.some((p) => p.postId == data.postId)) return preCodes;
+      // Get new pick up request
+      connection.on("ReceiveNewPickUpRequest", (data) => {
+        console.log(data);
+        setRequests((preRequests) => {
+          if (preRequests.some((p) => p.requestId == data.request.requestId))
+            return preRequests;
 
-          return [data, ...preCodes];
-        });
-      });
-
-      // Get status mark post
-      connection.on("ReceiveStatusMarkPost", (data) => {
-        setCodes((preCodes) => {
-          return preCodes.map((p) => {
-            return p.postId === data.postId
-              ? { ...p, isReceived: data.isReceived }
-              : p;
-          });
+          return [data.request, ...preRequests];
         });
       });
 
@@ -57,85 +81,13 @@ export default function VerificationCodes() {
     }
   };
 
-  // Get category posts
-  const searchCodes = async (query) => {
-    if (query.trim() == "") return null;
-
-    setIsInProcessing(true);
-
-    try {
-      const response = await axios.get(
-        `https://localhost:44306/api/Post/search-codes?query=${query}`,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
-
-      if (response.status === 200) {
-        setCodes(response.data);
-      }
-    } catch (error) {
-      if (error.response) {
-        const message = error.response.data?.message || "Server error";
-
-        window.dispatchEvent(
-          new CustomEvent("app-error", {
-            detail: {
-              message: message,
-              status: "error",
-            },
-          })
-        );
-      } else if (error.request) {
-        // If offline
-        if (!navigator.onLine) {
-          window.dispatchEvent(
-            new CustomEvent("app-error", {
-              detail: {
-                message: "Network error. Please check your internet connection",
-                status: "error",
-              },
-            })
-          );
-        } else {
-          // Server offline
-          window.dispatchEvent(
-            new CustomEvent("app-error", {
-              detail: {
-                message:
-                  "Server is currently unavailable. Please try again later.",
-                status: "error",
-              },
-            })
-          );
-        }
-      } else {
-        // Other errors
-        window.dispatchEvent(
-          new CustomEvent("app-error", {
-            detail: {
-              message: "Something went wrong. Please try again",
-              status: "error",
-            },
-          })
-        );
-      }
-    } finally {
-      setIsInProcessing(false);
-    }
-  };
-
-  const debouncedFetch = debounce(searchCodes, 500);
-
-  // Handle mark received
-  const handleMarkReceived = async (postId) => {
+  // Handle accept time
+  const handleAcceptTime = async (requestId) => {
     setIsInProcessing(true);
 
     try {
       const response = await axios.post(
-        `https://localhost:44306/api/Post/mark-received/${postId}`,
+        `https://localhost:44306/api/PickUpRequest/accept-time/${requestId}`,
         null,
         {
           withCredentials: true,
@@ -219,13 +171,180 @@ export default function VerificationCodes() {
     }
   };
 
-  // Get codes of lost items
-  const handleCodeLost = async () => {
+  // Get category posts
+  const searchEmail = async (query) => {
+    if (query.trim() == "") return null;
+
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.get(
+        `https://localhost:44306/api/TransferRequests`,
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        setRequests(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  const debouncedFetch = debounce(searchEmail, 500);
+
+  // Handle cancel hand over
+  const handleChangeTime = async (requestId) => {
+    console.log(requestId);
+    console.log(pickUpDate);
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.post(
+        `https://localhost:44306/api/PickUpRequest/change-time/${requestId}`,
+        pickUpDate,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          validateStatus: (status) =>
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 403,
+        }
+      );
+
+      if (response.status === 200) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data?.message,
+              status: "success",
+            },
+          })
+        );
+      }
+
+      if (response.status === 403) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "You don't have permission to perform this action",
+              status: "error",
+            },
+          })
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  // Get all requests
+  const handleGetAllRequests = async () => {
     setIsLoading(true);
 
     try {
       const response = await axios.get(
-        `https://localhost:44306/api/Match/match-user`,
+        "https://localhost:44306/api/PickUpRequest",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -237,7 +356,7 @@ export default function VerificationCodes() {
       );
 
       if (response.status === 200) {
-        setCodes(response.data);
+        setRequests(response.data);
       }
 
       if (response.status === 403) {
@@ -303,11 +422,12 @@ export default function VerificationCodes() {
 
   // Fetch data from API
   useEffect(() => {
-    handleCodeLost();
+    handleGetAllRequests();
   }, []);
 
   // Run realtime
   useEffect(() => {
+    getMyProfile();
     connectToSignalR();
   }, []);
 
@@ -358,7 +478,7 @@ export default function VerificationCodes() {
           <div className="search-codes-container">
             <input
               type="text"
-              placeholder="Search code..."
+              placeholder="Search request..."
               className="form-control-input search-codes"
               onChange={(e) => {
                 setQuery(e.target.value);
@@ -373,10 +493,9 @@ export default function VerificationCodes() {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>User</th>
-                  <th>Post</th>
-                  <th>Code</th>
-                  <th>Date Posted</th>
+                  <th>Description</th>
+                  <th>Pick-Up Time</th>
+                  <th>Date Created</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
@@ -388,49 +507,80 @@ export default function VerificationCodes() {
                       <i className="fas fa-spinner fa-spin"></i>
                     </td>
                   </tr>
-                ) : codes.length > 0 ? (
-                  codes.map((item, index) => (
-                    <tr key={item.matchId}>
+                ) : requests.length > 0 ? (
+                  requests.map((item, index) => (
+                    <tr key={item.requestId}>
                       <td>{index + 1}</td>
                       <td>
-                        {item.firstNameFound} {item.lastNameFound}
+                        <ReactMarkdown
+                          children={item.description}
+                          rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                        ></ReactMarkdown>
                       </td>
-                      <td>
-                        <a
-                          href={`/detail-post/${item.postId}`}
-                          style={{ textDecoration: "underline" }}
-                        >
-                          {item.titlePost}
-                        </a>
-                      </td>
-                      <td>{item.code}</td>
-                      <td>{dayjs(item.createdAt).format("MM/DD/YYYY")}</td>
+                      <td>{dayjs(item.pickUpDate).format("h:mm:ss A")}</td>
+                      <td>{dayjs(item.createdDate).format("MM/DD/YYYY")}</td>
                       <td>
                         <span
                           className={`status ${
-                            item.isReceived ? "active" : "inactive"
+                            item.status === "Pending"
+                              ? "warning"
+                              : item.status === "Cancelled"
+                              ? "inactive"
+                              : "active"
                           }`}
                         >
-                          {item.isReceived ? "Received" : "Not Receive"}
+                          {item.status}
                         </span>
                       </td>
                       <td>
                         <button
                           className="btn"
+                          style={{
+                            backgroundColor: item.isActive ? "red" : "",
+                            marginRight: "10px",
+                          }}
                           type="button"
                           onClick={() => {
-                            handleMarkReceived(item.postId);
+                            handleAcceptTime(item.requestId);
                           }}
-                          disabled={isInProcessing || item.isReceived}
+                          disabled={item.status !== "Pending" || isInProcessing}
                         >
-                          {isInProcessing ? (
-                            <i className="fas fa-spinner fa-spin"></i>
-                          ) : item.isReceived ? (
-                            "Received"
+                          {item.status === "Pending" ? (
+                            isInProcessing ? (
+                              <i className="fas fa-spinner fa-spin"></i>
+                            ) : (
+                              "Accept"
+                            )
                           ) : (
-                            "Mark as received"
+                            item.status
                           )}
                         </button>
+                        {item.status === "Pending" && (
+                          <button
+                            className="btn-yellow"
+                            type="button"
+                            onClick={() => {
+                              document.getElementById(
+                                "popup-change-pick-up-time"
+                              ).style.display = "flex";
+                              document.body.style.overflow = "hidden";
+
+                              setObjectToShowPopup({
+                                requestId: item.requestId,
+                                pickUpDate: dayjs(item.pickUpDate).format(
+                                  "MM/DD/YYYY h:mm:ss A"
+                                ),
+                              });
+                            }}
+                            disabled={isInProcessing}
+                          >
+                            {isInProcessing ? (
+                              <i className="fas fa-spinner fa-spin"></i>
+                            ) : (
+                              "Change Time"
+                            )}
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))
@@ -441,6 +591,72 @@ export default function VerificationCodes() {
                 )}
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      {/* Popup change pick up time */}
+      <div className="modal" id="popup-change-pick-up-time">
+        <div className="modal-content">
+          <h2 style={{ backgroundColor: "transparent" }}>
+            Change pickup time for{" "}
+            <span style={{ color: "#ec7207" }}>
+              {objectToShowPopup.pickUpDate}
+            </span>
+          </h2>
+
+          <div className="policy-section">
+            <p
+              style={{
+                fontSize: "16px",
+                color: "#555",
+                fontStyle: "italic",
+                marginTop: "4px",
+              }}
+            >
+              You are changing the pickup time for <strong>this request</strong>
+              . The user will be notified of the new time once you confirm the
+              change.
+            </p>
+
+            <h3 style={{ backgroundColor: "transparent", marginTop: "10px" }}>
+              Pick-up date and time
+            </h3>
+            <input
+              type="datetime-local"
+              value={pickUpDate}
+              min={new Date().toISOString().slice(0, 16)} // Not allow to choose date in the past
+              onChange={(e) => setPickUpDate(e.target.value)}
+              className="datetime-input"
+            />
+          </div>
+
+          <div style={{ marginTop: "40px" }}>
+            <button
+              className="btn"
+              onClick={() => {
+                handleChangeTime(objectToShowPopup.requestId);
+              }}
+              disabled={isInProcessing}
+            >
+              {isInProcessing ? (
+                <i className="fas fa-spinner fa-spin"></i>
+              ) : (
+                "Change"
+              )}
+            </button>
+            <button
+              className="btn-yellow btn-cancel-pick-up"
+              onClick={() => {
+                document.getElementById(
+                  "popup-change-pick-up-time"
+                ).style.display = "none";
+                document.body.style.overflow = "auto";
+              }}
+              style={{ marginLeft: "10px", cursor: "pointer" }}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </div>

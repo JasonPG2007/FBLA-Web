@@ -71,7 +71,7 @@ export default function Profile() {
 
     try {
       const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/profile",
+        "https://localhost:44306/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -154,7 +154,7 @@ export default function Profile() {
 
     try {
       const response = await axios.put(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/update-user",
+        "https://localhost:44306/api/Users/update-user",
         formData,
         {
           withCredentials: true,
