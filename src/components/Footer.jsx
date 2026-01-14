@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="bottom">
             <a href="/">Back2Me</a>
             <p style={{ color: "#9CA3AF", marginTop: "10px" }}>
-              Copyright © 2025 Back2Me. All rights reserved
+              Copyright © 2026 Back2Me. All rights reserved
             </p>
           </div>
         </div>

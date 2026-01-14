@@ -100,18 +100,19 @@ export default function Home() {
 
       <div
         className="hero"
-        style={{ display: "grid", gridTemplateColumns: "55% 30%" }}>
+        style={{ display: "flex", justifyContent: "space-around" }}>
         <div
           className="hero-text"
-          style={{ marginTop: "83px" }}>
+          style={{ marginTop: "83px", display: "flex", flexDirection: "column", alignItems: "center" }}>
           <p
             style={{
-              fontSize: "50px",
+              fontSize: "32px",
               marginLeft: "2%",
               textAlign: "center",
               width: "100%",
-              marginTop: "100px",
+              marginTop: "18px",
               lineHeight: "1.8",
+              marginBottom: "11px",
             }}
           >
             We can help find your{" "}
@@ -145,7 +146,6 @@ export default function Home() {
               justifyContent: "center",
               alignItems: "center",
               gap: "50px",
-              marginLeft: "30%",
               background: "linear-gradient(to right, #ec7207, #fadf45ff)",
               padding: "20px 20px",
               width: "400px",
@@ -165,7 +165,7 @@ export default function Home() {
               }}
             >
               <strong>
-                <span style={{ fontSize: "25px" }}>30</span> <br /> Lost Stuffs
+                <span style={{ fontSize: "25px", color: "#072138" }}>30</span> <br /> Lost Stuffs
               </strong>
             </button>
             <p style={{ fontSize: "20px" }}>
@@ -182,7 +182,7 @@ export default function Home() {
             >
               {" "}
               <strong>
-                <span style={{ fontSize: "25px" }}>60</span> <br /> Found Stuffs
+                <span style={{ fontSize: "25px", color: "#072138" }}>60</span> <br /> Found Stuffs
               </strong>
             </button>
           </div>
@@ -209,7 +209,7 @@ export default function Home() {
           className="move-up-down"
           width="850"
           loading="lazy"
-          style={{ objectFit: "cover" }}
+          style={{ objectFit: "cover", width: "692px", marginRight: "-70px" }}
         />
       </div>
       <p

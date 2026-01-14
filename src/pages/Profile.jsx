@@ -241,6 +241,7 @@ export default function Profile() {
         <div className="profile-info-container" style={{ display: "flex", marginTop: "100px" }}>
           <div style={{ width: "100%" }}>
             <h1
+              className="my-profile-title"
               style={{
                 fontFamily: "Mochiy Pop One, sans-serif",
                 fontSize: "20px",
@@ -522,8 +523,8 @@ export default function Profile() {
                 avatarPreview
                   ? avatarPreview
                   : user?.avatar
-                  ? user.urlAvatar
-                  : "./Image/user_icon.png"
+                    ? user.urlAvatar
+                    : "./Image/user_icon.png"
               }
               alt="avatar"
               style={{
