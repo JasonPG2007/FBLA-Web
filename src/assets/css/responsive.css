@@ -63,6 +63,8 @@
   .hero {
     grid-template-rows: 55% 30% !important;
     grid-template-columns: unset !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   .hero-text {
@@ -87,10 +89,10 @@
   }
 
   .number-buttons {
-    margin-left: 6% !important;
     padding: 5px !important;
     width: 310px !important;
     margin-top: 25px !important;
+    color: #072138 !important;
   }
 
   .number-buttons button strong {
@@ -204,6 +206,7 @@
     position: absolute;
     left: 26%;
     bottom: 10px;
+    color: #072138 !important;
   }
 
   /* About us */
@@ -490,6 +493,7 @@
 @media (min-width: 577px) and (max-width: 768px) {
   /* Home */
   .hero {
+    display: grid !important;
     grid-template-rows: 55% 30% !important;
     grid-template-columns: unset !important;
   }
@@ -514,7 +518,6 @@
   }
 
   .number-buttons {
-    margin-left: 22% !important;
     padding: 0px !important;
   }
 
@@ -557,7 +560,7 @@
     gap: 20px;
     padding: 16px 24px;
     margin-bottom: 10px;
-    margin-left: -40px;
+    margin-left: -8px;
   }
 
   .title-newest-post {
@@ -588,6 +591,10 @@
     margin-top: 8%;
   }
 
+  .card-text {
+    height: 190px !important;
+  }
+
   /* Profile*/
   .profile-page {
     grid-template-rows: 50% 50% !important;
@@ -596,6 +603,83 @@
 
   .avatar {
     margin-bottom: 40px !important;
+  }
+
+  .sidebarProfile {
+    margin-left: -12px !important;
+    display: grid !important;
+    grid-template-columns: auto auto auto auto !important;
+    height: max-content !important;
+    width: 103% !important;
+    border-bottom-right-radius: unset !important;
+    border-top-right-radius: unset !important;
+    border-radius: 12px !important;
+  }
+
+  .my-profile-title {
+    font-size: 28px !important;
+  }
+
+  .sidebarProfile a {
+    line-height: 25px !important;
+  }
+
+  .sidebarProfile a:nth-last-child(1) {
+    left: 22px !important;
+  }
+
+  .side-bar-infor-user {
+    margin-top: 20px;
+    flex-direction: column !important;
+  }
+
+  .sidebar-and-content {
+    grid-template-columns: auto !important;
+    gap: 0px !important;
+  }
+
+  .user-avatar {
+    width: 55px !important;
+    height: 55px !important;
+    margin-top: -38px !important;
+  }
+
+  .big-avatar {
+    display: none !important;
+  }
+
+  .table-tr {
+    height: 40px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding-top: 20px !important;
+    margin-bottom: 60px !important;
+  }
+
+  .notify-me-section {
+    width: 350px !important;
+  }
+
+  .notify-me p {
+    font-size: 11px !important;
+    margin-right: 0 !important;
+  }
+
+  .notify-me label {
+    font-size: 11px !important;
+    margin-right: 0 !important;
+  }
+
+  .skeleton-input {
+    width: 163% !important;
+  }
+
+  .profile-info-container {
+    width: 53% !important;
+  }
+
+  .btn-yellow {
+    width: 186% !important;
   }
 }
 
@@ -637,7 +721,6 @@
   }
 
   .number-buttons {
-    margin-left: 24% !important;
     padding: 0px !important;
   }
 
@@ -651,6 +734,7 @@
 
   .hero {
     grid-template-columns: auto !important;
+    display: grid !important;
   }
 
   .hero img {
@@ -683,7 +767,7 @@
     gap: 20px;
     padding: 16px 24px;
     margin-bottom: 100px;
-    margin-left: -40px;
+    margin-left: -6px;
   }
 
   .card img {
@@ -709,6 +793,91 @@
   .offer-block {
     margin-top: 8%;
   }
+
+  /* Profile */
+  .sidebarProfile {
+    margin-left: -12px !important;
+    display: grid !important;
+    grid-template-columns: auto auto auto auto !important;
+    height: max-content !important;
+    width: 103% !important;
+    border-bottom-right-radius: unset !important;
+    border-top-right-radius: unset !important;
+    border-radius: 12px !important;
+  }
+
+  .my-profile-title {
+    font-size: 28px !important;
+  }
+
+  .sidebarProfile a {
+    line-height: 25px !important;
+  }
+
+  .sidebarProfile a:nth-last-child(1) {
+    left: 22px !important;
+  }
+
+  .side-bar-infor-user {
+    margin-top: 20px;
+    flex-direction: column !important;
+  }
+
+  .sidebar-and-content {
+    grid-template-columns: auto !important;
+    gap: 0px !important;
+  }
+
+  .user-avatar {
+    width: 55px !important;
+    height: 55px !important;
+    margin-top: -38px !important;
+  }
+
+  .big-avatar {
+    display: none !important;
+  }
+
+  .table-tr {
+    height: 40px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    padding-top: 20px !important;
+    margin-bottom: 60px !important;
+  }
+
+  .notify-me-section {
+    width: 350px !important;
+  }
+
+  .notify-me p {
+    font-size: 11px !important;
+    margin-right: 0 !important;
+  }
+
+  .notify-me label {
+    font-size: 11px !important;
+    margin-right: 0 !important;
+  }
+
+  .skeleton-input {
+    width: 163% !important;
+  }
+
+  .profile-info-container {
+    width: 53% !important;
+  }
+
+  .btn-yellow {
+    width: 186% !important;
+  }
+
+  /* Notifications */
+  .card-text {
+    height: 190px !important;
+  }
+
+
 }
 
 /* SMALL LAPTOP */
@@ -716,8 +885,9 @@
 }
 
 /* BIG LAPTOP (Desktop screen) */
-@media (min-width: 1201px) {
-  /* Code here */
+@media (min-width: 1200px) {
+
+
   .hero img {
     /* width: 90% !important; */
   }
