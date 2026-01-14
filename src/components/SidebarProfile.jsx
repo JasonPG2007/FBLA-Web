@@ -20,7 +20,7 @@ export default function SidebarProfile() {
 
     try {
       const response = await axios.post(
-        `https://coat-responsible-frank-crm.trycloudflare.com/api/Users/sign-out`,
+        `https://localhost:44306/api/Users/sign-out`,
         null,
         {
           headers: {
@@ -46,7 +46,7 @@ export default function SidebarProfile() {
 
     try {
       const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/profile",
+        "https://localhost:44306/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -183,6 +183,7 @@ export default function SidebarProfile() {
           <i className="fa-solid fa-envelope"></i> Messages
         </a>
         <br />
+
         {/* Notifications */}
         <a
           href="/notifications"
@@ -194,6 +195,19 @@ export default function SidebarProfile() {
         >
           {" "}
           <i className="fa-solid fa-bell"></i> Notifications
+        </a>
+        <br />
+
+        {/* Verification Codes */}
+        <a
+          href="/verification-codes"
+          style={{
+            fontWeight: "400",
+            lineHeight: "50px",
+          }}
+          className={`${isActive("/verification-codes") ? "active" : ""}`}
+        >
+          <i className="fa-solid fa-key"></i> Verification Codes
         </a>
         <br />
 
@@ -236,12 +250,12 @@ export default function SidebarProfile() {
               </a>
 
               <a
-                href="/dashboard/verification-codes"
+                href="/dashboard/confirm-received"
                 className={
-                  isActive("/dashboard/verification-codes") ? "active" : ""
+                  isActive("/dashboard/confirm-received") ? "active" : ""
                 }
               >
-                Verification Codes
+                Confirm Received
               </a>
 
               <a
@@ -257,6 +271,14 @@ export default function SidebarProfile() {
                 }
               >
                 Transfer Requests
+              </a>
+              <a
+                href="/dashboard/pick-up-requests"
+                className={
+                  isActive("/dashboard/pick-up-requests") ? "active" : ""
+                }
+              >
+                Pick-Up Requests
               </a>
             </div>
             <br />

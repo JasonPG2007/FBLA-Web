@@ -124,7 +124,7 @@ a {
   font-weight: 600;
   cursor: pointer;
   font-size: 16px;
-  padding: 12px 25px;
+  padding: 10px 14px;
   border-radius: 20px;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -140,7 +140,7 @@ a {
   font-weight: 600;
   cursor: pointer;
   font-size: 16px;
-  padding: 12px 25px;
+  padding: 10px 14px;
   border-radius: 20px;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -156,7 +156,7 @@ a {
   font-weight: 600;
   cursor: pointer;
   font-size: 16px;
-  padding: 12px 25px;
+  padding: 10px 14px;
   border-radius: 20px;
   margin-top: 10px;
   margin-bottom: 10px;
@@ -208,7 +208,7 @@ a {
   margin: auto;
   text-align: center;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 20px;
   background: linear-gradient(135deg, #f5f4c2, #ffbd83);
   margin-bottom: 4%;
   margin-top: 4%;
@@ -251,7 +251,7 @@ a {
   color: #fff;
   cursor: pointer;
   padding: 10px 15px;
-  border-radius: 10px;
+  border-radius: 20px;
 }
 
 .offer-block {
@@ -266,7 +266,7 @@ a {
   margin: auto;
   text-align: left;
   padding: 30px 20px;
-  border-radius: 10px;
+  border-radius: 20px;
   background: linear-gradient(135deg, #f5f4c2, #ffbd83);
   margin-bottom: 3%;
   position: relative;
@@ -277,7 +277,7 @@ a {
   margin: auto;
   text-align: left;
   padding: 30px 20px;
-  border-radius: 10px;
+  border-radius: 20px;
   background: linear-gradient(-135deg, #f5f4c2, #ffbd83);
   margin-bottom: 3%;
 }
@@ -290,7 +290,7 @@ a {
   position: absolute;
   background-color: #fc8a26;
   padding: 8px 40px;
-  border-radius: 10px;
+  border-radius: 20px;
   color: #fff;
   top: -25px;
   left: 40px;
@@ -300,7 +300,7 @@ a {
   position: absolute;
   background-color: #fc8a26;
   padding: 8px 40px;
-  border-radius: 10px;
+  border-radius: 20px;
   color: #fff;
   top: -25px;
   left: 40px;
@@ -356,7 +356,7 @@ a {
   /* font-size: 16px; */
   background-color: transparent;
   cursor: pointer;
-  padding: 10px 25px;
+  padding: 10px 14px;
   font-size: 16px;
   border: none;
 }
@@ -409,7 +409,7 @@ footer .right form {
   margin: auto;
   width: max-content;
   background-color: #fff;
-  border-radius: 8px;
+  border-radius: 20px;
   margin-top: 10px;
 }
 
@@ -424,7 +424,7 @@ footer .right input {
 footer .right button {
   font-family: "Poppins", sans-serif;
   background-color: #fdcc4b;
-  border-radius: 8px;
+  border-radius: 20px;
   padding: 0 25px;
   cursor: pointer;
   border: none;
@@ -510,7 +510,7 @@ footer .right button {
   color: #072138;
   font-weight: 500;
   right: 10px;
-  border-radius: 10px;
+  border-radius: 20px;
 }
 
 .status-post-found {
@@ -522,7 +522,7 @@ footer .right button {
   right: 10px;
   color: #fff;
   font-weight: 500;
-  border-radius: 10px;
+  border-radius: 20px;
 }
 
 .show-code {
@@ -534,7 +534,7 @@ footer .right button {
   left: 10px;
   color: #072138;
   font-weight: 500;
-  border-radius: 10px;
+  border-radius: 20px;
 }
 
 .card-text {
@@ -632,7 +632,7 @@ footer .right button {
 .detail-filter .form-control {
   appearance: none;
   border: 1px solid #072138;
-  border-radius: 8px;
+  border-radius: 20px;
   background-color: transparent;
   font-size: 16px;
   width: 230px;
@@ -645,7 +645,7 @@ footer .right button {
   background-color: #072138;
   color: #fff;
   padding: 1px 30px;
-  border-radius: 8px;
+  border-radius: 20px;
   left: 10px;
   width: max-content;
 }
@@ -667,7 +667,7 @@ footer .right button {
   width: 230px;
   cursor: pointer;
   padding: 12px 25px;
-  border-radius: 10px;
+  border-radius: 20px;
   margin-left: auto;
 }
 
@@ -966,7 +966,7 @@ footer .right button {
   display: inline-block;
   margin-top: 40px;
   padding: 10px 16px;
-  border-radius: 10px;
+  border-radius: 20px;
   background-color: #ec7207;
   color: white;
   text-decoration: none;
@@ -1010,7 +1010,7 @@ footer .right button {
   transform: translate(-50%, -50%);
   padding: 70px 20px 40px 20px;
   background-color: #fff;
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease-in-out;
 }
@@ -1080,13 +1080,13 @@ footer .right button {
 .modal-header-report-stuff {
   display: grid;
   position: fixed;
-  top: -35px;
+  top: -26px;
   left: 0;
   width: 100%;
   /* background-color: #fff; */
   grid-template-columns: auto auto;
   align-items: center;
-  border-radius: 10px;
+  border-radius: 20px;
   margin-bottom: 20px;
 }
 
@@ -1381,7 +1381,7 @@ th {
   margin-top: 100px;
   border-bottom-right-radius: 20px;
   position: relative;
-  height: 700px;
+  height: 750px;
   width: 100%;
 }
 
@@ -1557,7 +1557,7 @@ th {
 
 .pick-image-container .content-images .images img.active {
   border: 3px solid #ec7207;
-  border-radius: 10px;
+  border-radius: 20px;
   scale: 1.07;
 }
 
@@ -1642,7 +1642,7 @@ th {
   right: 25px;
   color: white;
   padding: 12px 20px;
-  border-radius: 6px;
+  border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   transform: translateX(150%);
   transition: transform 0.5s ease;
@@ -1666,7 +1666,7 @@ th {
 
 .faq-item {
   border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  border-radius: 20px;
   margin-bottom: 14px;
   padding: 14px 18px;
   background: #fff;
@@ -1767,7 +1767,7 @@ th {
   width: 300px;
   height: 400px;
   background: white;
-  border-radius: 10px;
+  border-radius: 20px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
   position: absolute;
   bottom: 70px;
@@ -2006,7 +2006,7 @@ th {
 }
 .results-container::-webkit-scrollbar-thumb {
   background: #fdcc4b;
-  border-radius: 10px;
+  border-radius: 20px;
 }
 
 /* Print code */
@@ -2014,8 +2014,88 @@ th {
   visibility: hidden;
 }
 
+/* Confirmation Form Print */
+.form-container-print {
+  width: 120%;
+  margin: auto;
+  background: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  display: none;
+  visibility: hidden;
+  margin-top: -68%;
+  margin-left: 50%;
+  /* position: absolute; */
+  /* border: 1px solid #000; */
+}
+
+.form-container-print h1 {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 5px;
+  letter-spacing: 1px;
+}
+
+.form-container-print .subtitle {
+  text-align: center;
+  font-size: 13px;
+  margin-bottom: 30px;
+}
+
+.form-container-print .section {
+  margin-bottom: 25px;
+}
+
+.form-container-print h2 {
+  font-size: 15px;
+  border-bottom: 1px solid #000;
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+}
+
+.form-container-print .row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 12px;
+}
+
+.form-container-print .field {
+  flex: 1;
+}
+
+.form-container-print .field.full {
+  flex: 100%;
+}
+
+.form-container-print span {
+  font-size: 12px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.form-container-print .box {
+  border: 1px solid #000;
+  padding: 2px 20px;
+  border-radius: 20px;
+  height: 32px;
+}
+
+.form-container-print .box.large {
+  height: 70px;
+}
+
+.form-container-print .box.signature {
+  height: 50px;
+}
+
 /* Print */
 @media print {
+  @page {
+    size: Letter landscape;
+    margin: 15mm;
+  }
+
   html,
   body {
     margin: 0;
@@ -2026,6 +2106,58 @@ th {
 
   body * {
     visibility: hidden;
+  }
+
+  .form-container-print {
+    visibility: visible;
+    display: block;
+    left: 50%;
+    top: 33%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+  }
+  .form-container-print h1 {
+    visibility: visible;
+  }
+
+  .form-container-print .subtitle {
+    visibility: visible;
+  }
+
+  .form-container-print .section {
+    visibility: visible;
+  }
+
+  .form-container-print h2 {
+    visibility: visible;
+  }
+
+  .form-container-print .row {
+    visibility: visible;
+  }
+
+  .form-container-print .field {
+    visibility: visible;
+  }
+
+  .form-container-print .field.full {
+    visibility: visible;
+  }
+
+  .form-container-print span {
+    visibility: visible;
+  }
+
+  .form-container-print .box {
+    visibility: visible;
+  }
+
+  .form-container-print .box.large {
+    visibility: visible;
+  }
+
+  .form-container-print .box.signature {
+    visibility: visible;
   }
 
   .print-code {
@@ -2053,7 +2185,7 @@ th {
 }
 
 .card-my-post {
-  margin-bottom: 90px;
+  margin-bottom: 100px;
 }
 
 /* CKEDITOR 5 */
@@ -2131,4 +2263,26 @@ th {
   position: absolute;
   right: 15px;
   bottom: 15px;
+}
+
+/* Datetime input */
+.datetime-input {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  background-color: #fff;
+  color: #333;
+  outline: none;
+  transition: border 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.datetime-input:focus {
+  border-color: #ec7207;
+  box-shadow: 0 0 5px rgba(236, 114, 7, 0.5);
+}
+
+.description-link-pick-up {
+  text-decoration: underline;
 }

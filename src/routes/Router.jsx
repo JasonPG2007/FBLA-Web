@@ -13,9 +13,11 @@ import MyPost from "../pages/MyPost";
 import { SkeletonTheme } from "react-loading-skeleton";
 import Support from "../pages/Support";
 const Dashboard = lazy(() => import("../pages/Dashboard"));
-import VerificationCodes from "../pages/VerificationCodes";
+import ConfirmReceived from "../pages/ConfirmReceived";
 import Users from "../pages/Users";
-import WaitingRequests from "../pages/WaitingRequests";
+import TransferRequests from "../pages/TransferRequests";
+import VerificationCodes from "../pages/VerificationCodes";
+import PickUpRequest from "../pages/PickUpRequest";
 
 export default function Router() {
   return (
@@ -35,15 +37,20 @@ export default function Router() {
             <Route path="/lost-and-found" element={<LostAndFound />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/my-posts" element={<MyPost />} />
+            <Route path="/verification-codes" element={<VerificationCodes />} />
             <Route path="/dashboard/report" element={<Dashboard />} />
             <Route
-              path="/dashboard/verification-codes"
-              element={<VerificationCodes />}
+              path="/dashboard/confirm-received"
+              element={<ConfirmReceived />}
             />
             <Route path="/dashboard/users" element={<Users />} />
             <Route
               path="/dashboard/transfer-requests"
-              element={<WaitingRequests />}
+              element={<TransferRequests />}
+            />
+            <Route
+              path="/dashboard/pick-up-requests"
+              element={<PickUpRequest />}
             />
           </Routes>
         </Suspense>

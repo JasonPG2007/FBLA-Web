@@ -31,7 +31,7 @@ export default function DetailPost() {
 
     try {
       const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/profile",
+        "https://localhost:44306/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -123,7 +123,7 @@ export default function DetailPost() {
 
     try {
       const response = await axios.post(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Match",
+        "https://localhost:44306/api/Match",
         payload,
         {
           withCredentials: true,
@@ -203,7 +203,7 @@ export default function DetailPost() {
 
     try {
       const response = await axios.get(
-        `https://coat-responsible-frank-crm.trycloudflare.com/api/Post/${postId}`,
+        `https://localhost:44306/api/Post/${postId}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -271,7 +271,7 @@ export default function DetailPost() {
 
     try {
       const response = await axios.get(
-        `https://coat-responsible-frank-crm.trycloudflare.com/api/Post/suggest-post/${postId}`,
+        `https://localhost:44306/api/Post/suggest-post/${postId}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -417,7 +417,7 @@ export default function DetailPost() {
                 post.title
               )}
             </h1>
-            {user.email !== post.user?.email && (
+            {user.email !== post.user?.email ? (
               <button
                 style={{
                   marginLeft: "auto",
@@ -425,7 +425,17 @@ export default function DetailPost() {
                 }}
                 className="btn-yellow"
               >
-                Contact owner
+                <i className="fa-solid fa-comments"></i> Contact owner
+              </button>
+            ) : (
+              <button
+                style={{
+                  marginLeft: "auto",
+                  height: "max-content",
+                }}
+                className="btn-yellow"
+              >
+                <i className="fa-solid fa-pen-to-square"></i> Edit
               </button>
             )}
           </div>
@@ -760,29 +770,12 @@ export default function DetailPost() {
                 </table>
               </div>
 
-              {/* 2 buttons */}
-              <div className="btn-card-see-more">
-                <a
-                  href="/detail-post/1"
-                  className="btn-yellow"
-                  style={{
-                    marginTop: "20px",
-                    textAlign: "center",
-                    width: "100%",
-                  }}
-                >
-                  Track <i className="fa-regular fa-bookmark"></i>
-                </a>
-                <a
-                  href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fback2me.vercel.app%2Fdetail-post%2F1&amp;quote=Check%20out%20this%20awesome%20stuff!"
-                  className="btn-with-border"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ marginTop: "20px", width: "100%" }}
-                >
-                  Found <i className="fa-solid fa-magnifying-glass"></i>
-                </a>
-              </div>
+              <button
+                className="btn-yellow"
+                style={{ marginTop: "20px", width: "100%" }}
+              >
+                <i className="fa-solid fa-magnifying-glass"></i> I Found It
+              </button>
             </div>
           </div>
 

@@ -8,13 +8,25 @@ import Skeleton from "react-loading-skeleton";
 import Lottie from "lottie-react";
 import NotFoundPost from "../assets/animations/Not-Found-Post.json";
 import { HubConnectionBuilder } from "@microsoft/signalr";
+import dayjs from "dayjs";
 
 export default function MyPost() {
   // Variables
   const [posts, setPosts] = useState([]);
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+
+  const defaultDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
   const [isInProcessing, setIsInProcessing] = useState(false);
   const [user, setUser] = useState("");
+  const [pickUpDate, setPickUpDate] = useState("");
+  const [matchedPosts, setMatchedPosts] = useState({});
   const [handoverStatus, setHandoverStatus] = useState({});
+  const [pickUpStatus, setPickUpStatus] = useState({});
   const [objectToShowPopup, setObjectToShowPopup] = useState({
     name: "",
     code: "",
@@ -28,14 +40,12 @@ export default function MyPost() {
   const connectToSignalR = async () => {
     try {
       const connection = new HubConnectionBuilder()
-        .withUrl(
-          "https://coat-responsible-frank-crm.trycloudflare.com/SystemHub"
-        )
+        .withUrl("https://localhost:44306/SystemHub")
         .withAutomaticReconnect()
         .build();
 
       // Listen event from backend
-      // Get new lost post code
+      // Remove post was transferred
       connection.on("ReceivePostHandedOver", (data) => {
         setPosts((prePosts) => {
           return prePosts.filter((p) => p.postId !== data.postId);
@@ -44,6 +54,18 @@ export default function MyPost() {
 
       connection.on("ReceiveStatusPost", (data) => {
         setHandoverStatus((preStatus) => {
+          return {
+            ...preStatus,
+            [data.postId]: {
+              ...preStatus[data.postId],
+              status: data.status,
+            },
+          };
+        });
+      });
+
+      connection.on("ReceiveStatusPickUpPost", (data) => {
+        setPickUpStatus((preStatus) => {
           return {
             ...preStatus,
             [data.postId]: {
@@ -77,6 +99,10 @@ export default function MyPost() {
 
       // Start realtime
       await connection.start();
+
+      return () => {
+        connection.stop(); // Ignore leaks memory
+      };
     } catch (error) {
       console.log(error);
     }
@@ -88,7 +114,7 @@ export default function MyPost() {
 
     try {
       const response = await axios.post(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/TransferRequests",
+        "https://localhost:44306/api/TransferRequests",
         {
           postId: objectToShowPopup.postId,
           oldUserId: user.userId,
@@ -164,13 +190,35 @@ export default function MyPost() {
     }
   };
 
-  // Get my profile
-  const getMyProfile = async () => {
+  // Handle notify admin pick up
+  const handleNotifyAdminPickUp = async () => {
     setIsInProcessing(true);
 
+    if (pickUpDate.trim() === "") {
+      window.dispatchEvent(
+        new CustomEvent("app-error", {
+          detail: {
+            message: "Please select the date and time for pick-up",
+            status: "warning",
+          },
+        })
+      );
+      setIsInProcessing(false);
+      return;
+    }
+
+    const payload = {
+      requestId: 0,
+      postId: objectToShowPopup.postId,
+      description: "n",
+      pickUpDate: pickUpDate,
+      status: "Pending",
+    };
+
     try {
-      const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/profile",
+      const response = await axios.post(
+        "https://localhost:44306/api/PickUpRequest",
+        payload,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -179,22 +227,81 @@ export default function MyPost() {
       );
 
       if (response.status === 200) {
-        setUser(response.data);
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data?.message,
+              status: "success",
+            },
+          })
+        );
+
+        document.getElementById("popup-pick-up").style.display = "none";
+        setPickUpDate("");
       }
     } catch (error) {
-      console.log(error);
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
     } finally {
       setIsInProcessing(false);
     }
   };
 
-  // Get posts
-  const handleFetchPosts = async () => {
+  // Handle sort by status
+  const handleSortByStatus = async (status) => {
+    if (status === "All") {
+      handleFetchPosts();
+      return;
+    }
+
     setIsInProcessing(true);
 
     try {
       const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Post/my-posts",
+        `https://localhost:44306/api/Post/sort-status?typePost=${status}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -256,17 +363,180 @@ export default function MyPost() {
     }
   };
 
+  // Handle check matched post
+  const handleCheckMatchedPost = async (postId) => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.get(
+        `https://localhost:44306/api/Match/check-matched-post/${postId}`,
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        setMatchedPosts((prev) => ({
+          ...prev,
+          [postId]: response.status === 200,
+        }));
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  // Get my profile
+  const getMyProfile = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.get(
+        "https://localhost:44306/api/Users/profile",
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        setUser(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
   // Get posts
+  const handleFetchPosts = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.get(
+        "https://localhost:44306/api/Post/my-posts",
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        }
+      );
+
+      if (response.status === 200) {
+        setPosts(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  // Get status hand over
   const handleGetStatusHandover = async () => {
     setIsInProcessing(true);
 
     const results = {};
 
-    for (const post of posts) {
-      if (post.typePost === "Found") {
-        try {
+    try {
+      for (const post of posts) {
+        if (post.typePost === "Found") {
           const response = await axios.get(
-            `https://coat-responsible-frank-crm.trycloudflare.com/api/TransferRequests/status-request-post/${post.postId}`,
+            `https://localhost:44306/api/TransferRequests/status-request-post/${post.postId}`,
             {
               withCredentials: true,
               validateStatus: (status) =>
@@ -275,62 +545,137 @@ export default function MyPost() {
           );
 
           results[post.postId] = response.data;
-        } catch (error) {
-          console.log(error);
-
-          if (error.response) {
-            const message = error.response.data?.message || "Server error";
-
-            window.dispatchEvent(
-              new CustomEvent("app-error", {
-                detail: {
-                  message: message,
-                  status: "error",
-                },
-              })
-            );
-          } else if (error.request) {
-            // If offline
-            if (!navigator.onLine) {
-              window.dispatchEvent(
-                new CustomEvent("app-error", {
-                  detail: {
-                    message:
-                      "Network error. Please check your internet connection",
-                    status: "error",
-                  },
-                })
-              );
-            } else {
-              // Server offline
-              window.dispatchEvent(
-                new CustomEvent("app-error", {
-                  detail: {
-                    message:
-                      "Server is currently unavailable. Please try again later.",
-                    status: "error",
-                  },
-                })
-              );
-            }
-          } else {
-            // Other errors
-            window.dispatchEvent(
-              new CustomEvent("app-error", {
-                detail: {
-                  message: "Something went wrong. Please try again",
-                  status: "error",
-                },
-              })
-            );
-          }
-        } finally {
-          setIsInProcessing(false);
         }
       }
+
+      setHandoverStatus(results);
+    } catch (error) {
+      console.log(error);
+
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
     }
-    console.log(isInProcessing);
-    setHandoverStatus(results);
+  };
+
+  // Get status pick up
+  const handleGetStatusPickUp = async () => {
+    setIsInProcessing(true);
+
+    const results = {};
+
+    try {
+      for (const post of posts) {
+        if (post.typePost === "Lost") {
+          const response = await axios.get(
+            `https://localhost:44306/api/PickUpRequest/check-status-post-pick-up/${post.postId}`,
+            {
+              withCredentials: true,
+              validateStatus: (status) =>
+                status === 200 || status === 401 || status === 404,
+            }
+          );
+
+          results[post.postId] = response.data;
+        }
+      }
+
+      setPickUpStatus(results);
+    } catch (error) {
+      console.log(error);
+
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          })
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            })
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            })
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          })
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
   };
 
   // Fetch data from API
@@ -342,6 +687,8 @@ export default function MyPost() {
 
   useEffect(() => {
     handleGetStatusHandover();
+    handleGetStatusPickUp();
+    posts.forEach((post) => handleCheckMatchedPost(post.postId));
   }, [posts]);
 
   useEffect(() => {
@@ -399,7 +746,15 @@ export default function MyPost() {
             >
               Status
             </p>
-            <input type="radio" name="status" id="search-all" defaultChecked />{" "}
+            <input
+              type="radio"
+              name="status"
+              onChange={() => {
+                handleSortByStatus("All");
+              }}
+              id="search-all"
+              defaultChecked
+            />{" "}
             <label htmlFor="search-all" id="search-all-label">
               <strong>All</strong>
             </label>
@@ -407,12 +762,22 @@ export default function MyPost() {
               type="radio"
               name="status"
               id="lost"
+              onChange={() => {
+                handleSortByStatus("Lost");
+              }}
               style={{ marginLeft: "20px", marginTop: "25px" }}
             />{" "}
             <label htmlFor="lost" style={{ marginRight: "25px" }}>
               <strong>Lost</strong>
             </label>
-            <input type="radio" name="status" id="found" />{" "}
+            <input
+              type="radio"
+              name="status"
+              onChange={() => {
+                handleSortByStatus("Found");
+              }}
+              id="found"
+            />{" "}
             <label htmlFor="found">
               <strong>Found</strong>
             </label>
@@ -473,10 +838,22 @@ export default function MyPost() {
                       <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
                         <a href={`/detail-post/${post.postId}`}>{post.title}</a>
                       </h3>
+                      {post.isReceived && (
+                        <label
+                          style={{
+                            // fontSize: "13px",
+                            fontWeight: 500,
+                            color: "green",
+                          }}
+                        >
+                          (<i className="fa-solid fa-circle-check"></i>{" "}
+                          Received)
+                        </label>
+                      )}
                       {post.oldUserId && (
                         <label
                           style={{
-                            fontSize: "13px",
+                            // fontSize: "13px",
                             fontWeight: 500,
                             color: "#6b7280",
                           }}
@@ -506,7 +883,74 @@ export default function MyPost() {
 
                   {/* Show Code */}
                   {(post.typePost === "Lost" || user.role === "Admin") && (
-                    <div className="show-code">{post.code}</div>
+                    <>
+                      <div className="show-code">{post.code}</div>
+                      {matchedPosts[post.postId] && !post.isReceived && (
+                        <button
+                          className="btn-yellow"
+                          style={{ width: "100%" }}
+                          onClick={() => {
+                            document.getElementById(
+                              "popup-pick-up"
+                            ).style.display = "flex";
+                            document.body.style.overflow = "hidden";
+
+                            setObjectToShowPopup({
+                              name: post.title,
+                              code: post.code,
+                              postId: post.postId,
+                            });
+                          }}
+                          disabled={
+                            pickUpStatus[post.postId]?.status === "Pending" ||
+                            pickUpStatus[post.postId]?.status === "Confirmed"
+                          }
+                        >
+                          {pickUpStatus[post.postId]?.status === "Pending" ? (
+                            <>
+                              <i className="fa-solid fa-user-clock"></i>{" "}
+                              Awaiting admin
+                            </>
+                          ) : pickUpStatus[post.postId]?.status ===
+                            "Confirmed" ? (
+                            <>
+                              <i className="fa-solid fa-circle-check"></i>{" "}
+                              You're good to go!
+                            </>
+                          ) : pickUpStatus[post.postId]?.status ===
+                            "Reschedule" ? (
+                            <>
+                              <div>
+                                <i className="fa-solid fa-calendar"></i>{" "}
+                                Rescheduled to{" "}
+                                {dayjs(
+                                  pickUpStatus[post.postId].pickUpDate
+                                ).format("MM/DD/YYYY h:mm:ss A")}
+                              </div>
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <button className="btn">Accept</button>
+                                <button className="btn-with-border">
+                                  I'll pick it later!
+                                </button>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <i className="fa-solid fa-person-walking"></i> I'm
+                              picking up
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </>
                   )}
 
                   {post.typePost === "Found" && user.role !== "Admin" && (
@@ -529,9 +973,17 @@ export default function MyPost() {
                         handoverStatus[post.postId]?.status === "Pending"
                       }
                     >
-                      {handoverStatus[post.postId]?.status === "Pending"
-                        ? "Pending"
-                        : "Handed over to admin"}
+                      {handoverStatus[post.postId]?.status === "Pending" ? (
+                        <>
+                          <i className="fa-solid fa-user-clock"></i> Awaiting
+                          admin
+                        </>
+                      ) : (
+                        <>
+                          <i className="fa-solid fa-arrow-right-to-bracket"></i>{" "}
+                          Handed over to admin
+                        </>
+                      )}
                     </button>
                   )}
 
@@ -618,6 +1070,70 @@ export default function MyPost() {
                 document.getElementById(
                   "popup-confirm-handover"
                 ).style.display = "none";
+                document.body.style.overflow = "auto";
+              }}
+              style={{ marginLeft: "10px", cursor: "pointer" }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Popup pick up */}
+      <div className="modal" id="popup-pick-up">
+        <div className="modal-content">
+          <h2 style={{ backgroundColor: "transparent" }}>
+            Ready to pick up{" "}
+            <span style={{ color: "#ec7207" }}>{objectToShowPopup.name}</span>{" "}
+            today?
+          </h2>
+
+          <div className="policy-section">
+            <p
+              style={{
+                fontSize: "16px",
+                color: "#555",
+                fontStyle: "italic",
+                marginTop: "4px",
+              }}
+            >
+              By confirming, you will notify the admin that you are preparing to
+              pick up the {objectToShowPopup.name}. You will wait for the admin
+              to approve the time, and our system will notify you when you can
+              start picking up.
+            </p>
+
+            <h3 style={{ backgroundColor: "transparent", marginTop: "10px" }}>
+              Pick-up date and time
+            </h3>
+            <input
+              type="datetime-local"
+              value={pickUpDate}
+              min={new Date().toISOString().slice(0, 16)} // Not allow to choose date in the past
+              onChange={(e) => setPickUpDate(e.target.value)}
+              className="datetime-input"
+            />
+          </div>
+
+          <div style={{ marginTop: "40px" }}>
+            <button
+              className="btn"
+              onClick={() => {
+                handleNotifyAdminPickUp();
+              }}
+              disabled={isInProcessing}
+            >
+              {isInProcessing ? (
+                <i className="fas fa-spinner fa-spin"></i>
+              ) : (
+                "I'm picking up"
+              )}
+            </button>
+            <button
+              className="btn-yellow btn-cancel-pick-up"
+              onClick={() => {
+                document.getElementById("popup-pick-up").style.display = "none";
                 document.body.style.overflow = "auto";
               }}
               style={{ marginLeft: "10px", cursor: "pointer" }}

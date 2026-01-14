@@ -2,97 +2,81 @@ import { useEffect, useState } from "react";
 import SidebarProfile from "../components/SidebarProfile";
 import axios from "axios";
 import dayjs from "dayjs";
+import ReactMarkdown from "react-markdown";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { debounce } from "lodash";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 
-export default function WaitingRequests() {
+export default function ConfirmReceived() {
   // Variables
-  const [requests, setRequests] = useState([]);
+  const [codes, setCodes] = useState([]);
+  const [objectToPrint, setObjectToPrint] = useState(null);
   const [query, setQuery] = useState("");
-  const [user, setUser] = useState("");
   const [isInProcessing, setIsInProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   // APIs
 
   // Functions
-  // Get my profile
-  const getMyProfile = async () => {
-    setIsInProcessing(true);
-
-    try {
-      const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
-
-      if (response.status === 200) {
-        setUser(response.data);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsInProcessing(false);
-    }
+  // Remove tags in html when printing
+  const stripHtml = (html = "") => {
+    const div = document.createElement("div");
+    div.innerHTML = html; // remove tags (apply that tag to real html)
+    return div.textContent || div.innerText || "";
   };
 
   // Realtime
   const connectToSignalR = async () => {
     try {
       const connection = new HubConnectionBuilder()
-        .withUrl(
-          "https://coat-responsible-frank-crm.trycloudflare.com/SystemHub"
-        )
+        .withUrl("https://localhost:44306/SystemHub", {
+          withCredentials: true,
+        })
         .withAutomaticReconnect()
         .build();
 
       // Listen event from backend
       // Get new lost post code
-      connection.on("ReceiveNewRequest", (data) => {
-        setRequests((preRequests) => {
-          if (preRequests.some((p) => p.requestId == data.requests.requestId))
-            return preRequests;
+      connection.on("ReceiveNewLostPostCode", (data) => {
+        setCodes((preCodes) => {
+          if (preCodes.some((p) => p.postId == data.postId)) return preCodes;
 
-          return [data.requests, ...preRequests];
+          return [data, ...preCodes];
         });
       });
 
-      connection.on("ReceivedStatusRequestMarked", (data) => {
-        setRequests((preRequests) => {
-          return preRequests.map((r) =>
-            r.requestId === data.requestId ? { ...r, status: data.status } : r
-          );
-        });
-      });
-
-      connection.on("ReceivedStatusRequestCancelled", (data) => {
-        setRequests((preRequests) => {
-          return preRequests.map((r) =>
-            r.requestId === data.requestId ? { ...r, status: data.status } : r
-          );
+      // Get status mark post
+      connection.on("ReceiveStatusMarkPost", (data) => {
+        setCodes((preCodes) => {
+          return preCodes.map((p) => {
+            return p.postId === data.postId
+              ? { ...p, isReceived: data.isReceived }
+              : p;
+          });
         });
       });
 
       // Start realtime
       await connection.start();
+
+      return () => {
+        connection.stop(); // Ignore leaks memory
+      };
     } catch (error) {
       console.log(error);
     }
   };
 
   // Get category posts
-  const searchEmail = async (query) => {
+  const searchCodes = async (query) => {
     if (query.trim() == "") return null;
 
     setIsInProcessing(true);
 
     try {
       const response = await axios.get(
-        `https://coat-responsible-frank-crm.trycloudflare.com/api/TransferRequests`,
+        `https://localhost:44306/api/Post/search-codes?query=${query}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -101,7 +85,7 @@ export default function WaitingRequests() {
       );
 
       if (response.status === 200) {
-        setRequests(response.data);
+        setCodes(response.data);
       }
     } catch (error) {
       if (error.response) {
@@ -154,20 +138,16 @@ export default function WaitingRequests() {
     }
   };
 
-  const debouncedFetch = debounce(searchEmail, 500);
+  const debouncedFetch = debounce(searchCodes, 500);
 
   // Handle mark received
-  const handleMarkReceived = async (requestId, postId) => {
+  const handleMarkReceived = async (postId) => {
     setIsInProcessing(true);
 
     try {
       const response = await axios.post(
-        `https://coat-responsible-frank-crm.trycloudflare.com/api/TransferRequests/mark-received`,
-        {
-          requestId: requestId,
-          postId: postId,
-          oldUserId: user.userId,
-        },
+        `https://localhost:44306/api/Post/mark-received/${postId}`,
+        null,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -250,107 +230,13 @@ export default function WaitingRequests() {
     }
   };
 
-  // Handle cancel hand over
-  const handleCancelHandOver = async (requestId, postId) => {
-    setIsInProcessing(true);
-
-    try {
-      const response = await axios.post(
-        `https://coat-responsible-frank-crm.trycloudflare.com/api/TransferRequests/cancel-handover`,
-        {
-          requestId: requestId,
-          postId: postId,
-          oldUserId: user.userId,
-        },
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        }
-      );
-
-      if (response.status === 200) {
-        window.dispatchEvent(
-          new CustomEvent("app-error", {
-            detail: {
-              message: response.data?.message,
-              status: "success",
-            },
-          })
-        );
-      }
-
-      if (response.status === 403) {
-        window.dispatchEvent(
-          new CustomEvent("app-error", {
-            detail: {
-              message: "You don't have permission to perform this action",
-              status: "error",
-            },
-          })
-        );
-      }
-    } catch (error) {
-      if (error.response) {
-        const message = error.response.data?.message || "Server error";
-
-        window.dispatchEvent(
-          new CustomEvent("app-error", {
-            detail: {
-              message: message,
-              status: "error",
-            },
-          })
-        );
-      } else if (error.request) {
-        // If offline
-        if (!navigator.onLine) {
-          window.dispatchEvent(
-            new CustomEvent("app-error", {
-              detail: {
-                message: "Network error. Please check your internet connection",
-                status: "error",
-              },
-            })
-          );
-        } else {
-          // Server offline
-          window.dispatchEvent(
-            new CustomEvent("app-error", {
-              detail: {
-                message:
-                  "Server is currently unavailable. Please try again later.",
-                status: "error",
-              },
-            })
-          );
-        }
-      } else {
-        // Other errors
-        window.dispatchEvent(
-          new CustomEvent("app-error", {
-            detail: {
-              message: "Something went wrong. Please try again",
-              status: "error",
-            },
-          })
-        );
-      }
-    } finally {
-      setIsInProcessing(false);
-    }
-  };
-
-  // Get all requests
-  const handleGetAllRequests = async () => {
+  // Get codes of lost items
+  const handleCodeLost = async () => {
     setIsLoading(true);
 
     try {
       const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/TransferRequests",
+        "https://localhost:44306/api/Post/lost-post-codes",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -362,7 +248,7 @@ export default function WaitingRequests() {
       );
 
       if (response.status === 200) {
-        setRequests(response.data);
+        setCodes(response.data);
       }
 
       if (response.status === 403) {
@@ -428,12 +314,18 @@ export default function WaitingRequests() {
 
   // Fetch data from API
   useEffect(() => {
-    handleGetAllRequests();
+    handleCodeLost();
   }, []);
+
+  // Print confirmation form
+  useEffect(() => {
+    if (objectToPrint) {
+      window.print();
+    }
+  }, [objectToPrint]);
 
   // Run realtime
   useEffect(() => {
-    getMyProfile();
     connectToSignalR();
   }, []);
 
@@ -460,6 +352,7 @@ export default function WaitingRequests() {
   return (
     <>
       <div
+        className="sidebar-and-content"
         style={{
           display: "grid",
           gridTemplateColumns: "15% 85%",
@@ -483,7 +376,7 @@ export default function WaitingRequests() {
           <div className="search-codes-container">
             <input
               type="text"
-              placeholder="Search request..."
+              placeholder="Search code..."
               className="form-control-input search-codes"
               onChange={(e) => {
                 setQuery(e.target.value);
@@ -498,10 +391,11 @@ export default function WaitingRequests() {
               <thead>
                 <tr>
                   <th>#</th>
+                  <th>Code</th>
                   <th>Item</th>
-                  <th>Account Name</th>
-                  <th>Role</th>
-                  <th>Date Created</th>
+                  <th>Type</th>
+                  <th>User</th>
+                  <th>Date Posted</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
@@ -513,74 +407,61 @@ export default function WaitingRequests() {
                       <i className="fas fa-spinner fa-spin"></i>
                     </td>
                   </tr>
-                ) : requests.length > 0 ? (
-                  requests.map((item, index) => (
-                    <tr key={item.requestId}>
+                ) : codes.length > 0 ? (
+                  codes.map((item, index) => (
+                    <tr key={item.postId}>
                       <td>{index + 1}</td>
-                      <td>{item.nameItem}</td>
+                      <td>{item.code}</td>
                       <td>
-                        {item.firstName} {item.lastName}
+                        <a
+                          href={`/detail-post/${item.postId}`}
+                          style={{ textDecoration: "underline" }}
+                        >
+                          {item.title}
+                        </a>
                       </td>
-                      <td>{item.role}</td>
+                      <td>{item.typePost}</td>
+                      <td>
+                        {item.user.firstName} {item.user.lastName}
+                      </td>
                       <td>{dayjs(item.createdAt).format("MM/DD/YYYY")}</td>
                       <td>
                         <span
                           className={`status ${
-                            item.status === "Pending"
-                              ? "warning"
-                              : item.status === "Cancelled"
-                              ? "inactive"
-                              : "active"
+                            item.isReceived ? "active" : "inactive"
                           }`}
                         >
-                          {item.status}
+                          {item.isReceived ? "Received" : "Not Receive"}
                         </span>
                       </td>
-                      <td
-                        style={{
-                          display: "flex",
-                          gap: "10px",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
+                      <td>
                         <button
                           className="btn"
-                          style={{
-                            backgroundColor: item.isActive ? "red" : "",
-                          }}
                           type="button"
                           onClick={() => {
-                            handleMarkReceived(item.requestId, item.postId);
+                            // handleMarkReceived(item.postId);
+                            setObjectToPrint({
+                              fullName: `${item.user.firstName} ${item.user.lastName}`,
+                              code: `${item.code}`,
+                              studentId: `${item.studentId}`,
+                              description: item.description,
+                              itemName: item.title,
+                              categoryName: item.categoryName,
+                              email: item.user?.email,
+                              postId: item.postId,
+                              typePost: item.typePost,
+                            });
                           }}
-                          disabled={item.status !== "Pending" || isInProcessing}
+                          disabled={isInProcessing || item.isReceived}
                         >
-                          {item.status === "Pending" ? (
-                            isInProcessing ? (
-                              <i className="fas fa-spinner fa-spin"></i>
-                            ) : (
-                              "Mark as received"
-                            )
+                          {isInProcessing ? (
+                            <i className="fas fa-spinner fa-spin"></i>
+                          ) : item.isReceived ? (
+                            "Received"
                           ) : (
-                            item.status
+                            "Mark as received"
                           )}
                         </button>
-                        {item.status === "Pending" && (
-                          <button
-                            className="btn-yellow"
-                            type="button"
-                            onClick={() => {
-                              handleCancelHandOver(item.requestId);
-                            }}
-                            disabled={isInProcessing}
-                          >
-                            {isInProcessing ? (
-                              <i className="fas fa-spinner fa-spin"></i>
-                            ) : (
-                              "Cancel handover"
-                            )}
-                          </button>
-                        )}
                       </td>
                     </tr>
                   ))
@@ -591,6 +472,106 @@ export default function WaitingRequests() {
                 )}
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      {/* Form to print */}
+      <div className="form-container-print">
+        <h1>RECEIPT CONFIRMATION</h1>
+        <p className="subtitle">Confirmation of Lost Item Pickup</p>
+
+        <div className="section">
+          <h2>User Information</h2>
+
+          <div className="row">
+            <div className="field">
+              <span>Full Name:</span>
+              <div className="box">{objectToPrint?.fullName}</div>
+            </div>
+            <div className="field">
+              <span>Student ID:</span>
+              <div className="box">{objectToPrint?.studentId}</div>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="field">
+              <span>Email:</span>
+              <div className="box">{objectToPrint?.email}</div>
+            </div>
+            <div className="field">
+              <span>Code to Get Item:</span>
+              <div className="box">{objectToPrint?.code}</div>
+            </div>
+          </div>
+        </div>
+
+        <div className="section">
+          <h2>Item Information</h2>
+
+          <div className="row">
+            <div className="field">
+              <span>Item Name:</span>
+              <div className="box">{objectToPrint?.itemName}</div>
+            </div>
+            <div className="field">
+              <span>Category:</span>
+              <div className="box">{objectToPrint?.categoryName}</div>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="field">
+              <span>Post ID:</span>
+              <div className="box">{objectToPrint?.postId}</div>
+            </div>
+            <div className="field">
+              <span>Status:</span>
+              <div className="box">{objectToPrint?.typePost}</div>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="field full">
+              <span>Description:</span>
+              <div className="box large">
+                {objectToPrint?.description ? (
+                  stripHtml(objectToPrint?.description)
+                ) : (
+                  <span
+                    style={{
+                      fontSize: "unset",
+                      fontWeight: "unset",
+                      fontStyle: "italic",
+                      padding: "5px 0",
+                    }}
+                  >
+                    (The user did not provide this information)
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="section">
+          <h2>Confirmation</h2>
+          <p className="confirm-text">
+            I confirm that I have received the lost item described above.
+          </p>
+
+          <div className="row">
+            <div className="field">
+              <span>Signature:</span>
+              <div className="box signature"></div>
+            </div>
+            <div className="field">
+              <span>Date:</span>
+              <div className="box">
+                {dayjs(new Date()).format("MM/DD/YYYY")}
+              </div>
+            </div>
           </div>
         </div>
       </div>

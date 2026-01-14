@@ -30,7 +30,7 @@ export default function Dashboard() {
 
     try {
       const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Post/lost-posts-per-month",
+        "https://localhost:44306/api/Post/lost-posts-per-month",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -119,7 +119,7 @@ export default function Dashboard() {
 
     try {
       const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Post/found-posts-per-month",
+        "https://localhost:44306/api/Post/found-posts-per-month",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -208,7 +208,7 @@ export default function Dashboard() {
 
     try {
       const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Post/received-posts-per-month",
+        "https://localhost:44306/api/Post/received-posts-per-month",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -297,7 +297,7 @@ export default function Dashboard() {
 
     try {
       const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Post/found-posts-not-received",
+        "https://localhost:44306/api/Post/found-posts-not-received",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -699,7 +699,7 @@ export default function Dashboard() {
               </p>
             </div>
 
-            {/* Chart pipe */}
+            {/* Chart bar */}
             <div className="" style={{ marginTop: "40px" }}>
               {isInProcessing ? (
                 <Skeleton
@@ -714,10 +714,18 @@ export default function Dashboard() {
                     </p>
                   }
                 >
-                  <canvas
-                    ref={chartRef}
-                    style={{ width: "100%", height: "400px" }}
-                  ></canvas>
+                  <div
+                    style={{
+                      boxShadow: "0 10px 15px rgba(0, 0, 0, 0.2)",
+                      borderRadius: "20px",
+                      padding: "20px",
+                    }}
+                  >
+                    <canvas
+                      ref={chartRef}
+                      style={{ width: "100%", height: "400px" }}
+                    ></canvas>
+                  </div>
                 </Suspense>
               )}
             </div>
@@ -767,10 +775,18 @@ export default function Dashboard() {
                       </p>
                     }
                   >
-                    <canvas
-                      ref={chartRef2}
-                      style={{ width: "100%", height: "400px" }}
-                    ></canvas>
+                    <div
+                      style={{
+                        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.8)",
+                        borderRadius: "20px",
+                        padding: "20px",
+                      }}
+                    >
+                      <canvas
+                        ref={chartRef2}
+                        style={{ width: "100%", height: "400px" }}
+                      ></canvas>
+                    </div>
                   </Suspense>
                 )}
               </div>
@@ -794,7 +810,7 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              {/* Chart pipe */}
+              {/* Chart line */}
               <div className="" style={{ marginTop: "40px" }}>
                 {isInProcessing ? (
                   <Skeleton
@@ -811,10 +827,18 @@ export default function Dashboard() {
                       </p>
                     }
                   >
-                    <canvas
-                      ref={chartRef3}
-                      style={{ width: "100%", height: "400px" }}
-                    ></canvas>
+                    <div
+                      style={{
+                        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.8)",
+                        borderRadius: "20px",
+                        padding: "20px",
+                      }}
+                    >
+                      <canvas
+                        ref={chartRef3}
+                        style={{ width: "100%", height: "400px" }}
+                      ></canvas>
+                    </div>
                   </Suspense>
                 )}
               </div>

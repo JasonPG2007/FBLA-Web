@@ -29,7 +29,7 @@ export default function ModalReportStuff() {
   let [isSearchingCategory, setIsSearchingCategory] = useState(false);
 
   // APIs
-  const API_URL_Auth = `https://coat-responsible-frank-crm.trycloudflare.com/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
 
   // Functions
   // Close modal report
@@ -49,7 +49,7 @@ export default function ModalReportStuff() {
 
     try {
       const response = await axios.get(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Users/profile",
+        "https://localhost:44306/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -124,7 +124,7 @@ export default function ModalReportStuff() {
 
     try {
       const response = await axios.get(
-        `https://coat-responsible-frank-crm.trycloudflare.com/api/CategoryPost/search-category-post?query=${query}`,
+        `https://localhost:44306/api/CategoryPost/search-category-post?query=${query}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -297,7 +297,7 @@ export default function ModalReportStuff() {
 
     try {
       const response = await axios.post(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Post",
+        "https://localhost:44306/api/Post",
         formData,
         {
           withCredentials: true,
@@ -395,7 +395,7 @@ export default function ModalReportStuff() {
 
     try {
       const response = await axios.post(
-        "https://coat-responsible-frank-crm.trycloudflare.com/api/Post",
+        "https://localhost:44306/api/Post",
         formData,
         {
           withCredentials: true,
@@ -692,6 +692,7 @@ export default function ModalReportStuff() {
                           onChange={handleImageLostChange}
                         />
                         <button
+                          aria-label="Cancel image button"
                           className="btn-with-border"
                           type="button"
                           onClick={() => {
@@ -760,9 +761,9 @@ export default function ModalReportStuff() {
                               value={categoryLost}
                               required
                               onChange={(e) => {
+                                setCategoryPostId("");
                                 if (e.target.value.trim() == "") {
                                   setIsTypeSearch(false);
-                                  setCategoryPostId("");
                                 } else {
                                   setIsTypeSearch(true);
                                 }
@@ -798,7 +799,7 @@ export default function ModalReportStuff() {
                                     >
                                       <button
                                         className="list-group-item"
-                                        aria-label="category names"
+                                        aria-label="Choose category name button"
                                         type="button"
                                       >
                                         {item.categoryPostName}
@@ -821,7 +822,7 @@ export default function ModalReportStuff() {
                           </div>
                           <br />
 
-                          {/* Last Seen Date */}
+                          {/* Description */}
                           <label
                             htmlFor="description"
                             style={{ fontWeight: "600" }}
@@ -943,6 +944,12 @@ export default function ModalReportStuff() {
                     {/* Btn Post */}
                     <button
                       className="btn"
+                      aria-label="Post lost item button"
+                      title={
+                        categoryPostId === "" && isTypeSearch
+                          ? "Please select a category name"
+                          : ""
+                      }
                       style={{ width: "100%" }}
                       disabled={
                         user.role && !isInProcessing
@@ -950,7 +957,10 @@ export default function ModalReportStuff() {
                           : true
                       }
                     >
-                      Post Lost Item
+                      Post Lost Item{" "}
+                      {categoryPostId === "" &&
+                        isTypeSearch &&
+                        "(Please select a category name)"}
                     </button>
                   </div>
                 </div>
@@ -1018,6 +1028,7 @@ export default function ModalReportStuff() {
                           onChange={handleImageFoundChange}
                         />
                         <button
+                          aria-label="Remove image button"
                           className="btn-with-border"
                           type="button"
                           onClick={() => {
@@ -1086,9 +1097,9 @@ export default function ModalReportStuff() {
                               value={categoryLost}
                               required
                               onChange={(e) => {
+                                setCategoryPostId("");
                                 if (e.target.value.trim() == "") {
                                   setIsTypeSearch(false);
-                                  setCategoryPostId("");
                                 } else {
                                   setIsTypeSearch(true);
                                 }
@@ -1124,7 +1135,7 @@ export default function ModalReportStuff() {
                                     >
                                       <button
                                         className="list-group-item"
-                                        aria-label="category names"
+                                        aria-label="Choose category name button"
                                         type="button"
                                       >
                                         {item.categoryPostName}
@@ -1270,13 +1281,22 @@ export default function ModalReportStuff() {
                     <button
                       className="btn"
                       style={{ width: "100%" }}
+                      title={
+                        categoryPostId === "" && isTypeSearch
+                          ? "Please select a category name"
+                          : ""
+                      }
                       disabled={
                         user.role && !isInProcessing
                           ? handleValidateFormReport()
                           : true
                       }
+                      aria-label="Post found item button"
                     >
-                      Post Found Item
+                      Post Found Item{" "}
+                      {categoryPostId === "" &&
+                        isTypeSearch &&
+                        "(Please select a category name)"}
                     </button>
                   </div>
                 </div>
@@ -1341,6 +1361,7 @@ export default function ModalReportStuff() {
                 document.getElementById("popup-notice-code").style.display =
                   "none";
               }}
+              aria-label="Okay button"
             >
               Okay
             </button>
@@ -1355,6 +1376,7 @@ export default function ModalReportStuff() {
                   );
                 }}
                 style={{ marginLeft: "10px", cursor: "pointer" }}
+                aria-label="Print this code button"
               >
                 Print this code
               </button>
