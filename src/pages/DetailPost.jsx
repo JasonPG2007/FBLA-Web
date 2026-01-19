@@ -13,6 +13,7 @@ import LoadingFiles from "../assets/animations/Loading_Files.json";
 export default function DetailPost() {
   // Variables
   let [isInProcessing, setIsInProcessing] = useState(false);
+  let [isRequesting, setIsRequesting] = useState(false);
   const [isShowPopup, setIsShowPopup] = useState(false);
   let [suggestPosts, setSuggestPosts] = useState([]);
   let [post, setPost] = useState("");
@@ -31,12 +32,12 @@ export default function DetailPost() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -52,7 +53,7 @@ export default function DetailPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -63,7 +64,7 @@ export default function DetailPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -74,7 +75,7 @@ export default function DetailPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -85,7 +86,7 @@ export default function DetailPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -109,7 +110,7 @@ export default function DetailPost() {
 
   // Handle match post
   const handleMatchPost = async (lostPostId, foundPostId) => {
-    setIsInProcessing(true);
+    setIsRequesting(true);
 
     const codeIntoDb = getRandomString(6);
     setCode(codeIntoDb);
@@ -123,13 +124,13 @@ export default function DetailPost() {
 
     try {
       const response = await axios.post(
-        "https://localhost:44306/api/Match",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Match",
         payload,
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -139,15 +140,13 @@ export default function DetailPost() {
               message: "Match request sent successfully",
               status: "success",
             },
-          })
+          }),
         );
 
         setIsShowPopup(true); // Show popup notice code
       }
     } catch (error) {
-      console.log(error);
       if (error.response) {
-        console.log(error.response.data?.message);
         const message = error.response.data?.message || "Server error";
 
         window.dispatchEvent(
@@ -156,7 +155,7 @@ export default function DetailPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -167,7 +166,7 @@ export default function DetailPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -178,7 +177,7 @@ export default function DetailPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -189,11 +188,11 @@ export default function DetailPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsRequesting(false);
     }
   };
 
@@ -203,12 +202,12 @@ export default function DetailPost() {
 
     try {
       const response = await axios.get(
-        `https://localhost:44306/api/Post/${postId}`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/${postId}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -224,7 +223,7 @@ export default function DetailPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -235,7 +234,7 @@ export default function DetailPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -246,7 +245,7 @@ export default function DetailPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -257,7 +256,7 @@ export default function DetailPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -271,12 +270,12 @@ export default function DetailPost() {
 
     try {
       const response = await axios.get(
-        `https://localhost:44306/api/Post/suggest-post/${postId}`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/suggest-post/${postId}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -292,7 +291,7 @@ export default function DetailPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -303,7 +302,7 @@ export default function DetailPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -314,7 +313,7 @@ export default function DetailPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -325,7 +324,7 @@ export default function DetailPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -424,6 +423,29 @@ export default function DetailPost() {
                   height: "max-content",
                 }}
                 className="btn-yellow"
+                onClick={() => {
+                  const chatPopup = document.getElementById("chatPopup");
+                  chatPopup.style.display = "flex";
+
+                  const temporaryMsg = {
+                    message:
+                      post.typePost === "Lost"
+                        ? `Hello, I'm contacting you regarding your lost item post: "${post.title}" (Post ID: ${post.postId}). I may have information related to it.`
+                        : `Hello, I'm contacting you regarding your found item post: "${post.title}" (Post ID: ${post.postId}). I think this item might belong to me.`,
+                    urlAvatar: post.user.urlAvatar,
+                    firstName: post.user.firstName,
+                    lastName: post.user.lastName,
+                    userIdSend: user.userId,
+                    userIdReceive: post.user.userId,
+                    postId: post.postId,
+                  };
+
+                  window.dispatchEvent(
+                    new CustomEvent("contact-owner", {
+                      detail: temporaryMsg,
+                    }),
+                  );
+                }}
               >
                 <i className="fa-solid fa-comments"></i> Contact owner
               </button>
@@ -517,7 +539,7 @@ export default function DetailPost() {
                       handleChangeImage(
                         document.getElementById("big-img").src,
                         document.getElementById("img-1").src,
-                        "img-1"
+                        "img-1",
                       )
                     }
                   ></img>
@@ -553,7 +575,7 @@ export default function DetailPost() {
                       handleChangeImage(
                         document.getElementById("big-img").src,
                         document.getElementById("img-1").src,
-                        "img-1"
+                        "img-1",
                       )
                     }
                   ></img>
@@ -589,7 +611,7 @@ export default function DetailPost() {
                       handleChangeImage(
                         document.getElementById("big-img").src,
                         document.getElementById("img-1").src,
-                        "img-1"
+                        "img-1",
                       )
                     }
                   ></img>
@@ -779,122 +801,129 @@ export default function DetailPost() {
             </div>
           </div>
 
-          {post.typePost === "Lost" && user.email === post.user?.email && (
-            <div className="suggestion-lost-item">
-              <div className="suggestion-content">
-                <h1 style={{ textAlign: "center" }}>
-                  Suggestions for your lost item
-                </h1>
-                <div
-                  className="suggestion-card-container"
-                  style={{
-                    gridTemplateColumns: suggestPosts.length === 0 && "unset",
-                  }}
-                >
-                  {suggestPosts.length > 0 ? (
-                    suggestPosts.map((suggestion) => (
-                      <div
-                        className="card suggestion-card"
-                        key={suggestion.postId}
-                      >
-                        {suggestion.image ? (
-                          <img
-                            src={suggestion.urlImage}
-                            alt="picture of stuff"
-                            style={{
-                              width: "100%",
-                              height: "300px",
-                              objectFit: "cover",
-                              backgroundColor: "white",
-                            }}
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="image-placeholder">
-                            <i className="icon-image"></i>
-                            <span>No image</span>
-                          </div>
-                        )}
+          {post.typePost === "Lost" &&
+            user.email === post.user?.email &&
+            !post.isReceived && (
+              <div className="suggestion-lost-item">
+                <div className="suggestion-content">
+                  <h1 style={{ textAlign: "center" }}>
+                    Suggestions for your lost item
+                  </h1>
+                  <div
+                    className="suggestion-card-container"
+                    style={{
+                      gridTemplateColumns: suggestPosts.length === 0 && "unset",
+                    }}
+                  >
+                    {suggestPosts.length > 0 ? (
+                      suggestPosts.map((suggestion) => (
                         <div
-                          className="card-text suggestion-card-text"
-                          style={{ marginBottom: "40px" }}
+                          className="card suggestion-card"
+                          key={suggestion.postId}
                         >
-                          <div className="info-user-suggestion">
+                          {suggestion.image ? (
                             <img
-                              src={suggestion.user.urlAvatar}
-                              alt="avatar"
-                              width={50}
-                              height={50}
-                              style={{ borderRadius: "50%" }}
+                              src={suggestion.urlImage}
+                              alt="picture of stuff"
+                              style={{
+                                width: "100%",
+                                height: "300px",
+                                objectFit: "cover",
+                                backgroundColor: "white",
+                              }}
                               loading="lazy"
                             />
-                            <span>{`${suggestion.user.firstName} ${suggestion.user.lastName}`}</span>
-                          </div>
-                          <h3
-                            style={{ fontWeight: "700", marginBottom: "10px" }}
-                          >
-                            <a href={`/detail-post/${suggestion.postId}`}>
-                              {suggestion.title}
-                            </a>
-                          </h3>
-                          <a href={`/detail-post/${suggestion.postId}`}>
-                            <ReactMarkdown
-                              children={suggestion.description}
-                              rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                            ></ReactMarkdown>
-                          </a>
-                        </div>
-
-                        <button
-                          className="btn"
-                          style={{ width: "90%", marginLeft: "5%" }}
-                          onClick={() => {
-                            handleMatchPost(post.postId, suggestion.postId);
-                          }}
-                          disabled={isInProcessing}
-                        >
-                          {isInProcessing ? (
-                            <i className="fas fa-spinner fa-spin"></i>
                           ) : (
-                            "This is my item"
+                            <div className="image-placeholder">
+                              <i className="icon-image"></i>
+                              <span>No image</span>
+                            </div>
                           )}
-                        </button>
+                          <div
+                            className="card-text suggestion-card-text"
+                            style={{ marginBottom: "40px" }}
+                          >
+                            <div className="info-user-suggestion">
+                              <img
+                                src={suggestion.user.urlAvatar}
+                                alt="avatar"
+                                width={50}
+                                height={50}
+                                style={{ borderRadius: "50%" }}
+                                loading="lazy"
+                              />
+                              <span>{`${suggestion.user.firstName} ${suggestion.user.lastName}`}</span>
+                            </div>
+                            <h3
+                              style={{
+                                fontWeight: "700",
+                                marginBottom: "10px",
+                              }}
+                            >
+                              <a href={`/detail-post/${suggestion.postId}`}>
+                                {suggestion.title}
+                              </a>
+                            </h3>
+                            <a href={`/detail-post/${suggestion.postId}`}>
+                              <ReactMarkdown
+                                children={suggestion.description}
+                                rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                              ></ReactMarkdown>
+                            </a>
+                          </div>
 
-                        {/* Status */}
-                        <div
-                          className={
-                            suggestion.typePost === "Found"
-                              ? "status-post-found"
-                              : "status-post-lost"
-                          }
-                        >
-                          {suggestion.typePost}
+                          <button
+                            className="btn"
+                            style={{ width: "90%", marginLeft: "5%" }}
+                            onClick={() => {
+                              handleMatchPost(post.postId, suggestion.postId);
+                            }}
+                            disabled={isRequesting}
+                          >
+                            {isRequesting ? (
+                              <i className="fas fa-spinner fa-spin"></i>
+                            ) : (
+                              <>
+                                <i className="fa-solid fa-hand-point-up"></i>{" "}
+                                This is my item
+                              </>
+                            )}
+                          </button>
+
+                          {/* Status */}
+                          <div
+                            className={
+                              suggestion.typePost === "Found"
+                                ? "status-post-found"
+                                : "status-post-lost"
+                            }
+                          >
+                            {suggestion.typePost}
+                          </div>
+
+                          {/* Show score */}
+                          <div className="show-code">{suggestion.score}%</div>
                         </div>
-
-                        {/* Show score */}
-                        <div className="show-code">{suggestion.score}%</div>
+                      ))
+                    ) : (
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          textAlign: "center",
+                          width: "100%",
+                          margin: "auto",
+                        }}
+                      >
+                        <h3>No suggestions found</h3>
                       </div>
-                    ))
-                  ) : (
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        textAlign: "center",
-                        width: "100%",
-                        margin: "auto",
-                      }}
-                    >
-                      <h3>No suggestions found</h3>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Popup notice code */}
-          {console.log(isShowPopup)}
           {isShowPopup && (
             <div
               className="modal"
@@ -936,7 +965,7 @@ export default function DetailPost() {
                         window.print();
 
                         document.getElementById(
-                          "popup-notice-code"
+                          "popup-notice-code",
                         ).style.display = "none";
                       }}
                       style={{ marginLeft: "10px" }}

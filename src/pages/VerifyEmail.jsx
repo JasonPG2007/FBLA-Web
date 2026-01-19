@@ -1,0 +1,105 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
+import { useSearchParams } from "react-router-dom";
+
+export default function VerifyEmail() {
+  // Variables
+  let [isVerifying, setIsVerifying] = useState("");
+  let [statusVerify, setStatusVerify] = useState(null);
+  const [searchParams] = useSearchParams();
+
+  // Handle resend verification email
+  const handleResendVerify = async () => {
+    setIsVerifying(true);
+
+    try {
+      const response = await axios.get(
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/verify-email?token=${searchParams.get("token")}`,
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        },
+      );
+
+      if (response.status === 200) {
+        setStatusVerify(response.data);
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data,
+              status: "success",
+            },
+          }),
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  useEffect(() => {
+    handleResendVerify();
+  }, []);
+
+  return (
+    <>
+      {/* Helmet for setting the page title */}
+      <Helmet>
+        <title>Verify Email | Back2Me </title>
+      </Helmet>
+
+      <h1 style={{ textAlign: "center", marginTop: "70px" }}>
+        {isVerifying ? "Verifying email..." : statusVerify}
+      </h1>
+    </>
+  );
+}

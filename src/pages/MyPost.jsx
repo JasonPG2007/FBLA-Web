@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import SidebarProfile from "../components/SidebarProfile";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
@@ -6,7 +6,9 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import Skeleton from "react-loading-skeleton";
 import Lottie from "lottie-react";
-import NotFoundPost from "../assets/animations/Not-Found-Post.json";
+const NotFoundPost = lazy(
+  () => import("../assets/animations/Not-Found-Post.json"),
+);
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import dayjs from "dayjs";
 
@@ -22,6 +24,7 @@ export default function MyPost() {
 
   const defaultDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
   const [isInProcessing, setIsInProcessing] = useState(false);
+  const [isRequesting, setIsRequesting] = useState(false);
   const [user, setUser] = useState("");
   const [pickUpDate, setPickUpDate] = useState("");
   const [matchedPosts, setMatchedPosts] = useState({});
@@ -36,6 +39,268 @@ export default function MyPost() {
   // APIs
 
   // Functions
+  // Handle mark received
+  const handleMarkReceived = async (postId) => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axios.post(
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/mark-received/${postId}`,
+        null,
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 403,
+        },
+      );
+
+      if (response.status === 200) {
+        document.getElementById("popup-confirm-signed-in").style.display =
+          "none";
+        document.body.style.overflow = "auto";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data?.message,
+              status: "success",
+            },
+          }),
+        );
+      }
+
+      if (response.status === 403) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "You don't have permission to perform this action",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  // Handle pick later
+  const handlePickLater = async (postId) => {
+    setIsRequesting(true);
+
+    try {
+      const response = await axios.delete(
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/PickUpRequest/pick-later/${postId}`,
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 403,
+        },
+      );
+
+      if (response.status === 200) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data?.message,
+              status: "success",
+            },
+          }),
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsRequesting(false);
+    }
+  };
+
+  // Handle accept time rescheduled
+  const handleAcceptTimeRescheduled = async (requestId) => {
+    setIsRequesting(true);
+
+    try {
+      const response = await axios.post(
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/PickUpRequest/accept-time-rescheduled/${requestId}`,
+        null,
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 403,
+        },
+      );
+
+      if (response.status === 200) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data?.message,
+              status: "success",
+            },
+          }),
+        );
+      }
+
+      if (response.status === 403) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "You don't have permission to perform this action",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsRequesting(false);
+    }
+  };
+
   // Realtime
   const connectToSignalR = async () => {
     try {
@@ -93,7 +358,7 @@ export default function MyPost() {
               message: "Your request was not approved by the admin",
               status: "warning",
             },
-          })
+          }),
         );
       });
 
@@ -110,11 +375,11 @@ export default function MyPost() {
 
   // Handle Handover to admin
   const handleCreateRequest = async () => {
-    setIsInProcessing(true);
+    setIsRequesting(true);
 
     try {
       const response = await axios.post(
-        "https://localhost:44306/api/TransferRequests",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/TransferRequests",
         {
           postId: objectToShowPopup.postId,
           oldUserId: user.userId,
@@ -123,7 +388,7 @@ export default function MyPost() {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -133,7 +398,7 @@ export default function MyPost() {
               message: response.data?.message,
               status: "success",
             },
-          })
+          }),
         );
 
         document.getElementById("popup-confirm-handover").style.display =
@@ -149,7 +414,7 @@ export default function MyPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -160,7 +425,7 @@ export default function MyPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -171,7 +436,7 @@ export default function MyPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -182,17 +447,17 @@ export default function MyPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsRequesting(false);
     }
   };
 
   // Handle notify admin pick up
   const handleNotifyAdminPickUp = async () => {
-    setIsInProcessing(true);
+    setIsRequesting(true);
 
     if (pickUpDate.trim() === "") {
       window.dispatchEvent(
@@ -201,7 +466,7 @@ export default function MyPost() {
             message: "Please select the date and time for pick-up",
             status: "warning",
           },
-        })
+        }),
       );
       setIsInProcessing(false);
       return;
@@ -217,13 +482,13 @@ export default function MyPost() {
 
     try {
       const response = await axios.post(
-        "https://localhost:44306/api/PickUpRequest",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/PickUpRequest",
         payload,
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -233,7 +498,7 @@ export default function MyPost() {
               message: response.data?.message,
               status: "success",
             },
-          })
+          }),
         );
 
         document.getElementById("popup-pick-up").style.display = "none";
@@ -249,7 +514,7 @@ export default function MyPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -260,7 +525,7 @@ export default function MyPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -271,7 +536,7 @@ export default function MyPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -282,11 +547,11 @@ export default function MyPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsRequesting(false);
     }
   };
 
@@ -301,12 +566,12 @@ export default function MyPost() {
 
     try {
       const response = await axios.get(
-        `https://localhost:44306/api/Post/sort-status?typePost=${status}`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/sort-status?typePost=${status}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -322,7 +587,7 @@ export default function MyPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -333,7 +598,7 @@ export default function MyPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -344,7 +609,7 @@ export default function MyPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -355,7 +620,7 @@ export default function MyPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -369,12 +634,12 @@ export default function MyPost() {
 
     try {
       const response = await axios.get(
-        `https://localhost:44306/api/Match/check-matched-post/${postId}`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Match/check-matched-post/${postId}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -393,7 +658,7 @@ export default function MyPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -404,7 +669,7 @@ export default function MyPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -415,7 +680,7 @@ export default function MyPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -426,7 +691,7 @@ export default function MyPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -440,12 +705,12 @@ export default function MyPost() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -464,12 +729,12 @@ export default function MyPost() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Post/my-posts",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/my-posts",
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -485,7 +750,7 @@ export default function MyPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -496,7 +761,7 @@ export default function MyPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -507,7 +772,7 @@ export default function MyPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -518,7 +783,7 @@ export default function MyPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -536,12 +801,12 @@ export default function MyPost() {
       for (const post of posts) {
         if (post.typePost === "Found") {
           const response = await axios.get(
-            `https://localhost:44306/api/TransferRequests/status-request-post/${post.postId}`,
+            `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/TransferRequests/status-request-post/${post.postId}`,
             {
               withCredentials: true,
               validateStatus: (status) =>
                 status === 200 || status === 401 || status === 404,
-            }
+            },
           );
 
           results[post.postId] = response.data;
@@ -561,7 +826,7 @@ export default function MyPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -572,7 +837,7 @@ export default function MyPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -583,7 +848,7 @@ export default function MyPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -594,7 +859,7 @@ export default function MyPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -612,12 +877,12 @@ export default function MyPost() {
       for (const post of posts) {
         if (post.typePost === "Lost") {
           const response = await axios.get(
-            `https://localhost:44306/api/PickUpRequest/check-status-post-pick-up/${post.postId}`,
+            `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/PickUpRequest/check-status-post-pick-up/${post.postId}`,
             {
               withCredentials: true,
               validateStatus: (status) =>
                 status === 200 || status === 401 || status === 404,
-            }
+            },
           );
 
           results[post.postId] = response.data;
@@ -637,7 +902,7 @@ export default function MyPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -648,7 +913,7 @@ export default function MyPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -659,7 +924,7 @@ export default function MyPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -670,7 +935,7 @@ export default function MyPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -838,6 +1103,15 @@ export default function MyPost() {
                       <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
                         <a href={`/detail-post/${post.postId}`}>{post.title}</a>
                       </h3>
+                      {!post.isReceived && post.typePost === "Lost" && (
+                        <label
+                          onClick={() => {
+                            handleMarkReceived(post.postId);
+                          }}
+                        >
+                          Mark as received
+                        </label>
+                      )}
                       {post.isReceived && (
                         <label
                           style={{
@@ -885,70 +1159,112 @@ export default function MyPost() {
                   {(post.typePost === "Lost" || user.role === "Admin") && (
                     <>
                       <div className="show-code">{post.code}</div>
-                      {matchedPosts[post.postId] && !post.isReceived && (
-                        <button
+                      {matchedPosts[post.postId] &&
+                        !post.isReceived &&
+                        pickUpStatus[post.postId]?.status !== "Reschedule" && (
+                          <button
+                            className="btn-yellow btn-pick-up"
+                            style={{
+                              width: "100%",
+                            }}
+                            onClick={() => {
+                              document.getElementById(
+                                "popup-pick-up",
+                              ).style.display = "flex";
+                              document.body.style.overflow = "hidden";
+
+                              setObjectToShowPopup({
+                                name: post.title,
+                                code: post.code,
+                                postId: post.postId,
+                              });
+                            }}
+                            disabled={
+                              pickUpStatus[post.postId]?.status === "Pending" ||
+                              pickUpStatus[post.postId]?.status === "Confirmed"
+                            }
+                          >
+                            {pickUpStatus[post.postId]?.status === "Pending" ? (
+                              <>
+                                <i className="fa-solid fa-user-clock"></i>{" "}
+                                Awaiting admin
+                              </>
+                            ) : pickUpStatus[post.postId]?.status ===
+                              "Confirmed" ? (
+                              <>
+                                <i className="fa-solid fa-circle-check"></i>{" "}
+                                You're good to go!
+                              </>
+                            ) : (
+                              <>
+                                <i className="fa-solid fa-person-walking"></i>{" "}
+                                I'm picking up
+                              </>
+                            )}
+                          </button>
+                        )}
+                      {pickUpStatus[post.postId]?.status === "Reschedule" ? (
+                        <div
                           className="btn-yellow"
-                          style={{ width: "100%" }}
-                          onClick={() => {
-                            document.getElementById(
-                              "popup-pick-up"
-                            ).style.display = "flex";
-                            document.body.style.overflow = "hidden";
-
-                            setObjectToShowPopup({
-                              name: post.title,
-                              code: post.code,
-                              postId: post.postId,
-                            });
+                          style={{
+                            width: "100%",
+                            marginTop: "30px",
+                            cursor: "auto",
                           }}
-                          disabled={
-                            pickUpStatus[post.postId]?.status === "Pending" ||
-                            pickUpStatus[post.postId]?.status === "Confirmed"
-                          }
                         >
-                          {pickUpStatus[post.postId]?.status === "Pending" ? (
-                            <>
-                              <i className="fa-solid fa-user-clock"></i>{" "}
-                              Awaiting admin
-                            </>
-                          ) : pickUpStatus[post.postId]?.status ===
-                            "Confirmed" ? (
-                            <>
-                              <i className="fa-solid fa-circle-check"></i>{" "}
-                              You're good to go!
-                            </>
-                          ) : pickUpStatus[post.postId]?.status ===
-                            "Reschedule" ? (
-                            <>
-                              <div>
-                                <i className="fa-solid fa-calendar"></i>{" "}
-                                Rescheduled to{" "}
-                                {dayjs(
-                                  pickUpStatus[post.postId].pickUpDate
-                                ).format("MM/DD/YYYY h:mm:ss A")}
-                              </div>
+                          <div>
+                            <i className="fa-solid fa-calendar"></i> Rescheduled
+                            to{" "}
+                            {dayjs(pickUpStatus[post.postId].pickUpDate).format(
+                              "MM/DD/YYYY h:mm:ss A",
+                            )}
+                          </div>
 
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            {isRequesting ? (
                               <div
                                 style={{
-                                  display: "flex",
-                                  flexDirection: "column",
-                                  justifyContent: "center",
-                                  alignItems: "center",
+                                  marginTop: "20px",
+                                  marginBottom: "10px",
                                 }}
                               >
-                                <button className="btn">Accept</button>
-                                <button className="btn-with-border">
+                                <i className="fas fa-spinner fa-spin"></i>
+                              </div>
+                            ) : (
+                              <>
+                                <button
+                                  className="btn"
+                                  onClick={() => {
+                                    handleAcceptTimeRescheduled(
+                                      pickUpStatus[post.postId].requestId,
+                                    );
+                                  }}
+                                  disabled={isRequesting}
+                                >
+                                  Accept
+                                </button>
+                                <button
+                                  className="btn-with-border"
+                                  onClick={() => {
+                                    handlePickLater(post.postId);
+                                  }}
+                                  disabled={isRequesting}
+                                >
                                   I'll pick it later!
                                 </button>
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <i className="fa-solid fa-person-walking"></i> I'm
-                              picking up
-                            </>
-                          )}
-                        </button>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      ) : (
+                        ""
                       )}
                     </>
                   )}
@@ -959,7 +1275,7 @@ export default function MyPost() {
                       style={{ width: "100%" }}
                       onClick={() => {
                         document.getElementById(
-                          "popup-confirm-handover"
+                          "popup-confirm-handover",
                         ).style.display = "flex";
                         document.body.style.overflow = "hidden";
 
@@ -987,23 +1303,25 @@ export default function MyPost() {
                     </button>
                   )}
 
-                  {user.role === "Admin" && post.typePost === "Found" && (
-                    <button
-                      className="btn"
-                      style={{ width: "100%" }}
-                      onClick={() => {
-                        const code = `Code: ${post.code}`;
+                  {user.role === "Admin" &&
+                    post.typePost === "Found" &&
+                    !post.isReceived && (
+                      <button
+                        className="btn"
+                        style={{ width: "100%" }}
+                        onClick={() => {
+                          const code = `Code: ${post.code}`;
 
-                        window.dispatchEvent(
-                          new CustomEvent("codeToPrint", {
-                            detail: code,
-                          })
-                        );
-                      }}
-                    >
-                      Print Code
-                    </button>
-                  )}
+                          window.dispatchEvent(
+                            new CustomEvent("codeToPrint", {
+                              detail: code,
+                            }),
+                          );
+                        }}
+                      >
+                        <i className="fa-solid fa-print"></i> Print Code
+                      </button>
+                    )}
                 </div>
               ))
             ) : (
@@ -1068,7 +1386,7 @@ export default function MyPost() {
               className="btn-yellow"
               onClick={() => {
                 document.getElementById(
-                  "popup-confirm-handover"
+                  "popup-confirm-handover",
                 ).style.display = "none";
                 document.body.style.overflow = "auto";
               }}
@@ -1122,9 +1440,9 @@ export default function MyPost() {
               onClick={() => {
                 handleNotifyAdminPickUp();
               }}
-              disabled={isInProcessing}
+              disabled={isRequesting}
             >
-              {isInProcessing ? (
+              {isRequesting ? (
                 <i className="fas fa-spinner fa-spin"></i>
               ) : (
                 "I'm picking up"

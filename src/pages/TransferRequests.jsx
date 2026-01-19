@@ -22,12 +22,12 @@ export default function TransferRequests() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -64,7 +64,7 @@ export default function TransferRequests() {
       connection.on("ReceivedStatusRequestMarked", (data) => {
         setRequests((preRequests) => {
           return preRequests.map((r) =>
-            r.requestId === data.requestId ? { ...r, status: data.status } : r
+            r.requestId === data.requestId ? { ...r, status: data.status } : r,
           );
         });
       });
@@ -72,7 +72,7 @@ export default function TransferRequests() {
       connection.on("ReceivedStatusRequestCancelled", (data) => {
         setRequests((preRequests) => {
           return preRequests.map((r) =>
-            r.requestId === data.requestId ? { ...r, status: data.status } : r
+            r.requestId === data.requestId ? { ...r, status: data.status } : r,
           );
         });
       });
@@ -96,12 +96,12 @@ export default function TransferRequests() {
 
     try {
       const response = await axios.get(
-        `https://localhost:44306/api/TransferRequests`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/TransferRequests`,
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -117,7 +117,7 @@ export default function TransferRequests() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -128,7 +128,7 @@ export default function TransferRequests() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -139,7 +139,7 @@ export default function TransferRequests() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -150,7 +150,7 @@ export default function TransferRequests() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -166,7 +166,7 @@ export default function TransferRequests() {
 
     try {
       const response = await axios.post(
-        `https://localhost:44306/api/TransferRequests/mark-received`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/TransferRequests/mark-received`,
         {
           requestId: requestId,
           postId: postId,
@@ -179,7 +179,7 @@ export default function TransferRequests() {
             status === 401 ||
             status === 404 ||
             status === 403,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -189,7 +189,7 @@ export default function TransferRequests() {
               message: response.data?.message,
               status: "success",
             },
-          })
+          }),
         );
       }
 
@@ -200,7 +200,7 @@ export default function TransferRequests() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -213,7 +213,7 @@ export default function TransferRequests() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -224,7 +224,7 @@ export default function TransferRequests() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -235,7 +235,7 @@ export default function TransferRequests() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -246,7 +246,7 @@ export default function TransferRequests() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -260,7 +260,7 @@ export default function TransferRequests() {
 
     try {
       const response = await axios.post(
-        `https://localhost:44306/api/TransferRequests/cancel-handover`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/TransferRequests/cancel-handover`,
         {
           requestId: requestId,
           postId: postId,
@@ -273,7 +273,7 @@ export default function TransferRequests() {
             status === 401 ||
             status === 404 ||
             status === 403,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -283,7 +283,7 @@ export default function TransferRequests() {
               message: response.data?.message,
               status: "success",
             },
-          })
+          }),
         );
       }
 
@@ -294,7 +294,7 @@ export default function TransferRequests() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -307,7 +307,7 @@ export default function TransferRequests() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -318,7 +318,7 @@ export default function TransferRequests() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -329,7 +329,7 @@ export default function TransferRequests() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -340,7 +340,7 @@ export default function TransferRequests() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -354,7 +354,7 @@ export default function TransferRequests() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/TransferRequests",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/TransferRequests",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -362,7 +362,7 @@ export default function TransferRequests() {
             status === 401 ||
             status === 404 ||
             status === 403,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -376,7 +376,7 @@ export default function TransferRequests() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -389,7 +389,7 @@ export default function TransferRequests() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -400,7 +400,7 @@ export default function TransferRequests() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -411,7 +411,7 @@ export default function TransferRequests() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -422,7 +422,7 @@ export default function TransferRequests() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -534,8 +534,8 @@ export default function TransferRequests() {
                             item.status === "Pending"
                               ? "warning"
                               : item.status === "Cancelled"
-                              ? "inactive"
-                              : "active"
+                                ? "inactive"
+                                : "active"
                           }`}
                         >
                           {item.status}

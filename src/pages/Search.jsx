@@ -103,7 +103,9 @@ export default function Search() {
                 <i className="fa-solid fa-caret-down caret-type"></i>
               )}
             </div>
-            <button className="btn-use-filter">Use Filter</button>
+            <button className="btn-use-filter">
+              <i className="fa-solid fa-sliders"></i> Use Filter
+            </button>
           </div>
         </div>
       </form>

@@ -50,6 +50,10 @@ button:disabled:hover {
   transform: scale(1);
 }
 
+img {
+  object-fit: cover;
+}
+
 a {
   text-decoration: none;
   color: unset;
@@ -662,12 +666,14 @@ footer .right button {
   font-family: "Poppins", sans-serif;
   background-color: #fdcc4b;
   border: none;
+  width: max-content;
   color: #072138;
   font-weight: 600;
-  width: 230px;
   cursor: pointer;
-  padding: 12px 25px;
+  font-size: 16px;
+  padding: 10px 14px;
   border-radius: 20px;
+  transition: all 0.3s ease-in-out;
   margin-left: auto;
 }
 
@@ -1654,7 +1660,11 @@ th {
   max-width: 800px;
   margin: 40px auto;
   padding: 0 16px;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    sans-serif;
 }
 
 .faq-title {
@@ -1701,7 +1711,9 @@ th {
 .faq-content {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.35s ease, opacity 0.25s ease;
+  transition:
+    max-height 0.35s ease,
+    opacity 0.25s ease;
   opacity: 0;
 }
 
@@ -1790,8 +1802,9 @@ th {
   flex: 1;
   /* background-color: red; */
   overflow-y: auto;
-  width: 89%;
+  width: 100%;
 }
+
 .chat-item {
   display: flex;
   align-items: center;
@@ -1799,43 +1812,69 @@ th {
   cursor: pointer;
   transition: background 0.2s;
 }
+
 .chat-item:hover {
   background-color: #f0f0f0;
 }
+
+.chat-post-title {
+  font-size: 14px;
+  text-decoration: underline;
+}
+
 .avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
 }
+
 .chat-info {
   margin-left: 10px;
+  width: 230px;
 }
+
 .chat-name {
   font-weight: bold;
 }
+
 .chat-message {
   font-size: 12px;
   color: #555;
+  max-height: 30px;
+  overflow: hidden;
+}
+
+.chat-time {
+  font-size: 14px;
+  text-align: right;
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .chat-body {
   display: grid;
-  grid-template-columns: auto auto;
-  width: 185%;
+  grid-template-columns: 50% 50%;
+  width: 200%;
   overflow-y: auto;
   overflow-x: hidden;
   transition: all 0.2s ease-in-out;
 }
 
 .chat-details {
-  width: 105%;
+  width: 100%;
 }
 
 .chat-details-header {
   display: flex;
   align-items: center;
   gap: 10px;
+  width: 100%;
   padding: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background-color: #fff;
   border-bottom: 1px solid #ddd;
 }
 
@@ -1847,7 +1886,15 @@ th {
 .chat-details-body {
   flex: 1;
   padding: 10px;
-  overflow-y: auto;
+  margin-bottom: 70px;
+  position: relative;
+}
+
+.chat-details-body label {
+  position: absolute;
+  right: 20px;
+  bottom: 0;
+  font-size: 14px;
 }
 
 .message {
@@ -1861,26 +1908,46 @@ th {
 .message.me {
   background: #ec7207;
   color: white;
+  max-width: 55%;
   margin-left: auto;
+  overflow-wrap: break-word;
 }
 
 .message.other {
+  max-width: 55%;
+  margin-right: 10px;
+  overflow-wrap: break-word;
   background: #f1f1f1;
 }
 
 /* FOOTER */
 .chat-details-footer {
-  display: flex;
+  position: absolute;
+  bottom: 7%;
+  width: 100%;
+  left: 50%;
+  transform: translate(-50%, 50%);
   padding: 8px;
   border-top: 1px solid #ddd;
+  background-color: #fff;
 }
 
-.chat-details-footer input {
+.chat-details-footer form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-details-footer textarea {
   flex: 1;
+  font-family: inherit;
   border-radius: 20px;
+  resize: none;
   border: 1px solid #ccc;
   padding: 8px 12px;
+  overflow-y: auto;
   outline: none;
+  transition: all 0.2s ease-in-out;
 }
 
 .chat-details-footer input:focus {
@@ -1892,6 +1959,7 @@ th {
   color: white;
   border: none;
   margin-left: 6px;
+  cursor: pointer;
   border-radius: 50%;
   width: 36px;
   height: 36px;
@@ -2023,7 +2091,7 @@ th {
   border-radius: 20px;
   display: none;
   visibility: hidden;
-  margin-top: -68%;
+  margin-top: -115%;
   margin-left: 50%;
   /* position: absolute; */
   /* border: 1px solid #000; */
@@ -2275,7 +2343,9 @@ th {
   background-color: #fff;
   color: #333;
   outline: none;
-  transition: border 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  transition:
+    border 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
 }
 
 .datetime-input:focus {
@@ -2285,4 +2355,26 @@ th {
 
 .description-link-pick-up {
   text-decoration: underline;
+}
+
+.badge-not-verified {
+  color: #ec7207;
+  font-weight: 600;
+  margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.badge-verified {
+  color: green;
+  font-weight: 600;
+  margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-verify {
+  margin-left: 10px;
 }

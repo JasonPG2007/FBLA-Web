@@ -76,12 +76,12 @@ export default function ConfirmReceived() {
 
     try {
       const response = await axios.get(
-        `https://localhost:44306/api/Post/search-codes?query=${query}`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/search-codes?query=${query}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -97,7 +97,7 @@ export default function ConfirmReceived() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -108,7 +108,7 @@ export default function ConfirmReceived() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -119,7 +119,7 @@ export default function ConfirmReceived() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -130,7 +130,7 @@ export default function ConfirmReceived() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -146,7 +146,7 @@ export default function ConfirmReceived() {
 
     try {
       const response = await axios.post(
-        `https://localhost:44306/api/Post/mark-received/${postId}`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/mark-received/${postId}`,
         null,
         {
           withCredentials: true,
@@ -155,17 +155,21 @@ export default function ConfirmReceived() {
             status === 401 ||
             status === 404 ||
             status === 403,
-        }
+        },
       );
 
       if (response.status === 200) {
+        document.getElementById("popup-confirm-signed-in").style.display =
+          "none";
+        document.body.style.overflow = "auto";
+
         window.dispatchEvent(
           new CustomEvent("app-error", {
             detail: {
               message: response.data?.message,
               status: "success",
             },
-          })
+          }),
         );
       }
 
@@ -176,7 +180,7 @@ export default function ConfirmReceived() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -189,7 +193,7 @@ export default function ConfirmReceived() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -200,7 +204,7 @@ export default function ConfirmReceived() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -211,7 +215,7 @@ export default function ConfirmReceived() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -222,7 +226,7 @@ export default function ConfirmReceived() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -236,7 +240,7 @@ export default function ConfirmReceived() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Post/lost-post-codes",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/lost-post-codes",
         {
           withCredentials: true,
           validateStatus: (status) =>
@@ -244,7 +248,7 @@ export default function ConfirmReceived() {
             status === 401 ||
             status === 404 ||
             status === 403,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -258,7 +262,7 @@ export default function ConfirmReceived() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -271,7 +275,7 @@ export default function ConfirmReceived() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -282,7 +286,7 @@ export default function ConfirmReceived() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -293,7 +297,7 @@ export default function ConfirmReceived() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -304,7 +308,7 @@ export default function ConfirmReceived() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -321,6 +325,9 @@ export default function ConfirmReceived() {
   useEffect(() => {
     if (objectToPrint) {
       window.print();
+
+      document.getElementById("popup-confirm-signed-in").style.display = "flex";
+      document.body.style.overflow = "hidden";
     }
   }, [objectToPrint]);
 
@@ -457,9 +464,15 @@ export default function ConfirmReceived() {
                           {isInProcessing ? (
                             <i className="fas fa-spinner fa-spin"></i>
                           ) : item.isReceived ? (
-                            "Received"
+                            <>
+                              <i className="fa-solid fa-circle-check"></i>{" "}
+                              Received
+                            </>
                           ) : (
-                            "Mark as received"
+                            <>
+                              <i className="fa-solid fa-print"></i> Print
+                              Receipt
+                            </>
                           )}
                         </button>
                       </td>
@@ -472,6 +485,57 @@ export default function ConfirmReceived() {
                 )}
               </tbody>
             </table>
+          </div>
+        </div>
+      </div>
+
+      {/* Popup change pick up time */}
+      <div className="modal" id="popup-confirm-signed-in">
+        <div className="modal-content">
+          <h2 style={{ backgroundColor: "transparent" }}>
+            Did the student sign the receipt confirming they received the item?
+          </h2>
+
+          <div className="policy-section">
+            <p
+              style={{
+                fontSize: "16px",
+                color: "#555",
+                fontStyle: "italic",
+                marginTop: "4px",
+              }}
+            >
+              Please ensure that the student has signed the receipt before
+              leaving.
+            </p>
+          </div>
+
+          <div style={{ marginTop: "40px" }}>
+            <button
+              className="btn"
+              onClick={() => {
+                handleMarkReceived(objectToPrint?.postId);
+              }}
+              disabled={isInProcessing}
+            >
+              {isInProcessing ? (
+                <i className="fas fa-spinner fa-spin"></i>
+              ) : (
+                "Yes"
+              )}
+            </button>
+            <button
+              className="btn-yellow btn-cancel-pick-up"
+              onClick={() => {
+                document.getElementById(
+                  "popup-confirm-signed-in",
+                ).style.display = "none";
+                document.body.style.overflow = "auto";
+              }}
+              style={{ marginLeft: "10px", cursor: "pointer" }}
+            >
+              Cancel
+            </button>
           </div>
         </div>
       </div>

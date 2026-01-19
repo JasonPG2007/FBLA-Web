@@ -20,7 +20,7 @@ export default function Header() {
   let [msgErrorAI, setMsgErrorAI] = useState("");
 
   // APIs
-  const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/CheckAuth/check-auth`;
 
   // Functions
   // Realtime
@@ -41,7 +41,7 @@ export default function Header() {
               message: data.message,
               status: "success",
             },
-          })
+          }),
         );
       });
 
@@ -53,7 +53,7 @@ export default function Header() {
               message: data.message,
               status: "success",
             },
-          })
+          }),
         );
       });
 
@@ -108,7 +108,7 @@ export default function Header() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
 
       if (res.status === 200) {
@@ -166,7 +166,7 @@ export default function Header() {
 
     try {
       const response = await axios.post(
-        `https://localhost:44306/api/Users/sign-out`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/sign-out`,
         null,
         {
           headers: {
@@ -175,7 +175,7 @@ export default function Header() {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status == 200) {
@@ -191,12 +191,12 @@ export default function Header() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -210,7 +210,7 @@ export default function Header() {
               message: "Unauthorized access. Please sign in again.",
               status: "warning",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -225,13 +225,13 @@ export default function Header() {
 
     try {
       const response = await axios.post(
-        "https://localhost:44306/api/Post/search-image-similarity",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/search-image-similarity",
         vector,
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -255,7 +255,7 @@ export default function Header() {
               message: "Unauthorized access. Please sign in again.",
               status: "warning",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -342,6 +342,9 @@ export default function Header() {
               left: "10px",
               fontSize: "18px",
             }}
+            onClick={() => {
+              window.location.href = "/search";
+            }}
           ></i>
         </div>
         <div
@@ -391,7 +394,7 @@ export default function Header() {
                 />
               ) : (
                 <img
-                  src="./Image/user_icon.png"
+                  src="/Image/user_icon.png"
                   alt="avatar"
                   width={45}
                   loading="lazy"
@@ -441,7 +444,7 @@ export default function Header() {
 
               const modal = document.querySelector(".modal-report-stuff");
               const overlay = document.querySelector(
-                ".modal-overlay-report-stuff"
+                ".modal-overlay-report-stuff",
               );
               modal.style.visibility = "visible";
               modal.style.opacity = "1";
