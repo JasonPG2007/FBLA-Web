@@ -20,7 +20,7 @@ export default function SidebarProfile() {
 
     try {
       const response = await axios.post(
-        `https://localhost:44306/api/Users/sign-out`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/sign-out`,
         null,
         {
           headers: {
@@ -29,7 +29,7 @@ export default function SidebarProfile() {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status == 200) {
@@ -46,12 +46,12 @@ export default function SidebarProfile() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -109,7 +109,7 @@ export default function SidebarProfile() {
           ) : (
             <img
               className="user-avatar"
-              src="./Image/user_icon.png"
+              src="/Image/user_icon.png"
               alt="avatar"
               style={{
                 borderRadius: "50%",

@@ -1,10 +1,12 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import Lottie from "lottie-react";
+import { Suspense, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import Skeleton from "react-loading-skeleton";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
+import NotFoundPost from "../assets/animations/Not-Found-Post.json";
 
 export default function LostAndFound() {
   // Variables
@@ -35,7 +37,7 @@ export default function LostAndFound() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -46,7 +48,7 @@ export default function LostAndFound() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -57,7 +59,7 @@ export default function LostAndFound() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -68,7 +70,7 @@ export default function LostAndFound() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -135,7 +137,7 @@ export default function LostAndFound() {
               </div>
             ))}
           </div>
-        ) : (
+        ) : posts.length > 0 ? (
           posts.map((item) => (
             <div className="card suggestion-card" key={item.postId}>
               {item.image ? (
@@ -194,6 +196,24 @@ export default function LostAndFound() {
               </div>
             </div>
           ))
+        ) : (
+          <div
+            style={{
+              marginLeft: "100%",
+              width: "100%",
+              textAlign: "center",
+              marginTop: "50px",
+            }}
+          >
+            <Suspense fallback={<p>Loading animation...</p>}>
+              <Lottie
+                animationData={NotFoundPost}
+                className="m-auto"
+                style={{ width: "60%", margin: "auto" }}
+              />
+            </Suspense>
+            <h1>No posts yet</h1>
+          </div>
         )}
       </div>
     </>

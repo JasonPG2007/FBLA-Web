@@ -3,7 +3,7 @@ import axiosInstance from "../api/axiosInstance";
 
 export default function About() {
   // APIs
-  const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/CheckAuth/check-auth`;
 
   // Check authentication status and redirect if not authenticated
   const checkAuthentication = () => {
@@ -50,7 +50,7 @@ export default function About() {
 
               const modal = document.querySelector(".modal-report-stuff");
               const overlay = document.querySelector(
-                ".modal-overlay-report-stuff"
+                ".modal-overlay-report-stuff",
               );
               modal.style.visibility = "visible";
               modal.style.opacity = "1";
@@ -106,13 +106,19 @@ export default function About() {
         </div>
       </div>
 
-      <form onSubmit={() => {}}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+
+          window.location.href = "/search";
+        }}
+      >
         <div className="quick-search">
           <div className="categories">
             <div className="left">
               <label htmlFor="category">Type of Stuff</label>
               <br />
-              <select className="select" name="" id="category" required>
+              <select className="select" name="" id="category">
                 <option value="">Select type</option>
                 <option value="">Iphone</option>
               </select>
@@ -126,7 +132,7 @@ export default function About() {
             <div className="left">
               <label htmlFor="location">Location</label>
               <br />
-              <select className="select" name="" id="location" required>
+              <select className="select" name="" id="location">
                 <option value="">Select location</option>
                 <option value="">Hall 500</option>
                 <option value="">Hall 600</option>

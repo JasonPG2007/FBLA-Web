@@ -1,6 +1,13 @@
+import { Helmet } from "react-helmet-async";
+
 export default function Support() {
   return (
     <>
+      {/* Helmet for setting the page title */}
+      <Helmet>
+        <title>Support | Back2Me </title>
+      </Helmet>
+
       <div className="faq-container">
         <h2 className="faq-title">Frequently Asked Questions</h2>
 

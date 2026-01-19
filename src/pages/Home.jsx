@@ -24,12 +24,12 @@ export default function Home() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Post/newest-posts",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/newest-posts",
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -45,7 +45,7 @@ export default function Home() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -56,7 +56,7 @@ export default function Home() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -67,7 +67,7 @@ export default function Home() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -78,7 +78,7 @@ export default function Home() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -100,10 +100,17 @@ export default function Home() {
 
       <div
         className="hero"
-        style={{ display: "flex", justifyContent: "space-around" }}>
+        style={{ display: "flex", justifyContent: "space-around" }}
+      >
         <div
           className="hero-text"
-          style={{ marginTop: "83px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+          style={{
+            marginTop: "83px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <p
             style={{
               fontSize: "32px",
@@ -165,7 +172,8 @@ export default function Home() {
               }}
             >
               <strong>
-                <span style={{ fontSize: "25px", color: "#072138" }}>30</span> <br /> Lost Stuffs
+                <span style={{ fontSize: "25px", color: "#072138" }}>30</span>{" "}
+                <br /> Lost Stuffs
               </strong>
             </button>
             <p style={{ fontSize: "20px" }}>

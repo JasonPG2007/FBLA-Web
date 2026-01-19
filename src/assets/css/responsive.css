@@ -383,6 +383,10 @@
     width: 186% !important;
   }
 
+  .btn-pick-up {
+    width: 100% !important;
+  }
+
   .btn-cancel-pick-up {
     width: unset !important;
   }
@@ -876,8 +880,6 @@
   .card-text {
     height: 190px !important;
   }
-
-
 }
 
 /* SMALL LAPTOP */
@@ -886,8 +888,6 @@
 
 /* BIG LAPTOP (Desktop screen) */
 @media (min-width: 1200px) {
-
-
   .hero img {
     /* width: 90% !important; */
   }

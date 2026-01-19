@@ -43,12 +43,12 @@ export default function Users() {
 
     try {
       const response = await axios.get(
-        `https://localhost:44306/api/Users/search-email?query=${query}`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/search-email?query=${query}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -64,7 +64,7 @@ export default function Users() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -75,7 +75,7 @@ export default function Users() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -86,7 +86,7 @@ export default function Users() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -97,7 +97,7 @@ export default function Users() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -113,7 +113,7 @@ export default function Users() {
 
     try {
       const response = await axios.post(
-        `https://localhost:44306/api/Post/mark-received/${postId}`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/mark-received/${postId}`,
         null,
         {
           withCredentials: true,
@@ -122,7 +122,7 @@ export default function Users() {
             status === 401 ||
             status === 404 ||
             status === 403,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -132,7 +132,7 @@ export default function Users() {
               message: response.data?.message,
               status: "success",
             },
-          })
+          }),
         );
       }
 
@@ -143,7 +143,7 @@ export default function Users() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -156,7 +156,7 @@ export default function Users() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -167,7 +167,7 @@ export default function Users() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -178,7 +178,7 @@ export default function Users() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -189,7 +189,7 @@ export default function Users() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -202,11 +202,17 @@ export default function Users() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get("https://localhost:44306/api/Users", {
-        withCredentials: true,
-        validateStatus: (status) =>
-          status === 200 || status === 401 || status === 404 || status === 403,
-      });
+      const response = await axios.get(
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users",
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 403,
+        },
+      );
 
       if (response.status === 200) {
         setUsers(response.data);
@@ -219,7 +225,7 @@ export default function Users() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -232,7 +238,7 @@ export default function Users() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -243,7 +249,7 @@ export default function Users() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -254,7 +260,7 @@ export default function Users() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -265,7 +271,7 @@ export default function Users() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {

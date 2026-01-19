@@ -29,7 +29,7 @@ export default function ModalReportStuff() {
   let [isSearchingCategory, setIsSearchingCategory] = useState(false);
 
   // APIs
-  const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/CheckAuth/check-auth`;
 
   // Functions
   // Close modal report
@@ -49,12 +49,12 @@ export default function ModalReportStuff() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -74,7 +74,7 @@ export default function ModalReportStuff() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -85,7 +85,7 @@ export default function ModalReportStuff() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -96,7 +96,7 @@ export default function ModalReportStuff() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -107,7 +107,7 @@ export default function ModalReportStuff() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -124,12 +124,12 @@ export default function ModalReportStuff() {
 
     try {
       const response = await axios.get(
-        `https://localhost:44306/api/CategoryPost/search-category-post?query=${query}`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/CategoryPost/search-category-post?query=${query}`,
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -149,7 +149,7 @@ export default function ModalReportStuff() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -160,7 +160,7 @@ export default function ModalReportStuff() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -171,7 +171,7 @@ export default function ModalReportStuff() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -182,7 +182,7 @@ export default function ModalReportStuff() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -297,13 +297,16 @@ export default function ModalReportStuff() {
 
     try {
       const response = await axios.post(
-        "https://localhost:44306/api/Post",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post",
         formData,
         {
           withCredentials: true,
           validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 403,
+        },
       );
 
       if (response.status === 200) {
@@ -313,11 +316,22 @@ export default function ModalReportStuff() {
               message: response.data,
               status: "success",
             },
-          })
+          }),
         );
 
         closeModalReport();
         document.getElementById("popup-notice-code").style.display = "flex"; // Show popup notice code
+      }
+
+      if (response.status === 403) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Please verify your email address to continue",
+              status: "warning",
+            },
+          }),
+        );
       }
     } catch (error) {
       if (error.response) {
@@ -329,7 +343,7 @@ export default function ModalReportStuff() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -340,7 +354,7 @@ export default function ModalReportStuff() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -351,7 +365,7 @@ export default function ModalReportStuff() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -362,7 +376,7 @@ export default function ModalReportStuff() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -383,7 +397,7 @@ export default function ModalReportStuff() {
       selectedFileFound &&
         formData.append(
           "vector",
-          JSON.stringify(await handleGetVectorFromImage(selectedFileFound))
+          JSON.stringify(await handleGetVectorFromImage(selectedFileFound)),
         ); // Vector of image
     }
     formData.append("userId", user.userId);
@@ -395,13 +409,16 @@ export default function ModalReportStuff() {
 
     try {
       const response = await axios.post(
-        "https://localhost:44306/api/Post",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post",
         formData,
         {
           withCredentials: true,
           validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 403,
+        },
       );
 
       if (response.status === 200) {
@@ -411,11 +428,22 @@ export default function ModalReportStuff() {
               message: response.data,
               status: "success",
             },
-          })
+          }),
         );
 
         closeModalReport();
         document.getElementById("popup-notice-code").style.display = "flex"; // Show popup notice code
+      }
+
+      if (response.status === 403) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Please verify your email address to continue",
+              status: "warning",
+            },
+          }),
+        );
       }
     } catch (error) {
       if (error.response) {
@@ -427,7 +455,7 @@ export default function ModalReportStuff() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -438,7 +466,7 @@ export default function ModalReportStuff() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -449,7 +477,7 @@ export default function ModalReportStuff() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -460,7 +488,7 @@ export default function ModalReportStuff() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -480,7 +508,7 @@ export default function ModalReportStuff() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
 
       if (res.status === 200) {
@@ -501,7 +529,7 @@ export default function ModalReportStuff() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -512,7 +540,7 @@ export default function ModalReportStuff() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -522,7 +550,7 @@ export default function ModalReportStuff() {
                 message: "Found item posting is temporarily unavailable.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -533,7 +561,7 @@ export default function ModalReportStuff() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
 
@@ -1372,7 +1400,7 @@ export default function ModalReportStuff() {
                   window.dispatchEvent(
                     new CustomEvent("codeToPrint", {
                       detail: `Code: ${code}`,
-                    })
+                    }),
                   );
                 }}
                 style={{ marginLeft: "10px", cursor: "pointer" }}

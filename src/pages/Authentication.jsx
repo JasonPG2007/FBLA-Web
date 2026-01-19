@@ -91,7 +91,7 @@ export default function Authentication() {
       };
 
       const response = await axios.post(
-        "https://localhost:44306/api/Users/sign-up",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/sign-up",
         payload,
         {
           headers: {
@@ -99,7 +99,7 @@ export default function Authentication() {
           },
           withCredentials: true,
           validateStatus: (status) => status === 200 || status === 401,
-        }
+        },
       );
 
       // Success
@@ -112,7 +112,7 @@ export default function Authentication() {
               message: "Signed up successfully",
               status: "success",
             },
-          })
+          }),
         );
 
         setMsgSignIn({
@@ -184,7 +184,7 @@ export default function Authentication() {
     setIsInProcessing(true);
     try {
       const responseSignInUser = await axios.post(
-        `https://localhost:44306/api/Users/sign-in`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/sign-in`,
         {
           studentId: studentIdOrEmailForSignIn.includes("@")
             ? 0
@@ -199,7 +199,7 @@ export default function Authentication() {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       // Success, then pick image
@@ -269,7 +269,7 @@ export default function Authentication() {
 
     try {
       const responseSignInUser = await axios.post(
-        `https://localhost:44306/api/Users/select-image`,
+        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/select-image`,
         {
           studentId: studentIdOrEmailForSignIn.includes("@")
             ? 0
@@ -285,7 +285,7 @@ export default function Authentication() {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       // Success, then pick image
@@ -299,7 +299,7 @@ export default function Authentication() {
               message: "Signed in successfully",
               status: "success",
             },
-          })
+          }),
         );
 
         setMsgSignIn({
@@ -383,7 +383,7 @@ export default function Authentication() {
         }
 
         return item;
-      })
+      }),
     );
   };
 
@@ -653,7 +653,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye-slash"
                       onClick={() => {
                         setIsClickShowPasswordSignUp(
-                          !isClickShowPasswordSignUp
+                          !isClickShowPasswordSignUp,
                         );
                       }}
                     ></i>
@@ -662,7 +662,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye"
                       onClick={() => {
                         setIsClickShowPasswordSignUp(
-                          !isClickShowPasswordSignUp
+                          !isClickShowPasswordSignUp,
                         );
                       }}
                     ></i>
@@ -771,7 +771,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye-slash"
                       onClick={() => {
                         setIsClickShowConfirmPassword(
-                          !isClickShowConfirmPassword
+                          !isClickShowConfirmPassword,
                         );
                       }}
                     ></i>
@@ -780,7 +780,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye"
                       onClick={() => {
                         setIsClickShowConfirmPassword(
-                          !isClickShowConfirmPassword
+                          !isClickShowConfirmPassword,
                         );
                       }}
                     ></i>
@@ -845,7 +845,7 @@ export default function Authentication() {
                   <span
                     onClick={() => {
                       document.getElementById(
-                        "form-sign-up-in-container"
+                        "form-sign-up-in-container",
                       ).style.transform = "translateX(-35%)";
                     }}
                     style={{
@@ -919,7 +919,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye-slash"
                       onClick={() => {
                         setIsClickShowPasswordSignIn(
-                          !isClickShowPasswordSignIn
+                          !isClickShowPasswordSignIn,
                         );
                       }}
                     ></i>
@@ -928,7 +928,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye"
                       onClick={() => {
                         setIsClickShowPasswordSignIn(
-                          !isClickShowPasswordSignIn
+                          !isClickShowPasswordSignIn,
                         );
                       }}
                     ></i>
@@ -939,7 +939,7 @@ export default function Authentication() {
                   <span
                     onClick={() => {
                       document.getElementById(
-                        "form-sign-up-in-container"
+                        "form-sign-up-in-container",
                       ).style.transform = "translateX(-70%)";
                     }}
                     style={{
@@ -991,7 +991,7 @@ export default function Authentication() {
                   <span
                     onClick={() => {
                       document.getElementById(
-                        "form-sign-up-in-container"
+                        "form-sign-up-in-container",
                       ).style.transform = "translateX(0)";
                     }}
                     style={{
@@ -1162,7 +1162,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye-slash"
                       onClick={() => {
                         setIsClickShowConfirmNewPassword(
-                          !isClickShowConfirmNewPassword
+                          !isClickShowConfirmNewPassword,
                         );
                       }}
                     ></i>
@@ -1171,7 +1171,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye"
                       onClick={() => {
                         setIsClickShowConfirmNewPassword(
-                          !isClickShowConfirmNewPassword
+                          !isClickShowConfirmNewPassword,
                         );
                       }}
                     ></i>
@@ -1235,7 +1235,7 @@ export default function Authentication() {
                   <span
                     onClick={() => {
                       document.getElementById(
-                        "form-sign-up-in-container"
+                        "form-sign-up-in-container",
                       ).style.transform = "translateX(-35%)";
                     }}
                     style={{

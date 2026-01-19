@@ -15,12 +15,89 @@ export default function Profile() {
   let [avatarPreview, setAvatarPreview] = useState(null);
   let [selectedFileAvatar, setSelectedFileAvatar] = useState(null);
   let [isChangeDateOfBirth, setIsChangeDateOfBirth] = useState(false);
+  let [isSending, setIsSending] = useState(false);
   let [isModify, setIsModify] = useState(false);
   let [isInProcessing, setIsInProcessing] = useState(false);
 
   // APIs
 
   // Functions
+  // Handle resend verification email
+  const handleResendVerify = async () => {
+    setIsSending(true);
+
+    try {
+      const response = await axios.post(
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/resend-verify-email",
+        null,
+        {
+          withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        },
+      );
+
+      if (response.status === 200) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data,
+              status: "success",
+            },
+          }),
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsSending(false);
+    }
+  };
+
   // Handle change avatar
   const handleChangeAvatar = (file) => {
     if (!file) return;
@@ -71,12 +148,12 @@ export default function Profile() {
 
     try {
       const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -97,7 +174,7 @@ export default function Profile() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -108,7 +185,7 @@ export default function Profile() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -119,7 +196,7 @@ export default function Profile() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -130,7 +207,7 @@ export default function Profile() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -154,13 +231,13 @@ export default function Profile() {
 
     try {
       const response = await axios.put(
-        "https://localhost:44306/api/Users/update-user",
+        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/update-user",
         formData,
         {
           withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -172,7 +249,7 @@ export default function Profile() {
               message: response.data,
               status: "success",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -185,7 +262,7 @@ export default function Profile() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -196,7 +273,7 @@ export default function Profile() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -207,7 +284,7 @@ export default function Profile() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -218,7 +295,7 @@ export default function Profile() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -403,14 +480,45 @@ export default function Profile() {
                     </th>
                     <td style={{ verticalAlign: "top" }} className="table-td">
                       {!isInProcessing ? (
-                        <input
-                          placeholder="Ex: demo@ex.io"
-                          type="email"
-                          className="form-control-input-label-top"
-                          value={user.email}
-                          style={{ cursor: "not-allowed" }}
-                          disabled
-                        />
+                        <>
+                          <input
+                            placeholder="Ex: demo@ex.io"
+                            type="email"
+                            className="form-control-input-label-top"
+                            value={`${user.email}`}
+                            style={{ cursor: "not-allowed" }}
+                            disabled
+                          />
+                          {!user.isVerifiedEmail ? (
+                            <>
+                              <span className="badge-not-verified">
+                                <i className="fa-solid fa-triangle-exclamation"></i>{" "}
+                                Not Verified
+                              </span>
+
+                              <button
+                                className="btn btn-verify"
+                                onClick={() => {
+                                  handleResendVerify();
+                                }}
+                                type="button"
+                                disabled={isSending}
+                                aria-label="Send verification email button"
+                              >
+                                {isSending ? (
+                                  <i className="fas fa-spinner fa-spin"></i>
+                                ) : (
+                                  "Verify Now"
+                                )}
+                              </button>
+                            </>
+                          ) : (
+                            <span className="badge-verified">
+                              <i className="fa-solid fa-circle-check"></i>{" "}
+                              Verified
+                            </span>
+                          )}
+                        </>
                       ) : (
                         <Skeleton
                           className="skeleton-input"
@@ -424,76 +532,6 @@ export default function Profile() {
                 </tbody>
               </table>
 
-              {/* Notify me */}
-              <div
-                className="notify-me-section"
-                style={{
-                  padding: "10px 10px 30px",
-                }}
-              >
-                <div
-                  style={{
-                    padding: " 10px 0 10px",
-                  }}
-                >
-                  <div className="notify-me">
-                    <label className="switch">
-                      <input type="checkbox" />
-                      <span className="slider"></span>
-                    </label>
-                    <label
-                      style={{
-                        textAlign: "center",
-                        fontSize: "14px",
-                        color: "#072138",
-                        marginRight: "50%",
-                        className: "notify-text",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      Notify me when there is a new lost stuff post
-                    </label>
-                  </div>
-
-                  <div className="notify-me">
-                    <label className="switch">
-                      <input type="checkbox" />
-                      <span className="slider"></span>
-                    </label>
-                    <label
-                      style={{
-                        textAlign: "center",
-                        fontSize: "14px",
-                        color: "#072138",
-                        marginRight: "48%",
-                        className: "notify-text",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      Notify me when there is a new found stuff post
-                    </label>
-                  </div>
-
-                  <div className="notify-me">
-                    <label className="switch">
-                      <input type="checkbox" />
-                      <span className="slider"></span>
-                    </label>
-                    <label
-                      style={{
-                        textAlign: "center",
-                        fontSize: "14px",
-                        color: "#072138",
-                        marginRight: "45%",
-                        className: "notify-text",
-                      }}
-                      htmlFor="notify-similar-mine"
-                    >
-                      Notify me when there is a post that similar to mine
-                    </label>
-                  </div>
-                </div>
-              </div>
               <button
                 className="btn-yellow"
                 style={{
@@ -540,7 +578,7 @@ export default function Profile() {
                   ? avatarPreview
                   : user?.avatar
                     ? user.urlAvatar
-                    : "./Image/user_icon.png"
+                    : "/Image/user_icon.png"
               }
               alt="avatar"
               style={{
@@ -568,7 +606,7 @@ export default function Profile() {
                 }}
                 htmlFor="update-avatar"
               >
-                Change
+                <i className="fa-solid fa-repeat"></i> Change
               </label>
               <input
                 type="file"
@@ -589,7 +627,7 @@ export default function Profile() {
                   setIsModify(false);
                 }}
               >
-                Delete
+                <i className="fa-solid fa-trash"></i> Delete
               </button>
             </div>
           </div>
