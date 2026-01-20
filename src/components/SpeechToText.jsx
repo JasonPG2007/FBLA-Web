@@ -148,10 +148,10 @@ export default function SpeechToText() {
   }, [sessionStorage.getItem("requiredSignIn")]);
 
   useEffect(() => {
-    const speechRecognition =
+    const SpeechRecognition =
       window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    if (!speechRecognition) {
+    if (!SpeechRecognition) {
       alert("Your browser does not support Speech Recognition");
       return;
     }
@@ -178,6 +178,8 @@ export default function SpeechToText() {
       // Save final text
       if (finalText) {
         setFinalText(finalText.trim());
+        // Check and do action with final text
+        handleLogicForVoiceControl(finalText);
       }
     };
 
@@ -187,9 +189,6 @@ export default function SpeechToText() {
     };
 
     recognitionRef.current = recognition;
-
-    // Check and do action with final text
-    handleLogicForVoiceControl(finalText);
   }, [finalText]);
 
   useEffect(() => {
