@@ -3,7 +3,7 @@ import axiosInstance from "../api/axiosInstance";
 
 export default function About() {
   // APIs
-  const API_URL_Auth = `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `/CheckAuth/check-auth`;
 
   // Check authentication status and redirect if not authenticated
   const checkAuthentication = () => {

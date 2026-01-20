@@ -4,6 +4,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { debounce } from "lodash";
+import axiosInstance from "../api/axiosInstance";
 
 export default function VerificationCodes() {
   // Variables
@@ -21,14 +22,11 @@ export default function VerificationCodes() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        },
-      );
+      const response = await axiosInstance.get("/Users/profile", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setUser(response.data);
@@ -45,7 +43,7 @@ export default function VerificationCodes() {
     try {
       const connection = new HubConnectionBuilder()
         .withUrl("https://localhost:44306/SystemHub", {
-          withCredentials: true,
+          // withCredentials: true,
         })
         .withAutomaticReconnect()
         .build();
@@ -89,10 +87,10 @@ export default function VerificationCodes() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/search-codes?query=${query}`,
+      const response = await axiosInstance.get(
+        `/Post/search-codes?query=${query}`,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
         },
@@ -159,11 +157,11 @@ export default function VerificationCodes() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.post(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/mark-received/${postId}`,
+      const response = await axiosInstance.post(
+        `/Post/mark-received/${postId}`,
         null,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||
@@ -249,17 +247,11 @@ export default function VerificationCodes() {
     setIsLoading(true);
 
     try {
-      const response = await axios.get(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Match/match-user`,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        },
-      );
+      const response = await axiosInstance.get(`/Match/match-user`, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         setCodes(response.data);

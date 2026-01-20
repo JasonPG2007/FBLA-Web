@@ -5,6 +5,7 @@ import InputMask from "react-input-mask";
 import SidebarProfile from "../components/SidebarProfile";
 import Skeleton from "react-loading-skeleton";
 import dayjs from "dayjs";
+import axiosInstance from "../api/axiosInstance";
 
 export default function Profile() {
   // Variables
@@ -27,11 +28,11 @@ export default function Profile() {
     setIsSending(true);
 
     try {
-      const response = await axios.post(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/resend-verify-email",
+      const response = await axiosInstance.post(
+        "/Users/resend-verify-email",
         null,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
         },
@@ -147,14 +148,11 @@ export default function Profile() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        },
-      );
+      const response = await axiosInstance.get("/Users/profile", {
+        // // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setUser(response.data);
@@ -230,15 +228,11 @@ export default function Profile() {
     }
 
     try {
-      const response = await axios.put(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/update-user",
-        formData,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        },
-      );
+      const response = await axiosInstance.put("/Users/update-user", formData, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         await getMyProfile();

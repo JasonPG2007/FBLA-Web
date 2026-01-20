@@ -3,6 +3,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import SidebarProfile from "../components/SidebarProfile";
 import { data } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
+import axiosInstance from "../api/axiosInstance";
 
 export default function Dashboard() {
   // Variables
@@ -29,17 +30,11 @@ export default function Dashboard() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/lost-posts-per-month",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        },
-      );
+      const response = await axiosInstance.get("/Post/lost-posts-per-month", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         const defaultMonthsArray = new Array(12).fill(0);
@@ -118,17 +113,11 @@ export default function Dashboard() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/found-posts-per-month",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        },
-      );
+      const response = await axiosInstance.get("/Post/found-posts-per-month", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         const defaultMonthsArray = new Array(12).fill(0);
@@ -207,10 +196,10 @@ export default function Dashboard() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/received-posts-per-month",
+      const response = await axiosInstance.get(
+        "/Post/received-posts-per-month",
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||
@@ -296,10 +285,10 @@ export default function Dashboard() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/found-posts-not-received",
+      const response = await axiosInstance.get(
+        "/Post/found-posts-not-received",
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||

@@ -2,6 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
+import axiosInstance from "../api/axiosInstance";
 
 export default function VerifyEmail() {
   // Variables
@@ -14,10 +15,10 @@ export default function VerifyEmail() {
     setIsVerifying(true);
 
     try {
-      const response = await axios.get(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/verify-email?token=${searchParams.get("token")}`,
+      const response = await axiosInstance.get(
+        `/Users/verify-email?token=${searchParams.get("token")}`,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
         },

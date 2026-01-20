@@ -6,6 +6,7 @@ import Skeleton from "react-loading-skeleton";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
+import axiosInstance from "../api/axiosInstance";
 
 export default function Chat() {
   // Variables
@@ -36,14 +37,11 @@ export default function Chat() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        },
-      );
+      const response = await axiosInstance.get("/Users/profile", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setUser(response.data);
@@ -123,21 +121,14 @@ export default function Chat() {
     };
 
     try {
-      const response = await axios.post(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/MessageChat",
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
+      const response = await axiosInstance.post("/MessageChat", payload, {
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         setSendStatus("Sent");
@@ -220,20 +211,14 @@ export default function Chat() {
     setIsSending(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/MessageChat/my-chats",
-        {
-          headers: {
-            "Content-Type": "applications/json",
-          },
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
+      const response = await axiosInstance.get("/MessageChat/my-chats", {
+        headers: {
+          "Content-Type": "applications/json",
         },
-      );
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         setChats(response.data);
@@ -294,20 +279,14 @@ export default function Chat() {
     setIsSending(true);
 
     try {
-      const response = await axios.get(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/MessageChat/chat/${chatId}`,
-        {
-          headers: {
-            "Content-Type": "applications/json",
-          },
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
+      const response = await axiosInstance.get(`/MessageChat/chat/${chatId}`, {
+        headers: {
+          "Content-Type": "applications/json",
         },
-      );
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         setSendStatus("Sent");
@@ -369,7 +348,7 @@ export default function Chat() {
     try {
       const connection = new HubConnectionBuilder()
         .withUrl("https://localhost:44306/SystemHub", {
-          withCredentials: true,
+          // withCredentials: true,
         })
         .withAutomaticReconnect()
         .build();
