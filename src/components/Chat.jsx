@@ -345,12 +345,14 @@ export default function Chat() {
 
   // Realtime
   const connectToSignalR = async () => {
+    const token = localStorage.getItem("accessToken");
     try {
       const connection = new HubConnectionBuilder()
         .withUrl(
           "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/SystemHub",
           {
             // withCredentials: true,
+            accessTokenFactory: () => token,
           },
         )
         .withAutomaticReconnect()
