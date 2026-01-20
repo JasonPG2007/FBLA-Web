@@ -570,6 +570,8 @@ export default function Chat() {
                         user.userId === chat.userAId
                           ? chat.urlAvatarUserB
                           : chat.urlAvatarUserA
+                            ? chat.urlAvatarUserA
+                            : "/Image/user_icon.png"
                       }
                       alt="Avatar"
                       loading="lazy"
