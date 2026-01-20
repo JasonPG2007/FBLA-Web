@@ -1534,7 +1534,7 @@ th {
 
 .pick-image-container .content-images {
   background-color: #fff;
-  width: max-content;
+  max-width: max-content;
   padding: 20px;
   border-radius: 20px;
   margin: auto;

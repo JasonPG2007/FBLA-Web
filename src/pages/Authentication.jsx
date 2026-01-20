@@ -1356,7 +1356,11 @@ export default function Authentication() {
       </div>
 
       {/* Modal pick image */}
-      <div className="pick-image-container" id="pick-image-container">
+      <div
+        className="pick-image-container"
+        id="pick-image-container"
+        style={{ opacity: "1", visibility: "visible" }}
+      >
         <div className="content-images">
           <p style={{ fontSize: "30px", fontWeight: "600" }}>
             {isClickSignIn ? "Select" : "Register"} two pictures of you:
