@@ -27,9 +27,7 @@ export default function Header() {
   const connectToSignalR = async () => {
     try {
       const connection = new HubConnectionBuilder()
-        .withUrl(
-          "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/SystemHub",
-        )
+        .withUrl("https://localhost:44306/SystemHub")
         .withAutomaticReconnect()
         .build();
 
