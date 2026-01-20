@@ -634,7 +634,7 @@ export default function Authentication() {
                       setEmail(e.target.value);
                     }}
                   />
-                  <label htmlFor="email">School Email*</label>
+                  <label htmlFor="email">Email*</label>
                 </div>
                 <div className="form-control-authentication">
                   <input
@@ -1035,7 +1035,7 @@ export default function Authentication() {
                       setEmail(e.target.value);
                     }}
                   />
-                  <label htmlFor="email-forgot-password">School Email*</label>
+                  <label htmlFor="email-forgot-password">Email*</label>
                 </div>
                 <div className="form-control-authentication">
                   <input
