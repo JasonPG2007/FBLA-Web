@@ -304,9 +304,16 @@ export default function MyPost() {
 
   // Realtime
   const connectToSignalR = async () => {
+    const token = localStorage.getItem("accessToken");
     try {
       const connection = new HubConnectionBuilder()
-        .withUrl("https://localhost:44306/SystemHub")
+        .withUrl(
+          "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/SystemHub",
+          {
+            // withCredentials: true,
+            accessTokenFactory: () => token,
+          },
+        )
         .withAutomaticReconnect()
         .build();
 
