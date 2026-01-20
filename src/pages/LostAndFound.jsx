@@ -122,6 +122,7 @@ export default function LostAndFound() {
               gridTemplateColumns: "auto auto auto auto",
               gap: "16px",
             }}
+            className="skeleton-loading"
           >
             {Array.from({ length: 8 }).map((_, index) => (
               <div className="" key={index} style={{ marginBottom: "60px" }}>
