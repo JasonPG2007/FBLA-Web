@@ -196,9 +196,13 @@ export default function SpeechToText() {
   }, [textToResponse]);
 
   useEffect(() => {
-    document.body.addEventListener("click", () => {
-      setTextToResponse("Press Enter to turn on voice control");
-    });
+    document.body.addEventListener(
+      "click",
+      () => {
+        setTextToResponse("Press Enter to turn on voice control");
+      },
+      { once: true },
+    );
 
     window.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
