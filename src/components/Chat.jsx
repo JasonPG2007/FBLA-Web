@@ -365,6 +365,13 @@ export default function Chat() {
           }
           return [...prev, data.message];
         });
+
+        // Play audio sound when receive new chat
+        const audioNewMessageReceive = new Audio("/Sounds/news-ting.mp3");
+        audioNewMessageReceive.volume = 0.3;
+        audioNewMessageReceive
+          .play()
+          .catch((error) => console.log("Unable to play audio."));
       });
 
       // Get new chat
