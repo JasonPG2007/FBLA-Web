@@ -42,12 +42,9 @@ export default function VerificationCodes() {
   const connectToSignalR = async () => {
     try {
       const connection = new HubConnectionBuilder()
-        .withUrl(
-          "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/SystemHub",
-          {
-            // withCredentials: true,
-          },
-        )
+        .withUrl("https://localhost:44306/SystemHub", {
+          // withCredentials: true,
+        })
         .withAutomaticReconnect()
         .build();
 
