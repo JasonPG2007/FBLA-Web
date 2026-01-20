@@ -7,6 +7,7 @@ import { debounce } from "lodash";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
+import axiosInstance from "../api/axiosInstance";
 
 export default function PickUpRequest() {
   // Variables
@@ -29,14 +30,11 @@ export default function PickUpRequest() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        },
-      );
+      const response = await axiosInstance.get("/Users/profile", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setUser(response.data);
@@ -53,7 +51,7 @@ export default function PickUpRequest() {
     try {
       const connection = new HubConnectionBuilder()
         .withUrl("https://localhost:44306/SystemHub", {
-          withCredentials: true,
+          // withCredentials: true,
         })
         .withAutomaticReconnect()
         .build();
@@ -85,11 +83,11 @@ export default function PickUpRequest() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.post(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/PickUpRequest/accept-time/${requestId}`,
+      const response = await axiosInstance.post(
+        `/PickUpRequest/accept-time/${requestId}`,
         null,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||
@@ -177,14 +175,11 @@ export default function PickUpRequest() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/TransferRequests`,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        },
-      );
+      const response = await axiosInstance.get(`/TransferRequests`, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setRequests(response.data);
@@ -247,11 +242,11 @@ export default function PickUpRequest() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.post(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/PickUpRequest/change-time/${requestId}`,
+      const response = await axiosInstance.post(
+        `/PickUpRequest/change-time/${requestId}`,
         pickUpDate,
         {
-          withCredentials: true,
+          // withCredentials: true,
           headers: {
             "Content-Type": "application/json",
           },
@@ -345,17 +340,11 @@ export default function PickUpRequest() {
     setIsLoading(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/PickUpRequest",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        },
-      );
+      const response = await axiosInstance.get("/PickUpRequest", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         setRequests(response.data);

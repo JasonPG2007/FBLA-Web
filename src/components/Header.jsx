@@ -20,7 +20,7 @@ export default function Header() {
   let [msgErrorAI, setMsgErrorAI] = useState("");
 
   // APIs
-  const API_URL_Auth = `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `/CheckAuth/check-auth`;
 
   // Functions
   // Realtime
@@ -101,7 +101,7 @@ export default function Header() {
     formData.append("image", file);
 
     try {
-      const res = await axios.post(
+      const res = await axiosInstance.post(
         "https://contamination-final-heated-gradually.trycloudflare.com/embed",
         formData,
         {
@@ -165,18 +165,14 @@ export default function Header() {
     // e.preventDefault();
 
     try {
-      const response = await axios.post(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/sign-out`,
-        null,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
+      const response = await axiosInstance.post(`/Users/sign-out`, null, {
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status == 200) {
         window.location.href = "/";
@@ -190,14 +186,11 @@ export default function Header() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        },
-      );
+      const response = await axiosInstance.get("/Users/profile", {
+        // // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setUser(response.data);
@@ -224,11 +217,11 @@ export default function Header() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.post(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/search-image-similarity",
+      const response = await axiosInstance.post(
+        "/Post/search-image-similarity",
         vector,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
         },

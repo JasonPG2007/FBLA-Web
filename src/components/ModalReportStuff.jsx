@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Skeleton from "react-loading-skeleton";
 import { debounce } from "lodash";
+import axiosInstance from "../api/axiosInstance";
 
 export default function ModalReportStuff() {
   // Variables
@@ -29,7 +30,7 @@ export default function ModalReportStuff() {
   let [isSearchingCategory, setIsSearchingCategory] = useState(false);
 
   // APIs
-  const API_URL_Auth = `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `/CheckAuth/check-auth`;
 
   // Functions
   // Close modal report
@@ -48,14 +49,11 @@ export default function ModalReportStuff() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        },
-      );
+      const response = await axiosInstance.get("/Users/profile", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setUser(response.data);
@@ -123,10 +121,10 @@ export default function ModalReportStuff() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/CategoryPost/search-category-post?query=${query}`,
+      const response = await axiosInstance.get(
+        `/CategoryPost/search-category-post?query=${query}`,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
         },
@@ -296,18 +294,11 @@ export default function ModalReportStuff() {
     formData.append("categoryPostId", categoryPostId);
 
     try {
-      const response = await axios.post(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post",
-        formData,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        },
-      );
+      const response = await axiosInstance.post("/Post", formData, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         window.dispatchEvent(
@@ -408,18 +399,11 @@ export default function ModalReportStuff() {
     formData.append("categoryPostId", categoryPostId);
 
     try {
-      const response = await axios.post(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post",
-        formData,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        },
-      );
+      const response = await axiosInstance.post("/Post", formData, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         window.dispatchEvent(
@@ -501,7 +485,7 @@ export default function ModalReportStuff() {
     formData.append("image", imageFile);
 
     try {
-      const res = await axios.post(
+      const res = await axiosInstance.post(
         "https://contamination-final-heated-gradually.trycloudflare.com/embed",
         formData,
         {

@@ -7,6 +7,7 @@ import { HubConnectionBuilder } from "@microsoft/signalr";
 import { debounce } from "lodash";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
+import axiosInstance from "../api/axiosInstance";
 
 export default function ConfirmReceived() {
   // Variables
@@ -31,7 +32,7 @@ export default function ConfirmReceived() {
     try {
       const connection = new HubConnectionBuilder()
         .withUrl("https://localhost:44306/SystemHub", {
-          withCredentials: true,
+          // withCredentials: true,
         })
         .withAutomaticReconnect()
         .build();
@@ -75,10 +76,10 @@ export default function ConfirmReceived() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/search-codes?query=${query}`,
+      const response = await axiosInstance.get(
+        `/Post/search-codes?query=${query}`,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
         },
@@ -145,11 +146,11 @@ export default function ConfirmReceived() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.post(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/mark-received/${postId}`,
+      const response = await axiosInstance.post(
+        `/Post/mark-received/${postId}`,
         null,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||
@@ -239,17 +240,11 @@ export default function ConfirmReceived() {
     setIsLoading(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/lost-post-codes",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        },
-      );
+      const response = await axiosInstance.get("/Post/lost-post-codes", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         setCodes(response.data);

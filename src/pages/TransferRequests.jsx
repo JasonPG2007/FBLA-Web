@@ -4,6 +4,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { debounce } from "lodash";
+import axiosInstance from "../api/axiosInstance";
 
 export default function TransferRequests() {
   // Variables
@@ -21,14 +22,11 @@ export default function TransferRequests() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        },
-      );
+      const response = await axiosInstance.get("/Users/profile", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setUser(response.data);
@@ -45,7 +43,7 @@ export default function TransferRequests() {
     try {
       const connection = new HubConnectionBuilder()
         .withUrl("https://localhost:44306/SystemHub", {
-          withCredentials: true,
+          // withCredentials: true,
         })
         .withAutomaticReconnect()
         .build();
@@ -95,14 +93,11 @@ export default function TransferRequests() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/TransferRequests`,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        },
-      );
+      const response = await axiosInstance.get(`/TransferRequests`, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setRequests(response.data);
@@ -165,15 +160,15 @@ export default function TransferRequests() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.post(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/TransferRequests/mark-received`,
+      const response = await axiosInstance.post(
+        `/TransferRequests/mark-received`,
         {
           requestId: requestId,
           postId: postId,
           oldUserId: user.userId,
         },
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||
@@ -259,15 +254,15 @@ export default function TransferRequests() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.post(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/TransferRequests/cancel-handover`,
+      const response = await axiosInstance.post(
+        `/TransferRequests/cancel-handover`,
         {
           requestId: requestId,
           postId: postId,
           oldUserId: user.userId,
         },
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||
@@ -353,17 +348,11 @@ export default function TransferRequests() {
     setIsLoading(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/TransferRequests",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        },
-      );
+      const response = await axiosInstance.get("/TransferRequests", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         setRequests(response.data);

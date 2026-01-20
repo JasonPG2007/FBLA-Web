@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import axiosInstance from "../api/axiosInstance";
 
 export default function Authentication() {
   // Variables
@@ -90,26 +91,25 @@ export default function Authentication() {
         role: "Student",
       };
 
-      const response = await axios.post(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/sign-up",
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-          validateStatus: (status) => status === 200 || status === 401,
+      const response = await axiosInstance.post("/Users/sign-up", payload, {
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        // withCredentials: true,
+        validateStatus: (status) => status === 200 || status === 401,
+      });
 
       // Success
       if (response.status == 200) {
         sessionStorage.removeItem("requiredSignIn");
 
+        // Set token
+        localStorage.setItem("accessToken", response.data.accessToken);
+
         window.dispatchEvent(
           new CustomEvent("app-error", {
             detail: {
-              message: "Signed up successfully",
+              message: response.data?.message,
               status: "success",
             },
           }),
@@ -183,8 +183,8 @@ export default function Authentication() {
 
     setIsInProcessing(true);
     try {
-      const responseSignInUser = await axios.post(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/sign-in`,
+      const responseSignInUser = await axiosInstance.post(
+        `/Users/sign-in`,
         {
           studentId: studentIdOrEmailForSignIn.includes("@")
             ? 0
@@ -196,7 +196,7 @@ export default function Authentication() {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
         },
@@ -268,8 +268,8 @@ export default function Authentication() {
       .filter((i) => i !== null);
 
     try {
-      const responseSignInUser = await axios.post(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/select-image`,
+      const responseSignInUser = await axiosInstance.post(
+        `/Users/select-image`,
         {
           studentId: studentIdOrEmailForSignIn.includes("@")
             ? 0
@@ -282,7 +282,7 @@ export default function Authentication() {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true,
+          // // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
         },
@@ -293,10 +293,16 @@ export default function Authentication() {
         handleChangeToSelectImage(e);
         sessionStorage.removeItem("requiredSignIn");
 
+        // Set token
+        localStorage.setItem(
+          "accessToken",
+          responseSignInUser.data.accessToken,
+        );
+
         window.dispatchEvent(
           new CustomEvent("app-error", {
             detail: {
-              message: "Signed in successfully",
+              message: responseSignInUser.data?.message,
               status: "success",
             },
           }),
@@ -1356,10 +1362,7 @@ export default function Authentication() {
       </div>
 
       {/* Modal pick image */}
-      <div
-        className="pick-image-container"
-        id="pick-image-container"
-      >
+      <div className="pick-image-container" id="pick-image-container">
         <div className="content-images">
           <p style={{ fontSize: "30px", fontWeight: "600" }}>
             {isClickSignIn ? "Select" : "Register"} two pictures of you:

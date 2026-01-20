@@ -5,6 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
+import axiosInstance from "../api/axiosInstance";
 
 export default function Home() {
   // Variables
@@ -23,14 +24,11 @@ export default function Home() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/newest-posts",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        },
-      );
+      const response = await axiosInstance.get("/Post/newest-posts", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setNewestPosts(response.data);

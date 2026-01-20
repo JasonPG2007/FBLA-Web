@@ -4,6 +4,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { debounce } from "lodash";
+import axiosInstance from "../api/axiosInstance";
 
 export default function Users() {
   // Variables
@@ -42,10 +43,10 @@ export default function Users() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/search-email?query=${query}`,
+      const response = await axiosInstance.get(
+        `/Users/search-email?query=${query}`,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
         },
@@ -112,11 +113,11 @@ export default function Users() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.post(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/mark-received/${postId}`,
+      const response = await axiosInstance.post(
+        `/Post/mark-received/${postId}`,
         null,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||
@@ -202,17 +203,11 @@ export default function Users() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        },
-      );
+      const response = await axiosInstance.get("/Users", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         setUsers(response.data);

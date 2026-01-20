@@ -11,6 +11,7 @@ const NotFoundPost = lazy(
 );
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import dayjs from "dayjs";
+import axiosInstance from "../api/axiosInstance";
 
 export default function MyPost() {
   // Variables
@@ -44,11 +45,11 @@ export default function MyPost() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.post(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/mark-received/${postId}`,
+      const response = await axiosInstance.post(
+        `/Post/mark-received/${postId}`,
         null,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||
@@ -138,10 +139,10 @@ export default function MyPost() {
     setIsRequesting(true);
 
     try {
-      const response = await axios.delete(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/PickUpRequest/pick-later/${postId}`,
+      const response = await axiosInstance.delete(
+        `/PickUpRequest/pick-later/${postId}`,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||
@@ -216,11 +217,11 @@ export default function MyPost() {
     setIsRequesting(true);
 
     try {
-      const response = await axios.post(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/PickUpRequest/accept-time-rescheduled/${requestId}`,
+      const response = await axiosInstance.post(
+        `/PickUpRequest/accept-time-rescheduled/${requestId}`,
         null,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||
@@ -378,14 +379,14 @@ export default function MyPost() {
     setIsRequesting(true);
 
     try {
-      const response = await axios.post(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/TransferRequests",
+      const response = await axiosInstance.post(
+        "/TransferRequests",
         {
           postId: objectToShowPopup.postId,
           oldUserId: user.userId,
         },
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
         },
@@ -481,15 +482,11 @@ export default function MyPost() {
     };
 
     try {
-      const response = await axios.post(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/PickUpRequest",
-        payload,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        },
-      );
+      const response = await axiosInstance.post("/PickUpRequest", payload, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         window.dispatchEvent(
@@ -565,10 +562,10 @@ export default function MyPost() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/sort-status?typePost=${status}`,
+      const response = await axiosInstance.get(
+        `/Post/sort-status?typePost=${status}`,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
         },
@@ -633,10 +630,10 @@ export default function MyPost() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Match/check-matched-post/${postId}`,
+      const response = await axiosInstance.get(
+        `/Match/check-matched-post/${postId}`,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
         },
@@ -704,14 +701,11 @@ export default function MyPost() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        },
-      );
+      const response = await axiosInstance.get("/Users/profile", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setUser(response.data);
@@ -728,14 +722,11 @@ export default function MyPost() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/Post/my-posts",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        },
-      );
+      const response = await axiosInstance.get("/Post/my-posts", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setPosts(response.data);
@@ -800,10 +791,10 @@ export default function MyPost() {
     try {
       for (const post of posts) {
         if (post.typePost === "Found") {
-          const response = await axios.get(
-            `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/TransferRequests/status-request-post/${post.postId}`,
+          const response = await axiosInstance.get(
+            `/TransferRequests/status-request-post/${post.postId}`,
             {
-              withCredentials: true,
+              // withCredentials: true,
               validateStatus: (status) =>
                 status === 200 || status === 401 || status === 404,
             },
@@ -876,10 +867,10 @@ export default function MyPost() {
     try {
       for (const post of posts) {
         if (post.typePost === "Lost") {
-          const response = await axios.get(
-            `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/PickUpRequest/check-status-post-pick-up/${post.postId}`,
+          const response = await axiosInstance.get(
+            `/PickUpRequest/check-status-post-pick-up/${post.postId}`,
             {
-              withCredentials: true,
+              // withCredentials: true,
               validateStatus: (status) =>
                 status === 200 || status === 401 || status === 404,
             },

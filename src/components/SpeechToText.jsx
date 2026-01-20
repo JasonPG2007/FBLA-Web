@@ -10,7 +10,7 @@ export default function SpeechToText() {
   const recognitionRef = useRef(null);
 
   // APIs
-  const API_URL_Auth = `https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `/CheckAuth/check-auth`;
 
   // Functions
   // Check authentication status and redirect if not authenticated
