@@ -529,6 +529,7 @@ export default function Profile() {
               <button
                 className="btn-yellow"
                 style={{
+                  marginTop: "20px",
                   width: "100%",
                   backgroundColor:
                     isModify && !isInProcessing ? "#ec7207" : "#d3d3d3",
@@ -552,9 +553,10 @@ export default function Profile() {
 
         {/* Avatar */}
         <div
-          style={{ marginLeft: "100px" }}
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDropAvatar}
+          className="change-delete-avatar"
+          style={{ marginLeft: "100px" }}
         >
           {isInProcessing ? (
             <Skeleton
@@ -576,8 +578,8 @@ export default function Profile() {
               }
               alt="avatar"
               style={{
-                borderRadius: "12px",
-                width: "420px",
+                borderRadius: "20px",
+                width: "100%",
                 height: "420px",
                 objectFit: "cover",
                 marginTop: "150px",

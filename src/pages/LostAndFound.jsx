@@ -111,7 +111,7 @@ export default function LostAndFound() {
         </p>
       </div>
 
-      <div className="newest-post-container">
+      <div className={posts.length > 0 ? "newest-post-container" : ""}>
         {/* Cards */}
         {isInProcessing ? (
           <div
@@ -125,15 +125,42 @@ export default function LostAndFound() {
             {Array.from({ length: 8 }).map((_, index) => (
               <div className="" key={index} style={{ marginBottom: "60px" }}>
                 <Skeleton
-                  height={290}
+                  height={
+                    isInProcessing &&
+                    window.matchMedia("(max-width: 576px)").matches // check mobile size
+                      ? 193
+                      : 290
+                  }
+                  width={
+                    isInProcessing &&
+                    window.matchMedia("(max-width: 576px)").matches // check mobile size
+                      ? 170
+                      : 405
+                  }
                   style={{ marginBottom: "10px", borderRadius: "20px" }}
                 />
                 <div className="">
                   <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                    <Skeleton height={35} width={405} />
+                    <Skeleton
+                      height={35}
+                      width={
+                        isInProcessing &&
+                        window.matchMedia("(max-width: 576px)").matches // check mobile size
+                          ? 170
+                          : 405
+                      }
+                    />
                   </h3>
                   <p>
-                    <Skeleton count={3} />
+                    <Skeleton
+                      count={3}
+                      width={
+                        isInProcessing &&
+                        window.matchMedia("(max-width: 576px)").matches // check mobile size
+                          ? 170
+                          : 405
+                      }
+                    />
                   </p>
                 </div>
               </div>
@@ -201,20 +228,18 @@ export default function LostAndFound() {
         ) : (
           <div
             style={{
-              marginLeft: "100%",
-              width: "100%",
+              margin: "auto",
               textAlign: "center",
-              marginTop: "50px",
             }}
           >
             <Suspense fallback={<p>Loading animation...</p>}>
               <Lottie
                 animationData={NotFoundPost}
-                className="m-auto"
-                style={{ width: "60%", margin: "auto" }}
+                className="m-auto no-data"
+                style={{ width: "20%", margin: "auto" }}
               />
             </Suspense>
-            <h1>No posts yet</h1>
+            <h1 className="no-posts">No posts yet</h1>
           </div>
         )}
       </div>

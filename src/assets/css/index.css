@@ -907,7 +907,7 @@ footer .right button {
   background: rgba(0, 0, 0, 0.55);
   display: none;
   justify-content: center;
-  z-index: 1;
+  z-index: 10000;
   align-items: center;
 }
 
@@ -1397,14 +1397,13 @@ th {
     rgba(253, 149, 58, 0.8),
     rgba(255, 119, 0, 0.4)
   );
-  margin-left: -100px;
-  border-top-right-radius: 20px;
+  margin-left: -78px;
+  border-radius: 20px;
   padding: 40px 20px;
   margin-top: 100px;
-  border-bottom-right-radius: 20px;
   position: relative;
   height: 750px;
-  width: 100%;
+  width: 130%;
 }
 
 .sidebarProfile a {
@@ -2393,4 +2392,8 @@ th {
 
 .btn-verify {
   margin-left: 10px;
+}
+
+.sidebar-and-content {
+  grid-template-columns: 15% 50% 28% !important;
 }
