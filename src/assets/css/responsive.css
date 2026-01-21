@@ -409,6 +409,18 @@
     display: unset !important;
   }
 
+  .form-sign-up-in-container.move-sign-up {
+    transform: translateX(-35.5%);
+  }
+
+  .form-sign-up-in-container.move-forgot-password {
+    transform: translateX(-72%);
+  }
+
+  .form-sign-up-in-container.move-cancel-forgot {
+    transform: translateX(-35.5%);
+  }
+
   .label-required-password {
     font-size: 13px !important;
   }
