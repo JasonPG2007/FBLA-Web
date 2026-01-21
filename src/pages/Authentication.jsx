@@ -853,9 +853,18 @@ export default function Authentication() {
                   Already have an account?{" "}
                   <span
                     onClick={() => {
-                      document.getElementById(
-                        "form-sign-up-in-container",
-                      ).style.transform = "translateX(-35.5%)";
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.add("move-sign-up");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-sign-in");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-forgot-password");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-cancel-forgot");
                     }}
                     style={{
                       color: "#072138",
@@ -947,9 +956,18 @@ export default function Authentication() {
                 <div className="form-control-authentication">
                   <span
                     onClick={() => {
-                      document.getElementById(
-                        "form-sign-up-in-container",
-                      ).style.transform = "translateX(-72%)";
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-sign-up");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-sign-in");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.add("move-forgot-password");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-cancel-forgot");
                     }}
                     style={{
                       color: "#5d6d7c",
@@ -999,9 +1017,18 @@ export default function Authentication() {
                   No account?{" "}
                   <span
                     onClick={() => {
-                      document.getElementById(
-                        "form-sign-up-in-container",
-                      ).style.transform = "translateX(0)";
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-sign-up");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.add("move-sign-in");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-forgot-password");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-cancel-forgot");
                     }}
                     style={{
                       color: "#072138",
@@ -1243,9 +1270,18 @@ export default function Authentication() {
                 >
                   <span
                     onClick={() => {
-                      document.getElementById(
-                        "form-sign-up-in-container",
-                      ).style.transform = "translateX(-35.5%)";
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-sign-up");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-sign-in");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-forgot-password");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.add("move-cancel-forgot");
                     }}
                     style={{
                       color: "#072138",

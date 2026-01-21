@@ -787,6 +787,22 @@ footer .right button {
   transition: all 0.3s ease-in-out;
 }
 
+.form-sign-up-in-container.move-sign-up {
+  transform: translateX(-35%);
+}
+
+.form-sign-up-in-container.move-sign-in {
+  transform: translateX(0);
+}
+
+.form-sign-up-in-container.move-forgot-password {
+  transform: translateX(-70%);
+}
+
+.form-sign-up-in-container.move-cancel-forgot {
+  transform: translateX(-35%);
+}
+
 .sign-up {
   width: 100%;
 }
