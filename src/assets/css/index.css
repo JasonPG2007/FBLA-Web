@@ -2397,7 +2397,3 @@ th {
 .sidebar-and-content {
   grid-template-columns: 15% 50% 28% !important;
 }
-
-.sidebar-and-content:has(< :nth-child(3)) {
-  grid-template-columns: unset !important;
-}
