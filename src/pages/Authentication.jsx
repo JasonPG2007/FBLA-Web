@@ -562,7 +562,10 @@ export default function Authentication() {
                 >
                   {msgSignIn.msg}
                 </p>
-                <div style={{ display: "flex", gap: "20px" }}>
+                <div
+                  style={{ display: "flex", gap: "20px" }}
+                  className="form-sign-up-last-first"
+                >
                   <div className="form-control-authentication">
                     <input
                       type="text"
@@ -679,7 +682,7 @@ export default function Authentication() {
                 {/* Password Requirement */}
                 {!isExistSpecialChar && (
                   <div
-                    className="form-control-authentication"
+                    className="form-control-authentication label-required-password"
                     style={{
                       marginTop: "-15px",
                       justifyContent: "left",
@@ -696,7 +699,7 @@ export default function Authentication() {
 
                 {!isExistNumber && (
                   <div
-                    className="form-control-authentication"
+                    className="form-control-authentication label-required-password"
                     style={{
                       marginTop: "-15px",
                       justifyContent: "left",
@@ -712,7 +715,7 @@ export default function Authentication() {
 
                 {!isExistUppercase && (
                   <div
-                    className="form-control-authentication"
+                    className="form-control-authentication label-required-password"
                     style={{
                       marginTop: "-15px",
                       justifyContent: "left",
@@ -728,7 +731,7 @@ export default function Authentication() {
 
                 {!isExistLowercase && (
                   <div
-                    className="form-control-authentication"
+                    className="form-control-authentication label-required-password"
                     style={{
                       marginTop: "-15px",
                       justifyContent: "left",
@@ -744,7 +747,7 @@ export default function Authentication() {
 
                 {!isValidLength && (
                   <div
-                    className="form-control-authentication"
+                    className="form-control-authentication label-required-password"
                     style={{
                       marginTop: "-15px",
                       justifyContent: "left",
@@ -852,7 +855,7 @@ export default function Authentication() {
                     onClick={() => {
                       document.getElementById(
                         "form-sign-up-in-container",
-                      ).style.transform = "translateX(-35%)";
+                      ).style.transform = "translateX(-35.5%)";
                     }}
                     style={{
                       color: "#072138",
@@ -946,7 +949,7 @@ export default function Authentication() {
                     onClick={() => {
                       document.getElementById(
                         "form-sign-up-in-container",
-                      ).style.transform = "translateX(-70%)";
+                      ).style.transform = "translateX(-72%)";
                     }}
                     style={{
                       color: "#5d6d7c",
@@ -1242,7 +1245,7 @@ export default function Authentication() {
                     onClick={() => {
                       document.getElementById(
                         "form-sign-up-in-container",
-                      ).style.transform = "translateX(-35%)";
+                      ).style.transform = "translateX(-35.5%)";
                     }}
                     style={{
                       color: "#072138",

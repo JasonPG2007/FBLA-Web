@@ -1,14 +1,11 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import SidebarProfile from "../components/SidebarProfile";
-import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import Skeleton from "react-loading-skeleton";
 import Lottie from "lottie-react";
-const NotFoundPost = lazy(
-  () => import("../assets/animations/Not-Found-Post.json"),
-);
+import NotFoundPost from "../assets/animations/Not-Found-Post.json";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import dayjs from "dayjs";
 import axiosInstance from "../api/axiosInstance";
