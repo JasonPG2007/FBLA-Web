@@ -392,8 +392,25 @@
   }
 
   /* Authentication page */
+  .authentication-container {
+    width: 100%;
+    margin-top: 26%;
+  }
+
   .form-box {
     width: 100%;
+  }
+
+  .form-sign-up-in-container {
+    width: 350%;
+  }
+
+  .form-sign-up-last-first {
+    display: unset !important;
+  }
+
+  .label-required-password {
+    font-size: 12px !important;
   }
 
   .pick-image-container .content-images {

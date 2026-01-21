@@ -30,6 +30,7 @@ export default function SidebarProfile() {
       });
 
       if (response.status == 200) {
+        localStorage.removeItem("accessToken");
         window.location.href = "/";
       }
     } catch (error) {
