@@ -316,9 +316,6 @@
     grid-template-columns: auto !important;
     height: max-content !important;
     width: 103% !important;
-    border-bottom-right-radius: unset !important;
-    border-top-right-radius: unset !important;
-    border-radius: 12px !important;
   }
 
   .sidebarProfile a {
@@ -337,6 +334,10 @@
   .sidebar-and-content {
     grid-template-columns: auto !important;
     gap: 0px !important;
+  }
+
+  .sidebar-and-content .change-delete-avatar {
+    margin-left: unset !important;
   }
 
   .user-avatar {
@@ -376,11 +377,11 @@
   }
 
   .profile-info-container {
-    width: 53% !important;
+    width: 100% !important;
   }
 
   .btn-yellow {
-    width: 186% !important;
+    width: 100% !important;
   }
 
   .btn-pick-up {
@@ -538,9 +539,17 @@
   /* Skeleton loading */
   .skeleton-loading {
     display: grid !important;
-    grid-template-columns: 50% 50% !important;
+    grid-template-columns: 1fr 1fr !important;
     width: 100% !important;
     /* overflow: hidden; */
+  }
+
+  .no-data {
+    width: 40% !important;
+  }
+
+  .no-posts {
+    font-size: 25px;
   }
 }
 
@@ -666,9 +675,6 @@
     grid-template-columns: auto auto auto auto !important;
     height: max-content !important;
     width: 103% !important;
-    border-bottom-right-radius: unset !important;
-    border-top-right-radius: unset !important;
-    border-radius: 12px !important;
   }
 
   .my-profile-title {
@@ -858,7 +864,6 @@
     width: 103% !important;
     border-bottom-right-radius: unset !important;
     border-top-right-radius: unset !important;
-    border-radius: 12px !important;
   }
 
   .my-profile-title {
