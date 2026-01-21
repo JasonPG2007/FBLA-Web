@@ -651,7 +651,7 @@ export default function Authentication() {
                     name=""
                     id="password"
                     className="form-control-input"
-                    placeholder=""
+                    placeholder="Ex: Here is password"
                     required
                     onChange={(e) => {
                       setPasswordSignUp(e.target.value);
@@ -768,7 +768,7 @@ export default function Authentication() {
                     name=""
                     id="confirm-password"
                     className="form-control-input"
-                    placeholder=""
+                    placeholder="Ex: Here is password"
                     required
                     onChange={(e) => {
                       setConfirmPasswordSignUp(e.target.value); // Used to set real password value
@@ -917,7 +917,7 @@ export default function Authentication() {
                     name=""
                     id="password-sign-in"
                     className="form-control-input"
-                    placeholder=""
+                    placeholder="Ex: Here is password"
                     required
                     onChange={(e) => {
                       setPasswordSignIn(e.target.value);
@@ -1100,7 +1100,7 @@ export default function Authentication() {
                     name=""
                     id="password-forgot-password"
                     className="form-control-input"
-                    placeholder=""
+                    placeholder="Ex: Here is password"
                     required
                     disabled={!isSentVerificationCodeEmail}
                     onChange={(e) => {
@@ -1159,7 +1159,7 @@ export default function Authentication() {
                     name=""
                     id="confirm-password-forgot-password"
                     className="form-control-input"
-                    placeholder=""
+                    placeholder="Ex: Here is password"
                     required
                     disabled={!isSentVerificationCodeEmail}
                     onChange={(e) => {
