@@ -512,7 +512,8 @@
 
   /* Suggestion */
   .info-user-suggestion img {
-    height: unset !important;
+    height: 50px !important;
+    width: 50px !important;
   }
 
   .info-user-suggestion span {

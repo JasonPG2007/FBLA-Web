@@ -29,6 +29,7 @@ export default function Chat() {
   const [isSending, setIsSending] = useState(false);
   const [isSentTempMessage, setIsSentTempMessage] = useState(false);
   const [isInProcessing, setIsInProcessing] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
 
   // Functions
@@ -99,6 +100,29 @@ export default function Chat() {
 
   // Handle send message
   const handleSendMessage = async () => {
+    if (!localStorage.getItem("accessToken")) {
+      window.dispatchEvent(
+        new CustomEvent("app-error", {
+          detail: {
+            message: "Please sign in to continue",
+            status: "warning",
+          },
+        }),
+      );
+    }
+
+    // Add temporary message for good ux
+    setMessagesFromChat((prev) => {
+      return [
+        ...prev,
+        {
+          messageChatId: Math.random(),
+          messageContent: message,
+          userSenderId: user.userId,
+        },
+      ];
+    });
+
     setIsSentTempMessage(true);
     setIsSending(true);
     setTemporaryListChat((prev) => {
@@ -119,6 +143,9 @@ export default function Chat() {
       userSenderId: 0,
       messageContent: message,
     };
+
+    // Reset message
+    setMessage("");
 
     try {
       const response = await axiosInstance.post("/MessageChat", payload, {
@@ -209,6 +236,7 @@ export default function Chat() {
   // Handle get all chats
   const handleGetAllChats = async () => {
     setIsSending(true);
+    setIsLoading(true);
 
     try {
       const response = await axiosInstance.get("/MessageChat/my-chats", {
@@ -271,6 +299,7 @@ export default function Chat() {
       }
     } finally {
       setIsSending(false);
+      setIsLoading(false);
     }
   };
 
@@ -533,12 +562,50 @@ export default function Chat() {
                     </form>
                   </div>
                 </div>
+              ) : isLoading ? (
+                Array.from({ length: 3 }).map((_, index) => (
+                  <div
+                    className=""
+                    key={index}
+                    style={{
+                      padding: "10px",
+                      marginBottom: "0px",
+                      display: "flex",
+                    }}
+                  >
+                    <Skeleton
+                      height={50}
+                      width={50}
+                      style={{
+                        marginBottom: "10px",
+                        marginRight: "10px",
+                        borderRadius: "50px",
+                        marginTop: "10px",
+                      }}
+                    />
+                    <div className="">
+                      <Skeleton
+                        count={3}
+                        width={170}
+                        height={20}
+                        style={{ marginBottom: "3px" }}
+                      />
+                    </div>
+                  </div>
+                ))
               ) : chats.length === 0 ? (
                 <div
                   className="chat-item"
-                  style={{ backgroundColor: "transparent", cursor: "default" }}
+                  style={{
+                    backgroundColor: "transparent",
+                    cursor: "default",
+                    marginTop: "50%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
                 >
-                  <p>No chats</p>
+                  <p>No chats yet</p>
                 </div>
               ) : (
                 chats.map((chat) => (

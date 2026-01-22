@@ -454,7 +454,7 @@ export default function Home() {
               </div>
             ))}
           </div>
-        ) : (
+        ) : newestPosts.length > 0 ? (
           newestPosts.map((item) => (
             <div className="card suggestion-card" key={item.postId}>
               {item.image ? (
@@ -513,6 +513,8 @@ export default function Home() {
               </div>
             </div>
           ))
+        ) : (
+          <h2>No posts yet</h2>
         )}
       </div>
 
