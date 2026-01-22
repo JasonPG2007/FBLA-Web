@@ -109,6 +109,8 @@ export default function Chat() {
           },
         }),
       );
+
+      return;
     }
 
     // Add temporary message for good ux
