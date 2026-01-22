@@ -412,8 +412,26 @@ export default function DetailPost() {
                 }}
                 className="btn-yellow"
                 onClick={() => {
+                  // const chatPopup = document.getElementById("chatPopup");
+                  // chatPopup.style.display = "flex";
+
+                  const chatBubble = document.getElementById("chatBubble");
                   const chatPopup = document.getElementById("chatPopup");
-                  chatPopup.style.display = "flex";
+                  if (chatPopup.style.display === "flex") {
+                    chatPopup.style.display = "none";
+                  } else {
+                    chatPopup.style.display = "flex";
+                  }
+
+                  // Click outside to close
+                  document.addEventListener("click", (e) => {
+                    if (
+                      chatBubble.contains(e.target) &&
+                      chatPopup.contains(e.target)
+                    ) {
+                      chatPopup.style.display = "none";
+                    }
+                  });
 
                   const temporaryMsg = {
                     message:
