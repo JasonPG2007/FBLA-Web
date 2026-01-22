@@ -691,6 +691,51 @@ export default function ModalReportStuff() {
                       )}
                     </div>
 
+                    <div className="sub-upload-img">
+                      <div
+                        className={!imageLostPreview ? "upload-img-box" : ""}
+                        onClick={() => {
+                          fileInputLostRef.current.click();
+                        }}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={handleDropLostImage}
+                      >
+                        {!imageLostPreview && (
+                          <>
+                            <i className="fa-solid fa-cloud-arrow-up"></i>
+                            <p>Drag and Drop here</p>
+                            <p
+                              style={{
+                                marginBottom: "30px",
+                                marginTop: "10px",
+                              }}
+                              className="label-or"
+                            >
+                              or
+                            </p>
+                            <label className="btn-yellow">Select image</label>
+                            <input
+                              type="file"
+                              id="upload-img"
+                              ref={fileInputLostRef}
+                              style={{ display: "none" }}
+                              onChange={handleImageLostChange}
+                            />
+                          </>
+                        )}
+                        {imageLostPreview && (
+                          <img
+                            src={imageLostPreview}
+                            alt="Preview lost item"
+                            width="290"
+                            loading="lazy"
+                            height="297"
+                            className="preview-img"
+                          />
+                        )}
+                      </div>
+                    </div>
+
                     {/* Btn change image */}
                     {imageLostPreview && (
                       <div className="btn-change-img">
