@@ -148,47 +148,49 @@ export default function SpeechToText() {
   }, [sessionStorage.getItem("requiredSignIn")]);
 
   useEffect(() => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!localStorage.getItem("mute")) {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    if (!SpeechRecognition) {
-      alert("Your browser does not support Speech Recognition");
-      return;
-    }
+      if (!SpeechRecognition) {
+        alert("Your browser does not support Speech Recognition");
+        return;
+      }
 
-    const recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.continuous = true; // Keep listening, don't stop after 1 sentence
-    recognition.interimResults = true; // Allow to show preview text before the final text
+      const recognition = new SpeechRecognition();
+      recognition.lang = "en-US";
+      recognition.continuous = true; // Keep listening, don't stop after 1 sentence
+      recognition.interimResults = true; // Allow to show preview text before the final text
 
-    recognition.onresult = (event) => {
-      if (isSpeaking) return;
+      recognition.onresult = (event) => {
+        if (isSpeaking) return;
 
-      let finalText = "";
-      let interimText = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const transcript = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-          finalText += transcript + " "; // Final result
-        } else {
-          interimText += transcript; // temporary text
+        let finalText = "";
+        let interimText = "";
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalText += transcript + " "; // Final result
+          } else {
+            interimText += transcript; // temporary text
+          }
         }
-      }
 
-      // Save final text
-      if (finalText) {
-        setFinalText(finalText.trim());
-        // Check and do action with final text
-        handleLogicForVoiceControl(finalText);
-      }
-    };
+        // Save final text
+        if (finalText) {
+          setFinalText(finalText.trim());
+          // Check and do action with final text
+          handleLogicForVoiceControl(finalText);
+        }
+      };
 
-    recognition.onend = () => {
-      setListening(false);
-      setTextToResponse("Voice control is off. Press Enter to enable");
-    };
+      recognition.onend = () => {
+        setListening(false);
+        setTextToResponse("Voice control is off. Press Enter to enable");
+      };
 
-    recognitionRef.current = recognition;
+      recognitionRef.current = recognition;
+    }
   }, [finalText]);
 
   useEffect(() => {
@@ -199,7 +201,9 @@ export default function SpeechToText() {
     document.body.addEventListener(
       "click",
       () => {
-        setTextToResponse("Press Enter to turn on voice control");
+        if (!localStorage.getItem("mute")) {
+          setTextToResponse("Press Enter to turn on voice control");
+        }
       },
       { once: true },
     );

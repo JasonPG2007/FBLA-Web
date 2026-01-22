@@ -419,6 +419,26 @@ export default function Header() {
                   )}
                   <a
                     href=""
+                    onClick={() => {
+                      if (localStorage.getItem("mute")) {
+                        localStorage.removeItem("mute");
+                      } else {
+                        localStorage.setItem("mute", true);
+                      }
+                    }}
+                  >
+                    {!localStorage.getItem("mute") ? (
+                      <>
+                        <i className="fa-solid fa-volume-high"></i> Mute
+                      </>
+                    ) : (
+                      <>
+                        <i className="fa-solid fa-volume-xmark"></i> Unmute
+                      </>
+                    )}
+                  </a>
+                  <a
+                    href=""
                     onClick={(e) => {
                       e.preventDefault();
 
