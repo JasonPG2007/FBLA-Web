@@ -100,19 +100,6 @@ export default function Chat() {
 
   // Handle send message
   const handleSendMessage = async () => {
-    if (!localStorage.getItem("accessToken")) {
-      window.dispatchEvent(
-        new CustomEvent("app-error", {
-          detail: {
-            message: "Please sign in to continue",
-            status: "warning",
-          },
-        }),
-      );
-
-      return;
-    }
-
     // Add temporary message for good ux
     setMessagesFromChat((prev) => {
       return [
@@ -176,6 +163,17 @@ export default function Chat() {
           new CustomEvent("app-error", {
             detail: {
               message: "Please verify your email address to continue",
+              status: "warning",
+            },
+          }),
+        );
+      }
+
+      if (response.status === 401) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Please sign in to continue",
               status: "warning",
             },
           }),
