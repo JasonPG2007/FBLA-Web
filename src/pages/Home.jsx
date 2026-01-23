@@ -480,6 +480,7 @@ export default function Home() {
                 style={{ marginBottom: "40px" }}
               >
                 <div className="info-user-suggestion">
+                  {item.user.avatar ? (
                   <img
                     src={item.user.urlAvatar}
                     alt="avatar"
@@ -488,6 +489,16 @@ export default function Home() {
                     style={{ borderRadius: "50%" }}
                     loading="lazy"
                   />
+                  ) : (
+                  <img
+                    src="/Image/user_icon.png"
+                    alt="avatar"
+                    width={50}
+                    height={50}
+                    style={{ borderRadius: "50%" }}
+                    loading="lazy"
+                  />
+                  )}
                   <span>{`${item.user.firstName} ${item.user.lastName}`}</span>
                 </div>
                 <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
