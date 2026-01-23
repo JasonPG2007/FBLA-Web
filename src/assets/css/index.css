@@ -1564,6 +1564,16 @@ th {
   margin-top: 20px;
 }
 
+/* custom scrollbar */
+.pick-image-container .content-images .images::-webkit-scrollbar {
+  width: 6px;
+}
+
+.pick-image-container .content-images .images::-webkit-scrollbar-thumb {
+  background: #fdcc4b;
+  border-radius: 20px;
+}
+
 .pick-image-container .content-images .images img {
   border-radius: 20px;
   cursor: pointer;
@@ -2159,6 +2169,7 @@ th {
 .results-container::-webkit-scrollbar {
   width: 6px;
 }
+
 .results-container::-webkit-scrollbar-thumb {
   background: #fdcc4b;
   border-radius: 20px;
