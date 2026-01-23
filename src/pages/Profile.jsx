@@ -536,7 +536,6 @@ export default function Profile() {
                   color: isModify && !isInProcessing ? "#fff" : "#8c8c8c",
                   cursor:
                     isModify && !isInProcessing ? "pointer" : "not-allowed",
-                  pointerEvents: isModify && !isInProcessing ? "auto" : "none",
                   opacity: isModify && !isInProcessing ? 1 : 0.6,
                 }}
                 disabled={!isModify || isInProcessing}
