@@ -40,8 +40,7 @@
     left: -151px !important;
     justify-content: center !important;
     align-items: center !important;
-
-    width: max-content !important;
+    min-width: max-content !important;
   }
 
   .dropdown a {
