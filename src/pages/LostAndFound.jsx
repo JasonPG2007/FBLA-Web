@@ -1,4 +1,3 @@
-import axios from "axios";
 import Lottie from "lottie-react";
 import { Suspense, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -168,7 +167,14 @@ export default function LostAndFound() {
           </div>
         ) : posts.length > 0 ? (
           posts.map((item) => (
-            <div className="card suggestion-card" key={item.postId}>
+            <div
+              className="card suggestion-card"
+              style={{ cursor: "pointer" }}
+              key={item.postId}
+              onClick={() => {
+                window.location.href = `/detail-post/${item.postId}`;
+              }}
+            >
               {item.image ? (
                 <img
                   src={item.urlImage}
@@ -192,14 +198,25 @@ export default function LostAndFound() {
                 style={{ marginBottom: "40px" }}
               >
                 <div className="info-user-suggestion">
-                  <img
-                    src={item.user.urlAvatar}
-                    alt="avatar"
-                    width={50}
-                    height={50}
-                    style={{ borderRadius: "50%" }}
-                    loading="lazy"
-                  />
+                  {item.user.avatar ? (
+                    <img
+                      src={item.user.urlAvatar}
+                      alt="avatar"
+                      width={50}
+                      height={50}
+                      style={{ borderRadius: "50%" }}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <img
+                      src="/Image/user_icon.png"
+                      alt="avatar"
+                      width={50}
+                      height={50}
+                      style={{ borderRadius: "50%" }}
+                      loading="lazy"
+                    />
+                  )}
                   <span>{`${item.user.firstName} ${item.user.lastName}`}</span>
                 </div>
                 <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>

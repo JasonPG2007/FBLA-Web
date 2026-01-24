@@ -502,7 +502,7 @@ footer .right button {
 }
 
 .card-search {
-  margin-bottom: 33%;
+  margin-bottom: 30%;
 }
 
 .status-post-lost {
@@ -618,6 +618,7 @@ footer .right button {
 }
 
 .detail-filter {
+  margin-top: 9px;
   position: relative;
 }
 
@@ -660,21 +661,6 @@ footer .right button {
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
-}
-
-.btn-use-filter {
-  font-family: "Poppins", sans-serif;
-  background-color: #fdcc4b;
-  border: none;
-  width: max-content;
-  color: #072138;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 16px;
-  padding: 10px 14px;
-  border-radius: 20px;
-  transition: all 0.3s ease-in-out;
-  margin-left: auto;
 }
 
 .card-row {

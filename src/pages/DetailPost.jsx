@@ -461,6 +461,8 @@ export default function DetailPost() {
           <div
             style={{
               display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             <h1
@@ -488,7 +490,7 @@ export default function DetailPost() {
                   marginLeft: "auto",
                   height: "max-content",
                 }}
-                className="btn-yellow"
+                className="btn-yellow btn-contact-owner"
                 onClick={() => {
                   // const chatPopup = document.getElementById("chatPopup");
                   // chatPopup.style.display = "flex";
@@ -553,6 +555,7 @@ export default function DetailPost() {
               gridTemplateColumns: "auto auto",
               gap: "100px",
             }}
+            className="detail-post-container"
           >
             <div
               style={{
@@ -560,6 +563,7 @@ export default function DetailPost() {
                 gridTemplateColumns: "80% 20%",
                 gap: "20px",
               }}
+              className="image-post-details"
             >
               <div className="post-image-container">
                 <div>
@@ -605,7 +609,7 @@ export default function DetailPost() {
               </div>
 
               {/* Post image mini */}
-              <div className="post-image-mini">
+              {/* <div className="post-image-mini">
                 {post.image2 ? (
                   <img
                     src={post.image2 ? post.urlImage2 : ""}
@@ -714,7 +718,7 @@ export default function DetailPost() {
                     <span>No image</span>
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
 
             {/* About me */}

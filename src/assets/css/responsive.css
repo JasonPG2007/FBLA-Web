@@ -392,6 +392,10 @@
     width: unset !important;
   }
 
+  .btn-contact-owner {
+    width: max-content !important;
+  }
+
   /* Authentication page */
   .authentication-container {
     width: 100%;
@@ -551,6 +555,15 @@
 
   .no-posts {
     font-size: 25px;
+  }
+
+  /* Detail post */
+  .image-post-details {
+    grid-template-columns: unset !important;
+  }
+
+  .detail-post-container {
+    grid-template-columns: unset !important;
   }
 }
 
