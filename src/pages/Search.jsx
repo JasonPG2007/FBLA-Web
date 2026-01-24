@@ -1,5 +1,5 @@
 import Lottie from "lottie-react";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, use, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
@@ -7,7 +7,7 @@ import axiosInstance from "../api/axiosInstance";
 import NotFoundPost from "../assets/animations/Not-Found-Post.json";
 import Skeleton from "react-loading-skeleton";
 import ReactMarkdown from "react-markdown";
-import { set } from "lodash";
+import { useSearchParams } from "react-router-dom";
 
 export default function Search() {
   // Variables
@@ -19,6 +19,9 @@ export default function Search() {
   let [status, setStatus] = useState("");
   let [categoryId, setCategoryId] = useState("");
   let [nameItem, setNameItem] = useState("");
+  const [searchParams] = useSearchParams();
+  const categoryIdOnUrl = searchParams.get("categoryId") || "";
+  const statusOnUrl = searchParams.get("status") || "";
 
   // Functions
   // Get category posts
@@ -222,7 +225,11 @@ export default function Search() {
   // UseEffect
   useEffect(() => {
     searchCategoryPosts();
-    getAllPosts();
+    if (categoryIdOnUrl || statusOnUrl) {
+      handleSearch(statusOnUrl, categoryIdOnUrl, "");
+    } else {
+      getAllPosts();
+    }
   }, []);
 
   return (

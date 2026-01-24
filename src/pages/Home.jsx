@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import Skeleton from "react-loading-skeleton";
@@ -9,16 +8,84 @@ import axiosInstance from "../api/axiosInstance";
 
 export default function Home() {
   // Variables
+  let [categoryPosts, setCategoryPosts] = useState([]);
   let [newestPosts, setNewestPosts] = useState([]);
   let [pick60LostPosts, setPick60LostPosts] = useState("");
   let [pick60ReceivedPosts, setPick60ReceivedPosts] = useState("");
+  let [categoryId, setCategoryId] = useState("");
+  let [status, setStatus] = useState("");
   let [isInProcessing, setIsInProcessing] = useState(false);
 
   // Functions
+  // Get category posts
+  const searchCategoryPosts = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axiosInstance.get(`/CategoryPost`, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
+
+      if (response.status === 200) {
+        setCategoryPosts(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
   function handleSearch(e) {
     e.preventDefault();
 
-    window.location.href = "/search";
+    window.location.href = `/search${categoryId && !status ? `?categoryId=${categoryId}` : ""}${!categoryId && status ? `?status=${status}` : ""}${categoryId && status ? `?categoryId=${categoryId}&status=${status}` : ""}`;
   }
 
   // Get Newest Posts
@@ -221,6 +288,7 @@ export default function Home() {
 
   // UseEffect
   useEffect(() => {
+    searchCategoryPosts();
     getPick60LostPosts();
     getPick60ReceivedPosts();
     getNewestPosts();
@@ -718,9 +786,21 @@ export default function Home() {
             <div className="left">
               <label htmlFor="category">Type of Item</label>
               <br />
-              <select className="select" name="" id="category">
+              <select
+                name=""
+                id="type"
+                value={categoryId}
+                onChange={(e) => {
+                  setCategoryId(e.target.value);
+                }}
+                className="select"
+              >
                 <option value="">Select type</option>
-                <option value="">Iphone</option>
+                {categoryPosts.map((item) => (
+                  <option key={item.categoryPostId} value={item.categoryPostId}>
+                    {item.categoryPostName}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="right">
@@ -732,10 +812,17 @@ export default function Home() {
             <div className="left">
               <label htmlFor="status">Status</label>
               <br />
-              <select className="select" name="" id="status">
+              <select
+                className="select"
+                name=""
+                id="status"
+                onChange={(e) => {
+                  setStatus(e.target.value);
+                }}
+              >
                 <option value="">Select Status</option>
-                <option value="">Lost</option>
-                <option value="">Found</option>
+                <option value="Lost">Lost</option>
+                <option value="Found">Found</option>
               </select>
             </div>
             <div className="right">
