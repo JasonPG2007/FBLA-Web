@@ -337,8 +337,18 @@ export default function Search() {
                 }}
               />
             </div>
-            <button className="btn-yellow" style={{ marginLeft: "auto" }}>
-              <i className="fa-solid fa-sliders"></i> Use Filter
+            <button
+              className="btn-yellow"
+              style={{ marginLeft: "auto" }}
+              disabled={isInProcessing}
+            >
+              {isInProcessing ? (
+                <i className="fas fa-spinner fa-spin"></i>
+              ) : (
+                <>
+                  <i className="fa-solid fa-sliders"></i> Use Filter
+                </>
+              )}
             </button>
           </div>
         </div>
