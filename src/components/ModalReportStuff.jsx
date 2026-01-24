@@ -1,7 +1,6 @@
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import Skeleton from "react-loading-skeleton";
 import { debounce } from "lodash";
 import axiosInstance from "../api/axiosInstance";
@@ -610,7 +609,7 @@ export default function ModalReportStuff() {
                 setLostOrFound("Lost");
               }}
             >
-              Lost <span className="stuff-header">Stuff</span>
+              Lost <span className="stuff-header">Item</span>
             </h2>
           </div>
 
@@ -629,7 +628,7 @@ export default function ModalReportStuff() {
                 setLostOrFound("Found");
               }}
             >
-              Found <span className="stuff-header">Stuff</span>
+              Found <span className="stuff-header">Item</span>
             </h2>
           </div>
 
@@ -766,16 +765,14 @@ export default function ModalReportStuff() {
                   <div className="stuff-information-right-container">
                     <div className="stuff-information-box">
                       {/* Stuff info */}
-                      <h2 style={{ marginBottom: "20px" }}>
-                        Stuff Information
-                      </h2>
+                      <h2 style={{ marginBottom: "20px" }}>Item Information</h2>
                       <div className="stuff-information">
                         <div className="left">
                           <label
                             htmlFor="stuff-name"
                             style={{ fontWeight: "600" }}
                           >
-                            Stuff Name*
+                            Item Name*
                           </label>
                           <br />
                           <div
@@ -1102,16 +1099,14 @@ export default function ModalReportStuff() {
                   <div className="stuff-information-right-container">
                     <div className="stuff-information-box">
                       {/* Stuff info */}
-                      <h2 style={{ marginBottom: "20px" }}>
-                        Stuff Information
-                      </h2>
+                      <h2 style={{ marginBottom: "20px" }}>Item Information</h2>
                       <div className="stuff-information">
                         <div className="left">
                           <label
                             htmlFor="stuff-name"
                             style={{ fontWeight: "600" }}
                           >
-                            Stuff Name*
+                            Item Name*
                           </label>
                           <br />
                           <div

@@ -11,4 +11,4 @@ Currently, two members in this team are:
 
 ## Topic of this Project
 
-We are building a website that helps everyone in the school find their lost stuff in my school in the US - the name school is Discovery High School.
+We are building a website that helps everyone in the school find their lost item in my school in the US - the name school is Discovery High School.

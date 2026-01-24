@@ -91,7 +91,7 @@ export default function Home() {
     setIsInProcessing(true);
 
     try {
-      const response = await axiosInstance.get("/Post/quick-30-lost-posts", {
+      const response = await axiosInstance.get("/Post/quick-60-lost-posts", {
         // withCredentials: true,
         validateStatus: (status) =>
           status === 200 || status === 401 || status === 404,
@@ -267,7 +267,7 @@ export default function Home() {
               LOST
             </strong>
             <br />
-            Stuffs or reunite{" "}
+            Items or reunite{" "}
             <strong
               style={{
                 fontSize: "55px",
@@ -276,7 +276,7 @@ export default function Home() {
             >
               FOUND
             </strong>{" "}
-            Stuffs with
+            Items with
             <br />
             their owners
           </p>
@@ -308,7 +308,11 @@ export default function Home() {
             >
               <strong>
                 <span style={{ fontSize: "25px", color: "#072138" }}>
-                  {pick60LostPosts || "0"}
+                  {isInProcessing ? (
+                    <i className="fas fa-spinner fa-spin"></i>
+                  ) : (
+                    pick60LostPosts || "0"
+                  )}
                 </span>{" "}
                 <br /> Lost Items
               </strong>
@@ -326,7 +330,11 @@ export default function Home() {
             >
               <strong>
                 <span style={{ fontSize: "25px", color: "#072138" }}>
-                  {pick60ReceivedPosts || "0"}
+                  {isInProcessing ? (
+                    <i className="fas fa-spinner fa-spin"></i>
+                  ) : (
+                    pick60ReceivedPosts || "0"
+                  )}
                 </span>{" "}
                 <br /> Received Items
               </strong>
@@ -343,7 +351,7 @@ export default function Home() {
               marginLeft: "2%",
             }}
           >
-            It's super easy and takes only minutes. Just add your stuff's info,
+            It's super easy and takes only minutes. Just add your item's info,
             <br />
             picture, and contact information.
           </p>
@@ -418,8 +426,8 @@ export default function Home() {
           </p>
           <p>
             This step allows you to have a personalized space for managing your
-            stuff. You can edit and update your profile, contact other users,
-            and access useful tools.
+            item. You can edit and update your profile, contact other users, and
+            access useful tools.
           </p>
         </div>
 
@@ -450,7 +458,7 @@ export default function Home() {
               top: "-30px",
             }}
           >
-            Report a stuff
+            Report a item
           </p>
           <p>
             Share the details of your lost or found items by creating a post.
@@ -606,7 +614,7 @@ export default function Home() {
               {item.image ? (
                 <img
                   src={item.urlImage}
-                  alt="picture of stuff"
+                  alt="picture of item"
                   style={{
                     width: "100%",
                     height: "300px",
@@ -693,7 +701,7 @@ export default function Home() {
         >
           Search
         </span>{" "}
-        for Stuffs in your
+        for <strong>Items</strong> in your
         <span
           style={{
             fontFamily: "Mochiy Pop One, sans-serif",
@@ -708,7 +716,7 @@ export default function Home() {
         <div className="quick-search">
           <div className="categories">
             <div className="left">
-              <label htmlFor="category">Type of Stuff</label>
+              <label htmlFor="category">Type of Item</label>
               <br />
               <select className="select" name="" id="category">
                 <option value="">Select type</option>
@@ -720,24 +728,24 @@ export default function Home() {
             </div>
           </div>
           <div className="pipe">|</div>
-          <div className="location">
+          <div className="status-quick-search">
             <div className="left">
-              <label htmlFor="location">Location</label>
+              <label htmlFor="status">Status</label>
               <br />
-              <select className="select" name="" id="location">
-                <option value="">Select location</option>
-                <option value="">Hall 500</option>
-                <option value="">Hall 600</option>
+              <select className="select" name="" id="status">
+                <option value="">Select Status</option>
+                <option value="">Lost</option>
+                <option value="">Found</option>
               </select>
             </div>
             <div className="right">
-              <i className="fa-solid fa-location-dot"></i>
+              <i className="fa-solid fa-tag"></i>
             </div>
           </div>
           <div className="pipe">|</div>
           <div className="btn-quick-search">
             <button>
-              Find a stuff <i className="fa-solid fa-arrow-right"></i>
+              Search item <i className="fa-solid fa-arrow-right"></i>
             </button>
           </div>
         </div>

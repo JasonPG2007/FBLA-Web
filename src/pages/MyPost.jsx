@@ -1071,7 +1071,7 @@ export default function MyPost() {
                   {post.image ? (
                     <img
                       src={post.image ? post.urlImage : ""}
-                      alt="picture of stuff"
+                      alt="picture of item"
                       loading="lazy"
                       style={{
                         width: "100%",
