@@ -194,7 +194,9 @@ export default function SpeechToText() {
   }, [finalText]);
 
   useEffect(() => {
-    speak(textToResponse);
+    if (!localStorage.getItem("mute")) {
+      speak(textToResponse);
+    }
   }, [textToResponse]);
 
   useEffect(() => {
