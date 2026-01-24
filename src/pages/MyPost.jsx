@@ -997,7 +997,7 @@ export default function MyPost() {
                 width: "max-content",
                 color: "white",
                 padding: "1px 30px",
-                borderRadius: "8px",
+                borderRadius: "20px",
                 position: "absolute",
                 top: "-50%",
                 left: "0",

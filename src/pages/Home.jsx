@@ -10,6 +10,8 @@ import axiosInstance from "../api/axiosInstance";
 export default function Home() {
   // Variables
   let [newestPosts, setNewestPosts] = useState([]);
+  let [pick60LostPosts, setPick60LostPosts] = useState("");
+  let [pick60ReceivedPosts, setPick60ReceivedPosts] = useState("");
   let [isInProcessing, setIsInProcessing] = useState(false);
 
   // Functions
@@ -84,8 +86,143 @@ export default function Home() {
     }
   };
 
+  // Get Pick 60 Lost Posts
+  const getPick60LostPosts = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axiosInstance.get("/Post/quick-30-lost-posts", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
+
+      if (response.status === 200) {
+        setPick60LostPosts(response.data.length);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  // Get Pick 60 Received Posts
+  const getPick60ReceivedPosts = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axiosInstance.get(
+        "/Post/quick-60-received-posts",
+        {
+          // withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        },
+      );
+
+      if (response.status === 200) {
+        setPick60ReceivedPosts(response.data.length);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
   // UseEffect
   useEffect(() => {
+    getPick60LostPosts();
+    getPick60ReceivedPosts();
     getNewestPosts();
   }, []);
 
@@ -170,12 +307,13 @@ export default function Home() {
               }}
             >
               <strong>
-                <span style={{ fontSize: "25px", color: "#072138" }}>30</span>{" "}
-                <br /> Lost Stuffs
+                <span style={{ fontSize: "25px", color: "#072138" }}>
+                  {pick60LostPosts || "0"}
+                </span>{" "}
+                <br /> Lost Items
               </strong>
             </button>
             <p style={{ fontSize: "20px" }}>
-              {" "}
               <strong className="pipe">|</strong>
             </p>
             <button
@@ -186,10 +324,11 @@ export default function Home() {
                 cursor: "pointer",
               }}
             >
-              {" "}
               <strong>
-                <span style={{ fontSize: "25px" }}>60</span> <br /> Receive
-                Stuffs
+                <span style={{ fontSize: "25px", color: "#072138" }}>
+                  {pick60ReceivedPosts || "0"}
+                </span>{" "}
+                <br /> Received Items
               </strong>
             </button>
           </div>
@@ -456,7 +595,14 @@ export default function Home() {
           </div>
         ) : newestPosts.length > 0 ? (
           newestPosts.map((item) => (
-            <div className="card suggestion-card" key={item.postId}>
+            <div
+              className="card suggestion-card"
+              key={item.postId}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                window.location.href = `/detail-post/${item.postId}`;
+              }}
+            >
               {item.image ? (
                 <img
                   src={item.urlImage}
@@ -480,14 +626,25 @@ export default function Home() {
                 style={{ marginBottom: "40px" }}
               >
                 <div className="info-user-suggestion">
-                  <img
-                    src={item.user.urlAvatar}
-                    alt="avatar"
-                    width={50}
-                    height={50}
-                    style={{ borderRadius: "50%" }}
-                    loading="lazy"
-                  />
+                  {item.user.avatar ? (
+                    <img
+                      src={item.user.urlAvatar}
+                      alt="avatar"
+                      width={50}
+                      height={50}
+                      style={{ borderRadius: "50%" }}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <img
+                      src="/Image/user_icon.png"
+                      alt="avatar"
+                      width={50}
+                      height={50}
+                      style={{ borderRadius: "50%" }}
+                      loading="lazy"
+                    />
+                  )}
                   <span>{`${item.user.firstName} ${item.user.lastName}`}</span>
                 </div>
                 <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
