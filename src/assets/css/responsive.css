@@ -27,10 +27,6 @@
     margin-right: unset !important;
   }
 
-  .nav .list-service a:first-child {
-    margin-top: 15px;
-  }
-
   .nav .list-service button {
     margin-left: unset !important;
     margin-bottom: 40px;
@@ -41,12 +37,14 @@
     grid-template-columns: 1fr 1fr 1fr !important;
     /* overflow: unset; */
     left: -135px !important;
+    justify-content: center !important;
+    align-items: center !important;
 
     width: max-content !important;
   }
 
   .dropdown a {
-    padding: 8px 10px;
+    padding: 8px 10px !important;
   }
 
   /* Search image bar */
