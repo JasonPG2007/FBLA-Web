@@ -578,7 +578,7 @@ export default function DetailPost() {
                   ) : post.image ? (
                     <img
                       src={post.image ? post.urlImage : ""}
-                      alt="picture of stuff"
+                      alt="picture of item"
                       loading="lazy"
                       style={{
                         width: "100%",
@@ -613,7 +613,7 @@ export default function DetailPost() {
                 {post.image2 ? (
                   <img
                     src={post.image2 ? post.urlImage2 : ""}
-                    alt="picture of stuff"
+                    alt="picture of item"
                     loading="lazy"
                     style={{
                       width: "80%",
@@ -649,7 +649,7 @@ export default function DetailPost() {
                 {post.image2 ? (
                   <img
                     src={post.image2 ? post.urlImage2 : ""}
-                    alt="picture of stuff"
+                    alt="picture of item"
                     loading="lazy"
                     style={{
                       width: "80%",
@@ -685,7 +685,7 @@ export default function DetailPost() {
                 {post.image2 ? (
                   <img
                     src={post.image2 ? post.urlImage2 : ""}
-                    alt="picture of stuff"
+                    alt="picture of item"
                     loading="lazy"
                     style={{
                       width: "80%",
@@ -952,7 +952,7 @@ export default function DetailPost() {
                       {item.image ? (
                         <img
                           src={item.image ? item.urlImage : ""}
-                          alt="picture of stuff"
+                          alt="picture of item"
                           loading="lazy"
                           style={{
                             width: "100%",
@@ -1138,7 +1138,7 @@ export default function DetailPost() {
                           {suggestion.image ? (
                             <img
                               src={suggestion.urlImage}
-                              alt="picture of stuff"
+                              alt="picture of item"
                               style={{
                                 width: "100%",
                                 height: "300px",

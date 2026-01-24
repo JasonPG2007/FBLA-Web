@@ -297,7 +297,7 @@ export default function Search() {
 
             <div className="detail-filter">
               <p>
-                <label htmlFor="type">Type of Stuff</label>
+                <label htmlFor="type">Type of Item</label>
               </p>
               <select
                 name=""
@@ -355,7 +355,7 @@ export default function Search() {
       </form>
 
       {/* Cards section */}
-      <div className="card-row">
+      <div className={posts.length > 0 ? `card-row` : ""}>
         {isInProcessing ? (
           <div
             style={{
@@ -422,7 +422,7 @@ export default function Search() {
               {item.image ? (
                 <img
                   src={item.urlImage}
-                  alt="picture of stuff"
+                  alt="picture of item"
                   style={{
                     width: "100%",
                     height: "300px",
@@ -489,7 +489,10 @@ export default function Search() {
         ) : (
           <div
             style={{
-              margin: "auto",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              flexDirection: "column",
               textAlign: "center",
             }}
           >
@@ -497,7 +500,7 @@ export default function Search() {
               <Lottie
                 animationData={NotFoundPost}
                 className="m-auto no-data"
-                style={{ width: "20%", margin: "auto" }}
+                style={{ width: "15%" }}
               />
             </Suspense>
             <h1 className="no-posts">No posts yet</h1>

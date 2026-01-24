@@ -2,8 +2,6 @@ import ModalReportStuff from "./ModalReportStuff";
 import { lazy, Suspense, useEffect, useState } from "react";
 const Lottie = lazy(() => import("lottie-react"));
 import DocumentScan from "../assets/animations/Document-OCR-Scan.json";
-import Cookies from "js-cookie";
-import axios from "axios";
 import axiosInstance from "../api/axiosInstance";
 import Skeleton from "react-loading-skeleton";
 import ReactMarkdown from "react-markdown";
@@ -376,6 +374,9 @@ export default function Header() {
               aria-label="Sign in button"
               onClick={() => {
                 document.getElementById("dropdown").classList.toggle("hidden");
+                document
+                  .getElementById("dropdown")
+                  .classList.toggle("show-mobile");
               }}
             >
               {isInProcessing ? (
@@ -642,7 +643,7 @@ export default function Header() {
                   {item.post.image ? (
                     <img
                       src={item.post.urlImage}
-                      alt="picture of stuff"
+                      alt="picture of item"
                       style={{
                         width: "100%",
                         height: "300px",

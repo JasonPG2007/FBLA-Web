@@ -43,7 +43,7 @@ export default function About() {
         <div className="content-bottom">
           <p></p>
           <button
-            aria-label="Report a stuff button"
+            aria-label="Report a item button"
             className="btn"
             onClick={() => {
               checkAuthentication();
@@ -116,7 +116,7 @@ export default function About() {
         <div className="quick-search">
           <div className="categories">
             <div className="left">
-              <label htmlFor="category">Type of Stuff</label>
+              <label htmlFor="category">Type of Item</label>
               <br />
               <select className="select" name="" id="category">
                 <option value="">Select type</option>
@@ -128,24 +128,24 @@ export default function About() {
             </div>
           </div>
           <div className="pipe">|</div>
-          <div className="location">
+          <div className="status-quick-search">
             <div className="left">
-              <label htmlFor="location">Location</label>
+              <label htmlFor="status">Status</label>
               <br />
-              <select className="select" name="" id="location">
-                <option value="">Select location</option>
-                <option value="">Hall 500</option>
-                <option value="">Hall 600</option>
+              <select className="select" name="" id="status">
+                <option value="">Select Status</option>
+                <option value="">Lost</option>
+                <option value="">Found</option>
               </select>
             </div>
             <div className="right">
-              <i className="fa-solid fa-location-dot"></i>
+              <i className="fa-solid fa-tag"></i>
             </div>
           </div>
           <div className="pipe">|</div>
           <div className="btn-quick-search">
             <button>
-              Find a stuff <i className="fa-solid fa-arrow-right"></i>
+              Search item <i className="fa-solid fa-arrow-right"></i>
             </button>
           </div>
         </div>

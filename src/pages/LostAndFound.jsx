@@ -178,7 +178,7 @@ export default function LostAndFound() {
               {item.image ? (
                 <img
                   src={item.urlImage}
-                  alt="picture of stuff"
+                  alt="picture of item"
                   style={{
                     width: "100%",
                     height: "300px",

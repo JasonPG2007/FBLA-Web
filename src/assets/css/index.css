@@ -335,13 +335,13 @@ a {
   margin-right: 30px;
 }
 
-.location {
+.status-quick-search {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.location .left {
+.status-quick-search .left {
   margin-right: 30px;
 }
 
@@ -1006,7 +1006,7 @@ footer .right button {
   margin-bottom: 5%;
 }
 
-/* MODAL REPORT STUFF */
+/* Modal report Item */
 .modal-report-stuff {
   width: 65%;
   z-index: 2;
@@ -1340,6 +1340,7 @@ th {
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
   overflow: hidden;
+  z-index: 1;
   animation: fadeIn 0.2s ease-in-out;
 }
 
