@@ -198,7 +198,10 @@ export default function Authentication() {
           },
           // withCredentials: true,
           validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 403,
         },
       );
 
@@ -216,6 +219,13 @@ export default function Authentication() {
         handleCloseSelectImage();
         setMsgSignIn({
           msg: responseSignInUser.data,
+          status: responseSignInUser.status,
+        });
+      }
+
+      if (responseSignInUser.status === 403) {
+        setMsgSignIn({
+          msg: "Your account is currently disabled. Please contact admin for assistance",
           status: responseSignInUser.status,
         });
       }
@@ -269,7 +279,7 @@ export default function Authentication() {
 
     try {
       const responseSignInUser = await axiosInstance.post(
-        `/Users/select-image`,
+        `/Users/select-images`,
         {
           studentId: studentIdOrEmailForSignIn.includes("@")
             ? 0

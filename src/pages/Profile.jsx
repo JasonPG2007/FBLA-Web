@@ -370,8 +370,8 @@ export default function Profile() {
                         <Skeleton
                           className="skeleton-input"
                           height={45}
-                          width={630}
-                          style={{ marginBottom: "5px" }}
+                          width={530}
+                          style={{ marginBottom: "5px", borderRadius: "20px" }}
                         />
                       )}
                     </td>
@@ -403,8 +403,8 @@ export default function Profile() {
                         <Skeleton
                           className="skeleton-input"
                           height={45}
-                          width={630}
-                          style={{ marginBottom: "5px" }}
+                          width={530}
+                          style={{ marginBottom: "5px", borderRadius: "20px" }}
                         />
                       )}
                     </td>
@@ -439,8 +439,8 @@ export default function Profile() {
                       ) : (
                         <Skeleton
                           height={45}
-                          width={630}
-                          style={{ marginBottom: "5px" }}
+                          width={530}
+                          style={{ marginBottom: "5px", borderRadius: "20px" }}
                         />
                       )}
                     </td>
@@ -461,8 +461,8 @@ export default function Profile() {
                         <Skeleton
                           className="skeleton-input"
                           height={45}
-                          width={630}
-                          style={{ marginBottom: "5px" }}
+                          width={530}
+                          style={{ marginBottom: "5px", borderRadius: "20px" }}
                         />
                       )}
                     </td>
@@ -516,8 +516,8 @@ export default function Profile() {
                         <Skeleton
                           className="skeleton-input"
                           height={45}
-                          width={630}
-                          style={{ marginBottom: "5px" }}
+                          width={530}
+                          style={{ marginBottom: "5px", borderRadius: "20px" }}
                         />
                       )}
                     </td>
@@ -575,13 +575,6 @@ export default function Profile() {
                     : "/Image/user_icon.png"
               }
               alt="avatar"
-              style={{
-                borderRadius: "20px",
-                width: "100%",
-                height: "420px",
-                objectFit: "cover",
-                marginTop: "150px",
-              }}
               loading="lazy"
             />
           )}
@@ -589,7 +582,6 @@ export default function Profile() {
             style={{
               display: "flex",
               gap: "20px",
-              marginLeft: "90px",
             }}
           >
             <div style={{ display: "flex" }}>

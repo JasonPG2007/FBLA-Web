@@ -25,6 +25,7 @@ export default function ModalReportStuff() {
   let [categoryLost, setCategoryLost] = useState("");
   let [descriptionLost, setDescriptionLost] = useState("");
   let [isInProcessing, setIsInProcessing] = useState(false);
+  let [isPosting, setIsPosting] = useState(false);
   let [isTypeSearch, setIsTypeSearch] = useState(false);
   let [isSearchingCategory, setIsSearchingCategory] = useState(false);
 
@@ -278,13 +279,20 @@ export default function ModalReportStuff() {
   const handleSubmitPostLost = async (e) => {
     e.preventDefault();
 
-    setIsInProcessing(true);
+    setIsPosting(true);
 
     const codeIntoDb = getRandomString(6);
     setCode(codeIntoDb);
 
     const formData = new FormData();
-    selectedFileLost && formData.append("imageUpload", selectedFileLost); // Image
+    if (selectedFileLost) {
+      selectedFileLost && formData.append("imageUpload", selectedFileLost); // Image
+      selectedFileLost &&
+        formData.append(
+          "vector",
+          JSON.stringify(await handleGetVectorFromImage(selectedFileLost)),
+        ); // Vector of image
+    }
     formData.append("userId", user.userId);
     formData.append("title", stuffNameLost);
     formData.append("description", descriptionLost);
@@ -370,14 +378,14 @@ export default function ModalReportStuff() {
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsPosting(false);
     }
   };
 
   const handleSubmitPostFound = async (e) => {
     e.preventDefault();
 
-    setIsInProcessing(true);
+    setIsPosting(true);
 
     const codeIntoDb = getRandomString(6);
     setCode(codeIntoDb);
@@ -475,7 +483,7 @@ export default function ModalReportStuff() {
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsPosting(false);
     }
   };
 
@@ -530,8 +538,8 @@ export default function ModalReportStuff() {
           window.dispatchEvent(
             new CustomEvent("app-error", {
               detail: {
-                message: "Found item posting is temporarily unavailable.",
-                status: "error",
+                message: "Posting item with image is temporarily unavailable.",
+                status: "warning",
               },
             }),
           );
@@ -550,7 +558,7 @@ export default function ModalReportStuff() {
 
       throw error;
     } finally {
-      setIsInProcessing(false);
+      setIsPosting(false);
     }
   };
 
@@ -1008,15 +1016,23 @@ export default function ModalReportStuff() {
                       }
                       style={{ width: "100%" }}
                       disabled={
-                        user.role && !isInProcessing
+                        user.role && !isPosting
                           ? handleValidateFormReport()
                           : true
                       }
                     >
-                      Post Lost Item{" "}
-                      {categoryPostId === "" &&
-                        isTypeSearch &&
-                        "(Please select a category name)"}
+                      {isPosting ? (
+                        <>
+                          <i className="fas fa-spinner fa-spin"></i>
+                        </>
+                      ) : (
+                        <>
+                          Post Lost Item{" "}
+                          {categoryPostId === "" &&
+                            isTypeSearch &&
+                            "(Please select a category name)"}
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -1357,16 +1373,24 @@ export default function ModalReportStuff() {
                           : ""
                       }
                       disabled={
-                        user.role && !isInProcessing
+                        user.role && !isPosting
                           ? handleValidateFormReport()
                           : true
                       }
                       aria-label="Post found item button"
                     >
-                      Post Found Item{" "}
-                      {categoryPostId === "" &&
-                        isTypeSearch &&
-                        "(Please select a category name)"}
+                      {isPosting ? (
+                        <>
+                          <i className="fas fa-spinner fa-spin"></i>
+                        </>
+                      ) : (
+                        <>
+                          Post Found Item{" "}
+                          {categoryPostId === "" &&
+                            isTypeSearch &&
+                            "(Please select a category name)"}
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>

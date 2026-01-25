@@ -37,7 +37,7 @@ export default function Header() {
         .build();
 
       // Listen event from backend
-      // Get new lost post code
+      // Get new request
       connection.on("ReceiveNewRequest", (data) => {
         // notice admin toast
         window.dispatchEvent(
@@ -48,6 +48,22 @@ export default function Header() {
             },
           }),
         );
+      });
+
+      // Auto sign out when account is suspended
+      connection.on("ReceiveForceSignOut", (data) => {
+        // notice admin toast
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: data.message,
+              status: "success",
+            },
+          }),
+        );
+
+        localStorage.removeItem("accessToken");
+        window.location.href = "/authentication";
       });
 
       connection.on("ReceiveNewPickUpRequest", (data) => {

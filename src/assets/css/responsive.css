@@ -337,6 +337,16 @@
     left: 22px !important;
   }
 
+  .change-delete-avatar img {
+    height: 320px;
+    margin-top: 100px;
+    margin-left: 11%;
+  }
+
+  .change-delete-avatar > div {
+    margin-left: 90px;
+  }
+
   .side-bar-infor-user {
     margin-top: 20px;
     flex-direction: column !important;
