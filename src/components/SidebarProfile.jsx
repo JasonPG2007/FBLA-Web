@@ -165,20 +165,6 @@ export default function SidebarProfile() {
         </a>
         <br />
 
-        {/* Messages */}
-        <a
-          href="/messages"
-          style={{
-            fontWeight: "400",
-            lineHeight: "50px",
-          }}
-          className={`${isActive("/messages") ? "active" : ""}`}
-        >
-          {" "}
-          <i className="fa-solid fa-envelope"></i> Messages
-        </a>
-        <br />
-
         {/* Notifications */}
         <a
           href="/notifications"

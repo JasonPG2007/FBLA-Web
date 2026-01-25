@@ -503,6 +503,7 @@ footer .right button {
 
 .card-search {
   margin-bottom: 30%;
+  height: unset;
 }
 
 .status-post-lost {
@@ -543,7 +544,7 @@ footer .right button {
 
 .card-text {
   padding: 15px;
-  word-wrap: break-word;
+  /* word-wrap: break-word; */
   overflow: hidden;
   height: 115px;
 }

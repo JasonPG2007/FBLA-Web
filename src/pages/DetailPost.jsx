@@ -1,4 +1,3 @@
-import axios from "axios";
 import dayjs from "dayjs";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -10,10 +9,15 @@ const Lottie = lazy(() => import("lottie-react"));
 import EmptyGhost from "../assets/animations/empty_ghost.json";
 import LoadingFiles from "../assets/animations/Loading_Files.json";
 import axiosInstance from "../api/axiosInstance";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default function DetailPost() {
   // Variables
+  let [isEdit, setIsEdit] = useState(false);
   let [isInProcessing, setIsInProcessing] = useState(false);
+  let [isGettingPost, setIsGettingPost] = useState(false);
+  let [isGettingSuggestion, setIsGettingSuggestion] = useState(false);
   let [isLoadingMyPost, setIsLoadingMyPost] = useState(false);
   let [isRequesting, setIsRequesting] = useState(false);
   const [isShowPopup, setIsShowPopup] = useState(false);
@@ -22,6 +26,9 @@ export default function DetailPost() {
   let [post, setPost] = useState("");
   let [user, setUser] = useState("");
   let [code, setCode] = useState("");
+  let [statusPost, setStatusPost] = useState("");
+  let [categoryPostName, setCategoryPostName] = useState("");
+  let [description, setDescription] = useState("");
   const postId = location.pathname.split("/").pop();
 
   // APIs
@@ -270,7 +277,7 @@ export default function DetailPost() {
 
   // Get post by id
   const handleFetchPost = async () => {
-    setIsInProcessing(true);
+    setIsGettingPost(true);
 
     try {
       const response = await axiosInstance.get(`/Post/${postId}`, {
@@ -329,13 +336,13 @@ export default function DetailPost() {
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsGettingPost(false);
     }
   };
 
   // Get posts
   const handleFetchSuggestPost = async () => {
-    setIsInProcessing(true);
+    setIsGettingSuggestion(true);
 
     try {
       const response = await axiosInstance.get(`/Post/suggest-post/${postId}`, {
@@ -394,7 +401,7 @@ export default function DetailPost() {
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsGettingSuggestion(false);
     }
   };
 
@@ -484,73 +491,92 @@ export default function DetailPost() {
                 post.title
               )}
             </h1>
-            {user.email !== post.user?.email ? (
-              <button
-                style={{
-                  marginLeft: "auto",
-                  height: "max-content",
-                }}
-                className="btn-yellow btn-contact-owner"
-                onClick={() => {
-                  // const chatPopup = document.getElementById("chatPopup");
-                  // chatPopup.style.display = "flex";
+            {!isGettingPost &&
+              !isGettingSuggestion &&
+              (user.email !== post.user?.email ? (
+                <button
+                  style={{
+                    marginLeft: "auto",
+                    height: "max-content",
+                  }}
+                  className="btn-yellow btn-contact-owner"
+                  onClick={() => {
+                    // const chatPopup = document.getElementById("chatPopup");
+                    // chatPopup.style.display = "flex";
 
-                  const chatBubble = document.getElementById("chatBubble");
-                  const chatPopup = document.getElementById("chatPopup");
-                  if (chatPopup.style.display === "flex") {
-                    chatPopup.style.display = "none";
-                  } else {
-                    chatPopup.style.display = "flex";
-                  }
-
-                  // Click outside to close
-                  document.addEventListener("click", (e) => {
-                    if (
-                      chatBubble.contains(e.target) &&
-                      chatPopup.contains(e.target)
-                    ) {
+                    const chatBubble = document.getElementById("chatBubble");
+                    const chatPopup = document.getElementById("chatPopup");
+                    if (chatPopup.style.display === "flex") {
                       chatPopup.style.display = "none";
+                    } else {
+                      chatPopup.style.display = "flex";
                     }
-                  });
 
-                  const temporaryMsg = {
-                    message:
-                      post.typePost === "Lost"
-                        ? `Hello, I'm contacting you regarding your lost item post: "${post.title}" (Post ID: ${post.postId}). I may have information related to it.`
-                        : `Hello, I'm contacting you regarding your found item post: "${post.title}" (Post ID: ${post.postId}). I think this item might belong to me.`,
-                    urlAvatar: post.user.urlAvatar,
-                    firstName: post.user.firstName,
-                    lastName: post.user.lastName,
-                    userIdSend: user.userId,
-                    userIdReceive: post.user.userId,
-                    postId: post.postId,
-                    chatId:
-                      Date.now().toString().slice(-5) +
-                      Math.floor(Math.random() * 10000)
-                        .toString()
-                        .padStart(4, "0"), // Temporary chat id
-                  };
+                    // Click outside to close
+                    document.addEventListener("click", (e) => {
+                      if (
+                        chatBubble.contains(e.target) &&
+                        chatPopup.contains(e.target)
+                      ) {
+                        chatPopup.style.display = "none";
+                      }
+                    });
 
-                  window.dispatchEvent(
-                    new CustomEvent("contact-owner", {
-                      detail: temporaryMsg,
-                    }),
-                  );
-                }}
-              >
-                <i className="fa-solid fa-comments"></i> Contact owner
-              </button>
-            ) : (
-              <button
-                style={{
-                  marginLeft: "auto",
-                  height: "max-content",
-                }}
-                className="btn-yellow"
-              >
-                <i className="fa-solid fa-pen-to-square"></i> Edit
-              </button>
-            )}
+                    const temporaryMsg = {
+                      message:
+                        post.typePost === "Lost"
+                          ? `Hello, I'm contacting you regarding your lost item post: "${post.title}" (Post ID: ${post.postId}). I may have information related to it.`
+                          : `Hello, I'm contacting you regarding your found item post: "${post.title}" (Post ID: ${post.postId}). I think this item might belong to me.`,
+                      urlAvatar: post.user.urlAvatar,
+                      firstName: post.user.firstName,
+                      lastName: post.user.lastName,
+                      userIdSend: user.userId,
+                      userIdReceive: post.user.userId,
+                      postId: post.postId,
+                      chatId:
+                        Date.now().toString().slice(-5) +
+                        Math.floor(Math.random() * 10000)
+                          .toString()
+                          .padStart(4, "0"), // Temporary chat id
+                    };
+
+                    window.dispatchEvent(
+                      new CustomEvent("contact-owner", {
+                        detail: temporaryMsg,
+                      }),
+                    );
+                  }}
+                >
+                  <i className="fa-solid fa-comments"></i> Contact owner
+                </button>
+              ) : (
+                <button
+                  style={{
+                    marginLeft: "auto",
+                    height: "max-content",
+                  }}
+                  className="btn-yellow btn-edit-discard-post"
+                  onClick={() => {
+                    setIsEdit(!isEdit);
+
+                    if (isEdit) {
+                      setStatusPost(post.typePost);
+                      setCategoryPostName(post.categoryPost?.categoryPostName);
+                      setDescription(post.description);
+                    }
+                  }}
+                >
+                  {isEdit ? (
+                    <>
+                      <i className="fa-solid fa-xmark"></i> Discard changes
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa-solid fa-pen-to-square"></i> Edit Post
+                    </>
+                  )}
+                </button>
+              ))}
           </div>
 
           {/* Image of post */}
@@ -760,7 +786,19 @@ export default function DetailPost() {
                           style={{ marginBottom: "20px" }}
                         />
                       ) : post.categoryPost?.categoryPostName ? (
-                        post.categoryPost?.categoryPostName
+                        isEdit ? (
+                          <input
+                            type="text"
+                            className="form-control-input input-update-post"
+                            style={{
+                              marginBottom: "20px",
+                              marginTop: "-40px",
+                            }}
+                            value={categoryPostName}
+                          />
+                        ) : (
+                          post.categoryPost?.categoryPostName
+                        )
                       ) : (
                         "Not available"
                       )}
@@ -796,7 +834,25 @@ export default function DetailPost() {
                           style={{ marginBottom: "20px" }}
                         />
                       ) : post.typePost ? (
-                        post.typePost
+                        isEdit ? (
+                          <select
+                            name=""
+                            id=""
+                            className="form-control-input input-update-post"
+                            style={{
+                              marginBottom: "20px",
+                              marginTop: "-40px",
+                            }}
+                            value={statusPost}
+                            onChange={(e) => setStatusPost(e.target.value)}
+                          >
+                            <option value="">Choose Type</option>
+                            <option value="Lost">Lost</option>
+                            <option value="Found">Found</option>
+                          </select>
+                        ) : (
+                          post.typePost
+                        )
                       ) : (
                         "Not available"
                       )}
@@ -812,6 +868,26 @@ export default function DetailPost() {
                           height={100}
                           width={700}
                           style={{ marginBottom: "20px" }}
+                        />
+                      ) : isEdit ? (
+                        <CKEditor
+                          editor={ClassicEditor}
+                          data={description}
+                          config={{
+                            licenseKey: "GPL",
+                            toolbar: [
+                              "bold",
+                              "italic",
+                              "bulletedList",
+                              "numberedList",
+                              "link",
+                              "undo",
+                              "redo",
+                            ],
+                          }}
+                          onChange={(event, editor) => {
+                            setDescription(editor.getData());
+                          }}
                         />
                       ) : (
                         <ReactMarkdown

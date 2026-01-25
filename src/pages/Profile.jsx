@@ -41,8 +41,23 @@ export default function Profile() {
         window.dispatchEvent(
           new CustomEvent("app-error", {
             detail: {
-              message: response.data,
+              message: response.data?.message
+                ? response.data?.message
+                : response.data,
               status: "success",
+            },
+          }),
+        );
+      }
+
+      if (response.status === 404) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data?.message
+                ? response.data?.message
+                : response.data,
+              status: "error",
             },
           }),
         );
