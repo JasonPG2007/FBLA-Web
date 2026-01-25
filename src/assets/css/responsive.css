@@ -832,7 +832,7 @@
 }
 
 /* BIG TABLET */
-@media (min-width: 769px) and (max-width: 992px) {
+@media (min-width: 769px) and (max-width: 1366px) {
   /* Navbar */
   .bar {
     display: block;
