@@ -3,7 +3,7 @@ import SidebarProfile from "../components/SidebarProfile";
 import axios from "axios";
 import dayjs from "dayjs";
 import { HubConnectionBuilder } from "@microsoft/signalr";
-import { debounce } from "lodash";
+import { debounce, set } from "lodash";
 import axiosInstance from "../api/axiosInstance";
 
 export default function Users() {
@@ -11,6 +11,7 @@ export default function Users() {
   const [users, setUsers] = useState([]);
   const [query, setQuery] = useState("");
   const [isInProcessing, setIsInProcessing] = useState(false);
+  const [isRequesting, setIsRequesting] = useState(false);
 
   // APIs
 
@@ -20,17 +21,38 @@ export default function Users() {
     const token = localStorage.getItem("accessToken");
     try {
       const connection = new HubConnectionBuilder()
-        .withUrl(
-          "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/SystemHub",
-          {
-            // withCredentials: true,
-            accessTokenFactory: () => token,
-          },
-        )
+        .withUrl("https://localhost:44306/SystemHub", {
+          // withCredentials: true,
+          accessTokenFactory: () => token,
+        })
         .withAutomaticReconnect()
         .build();
 
       // Listen event from backend
+      // Receive user suspended
+      connection.on("ReceiveUserSuspended", (data) => {
+        setUsers((prevUsers) => {
+          const index = prevUsers.findIndex((u) => u.userId === data.userId);
+          if (index === -1) return prevUsers;
+          const next = [...prevUsers];
+          next[index].isActive = false;
+          return next;
+        });
+      });
+
+      // Receive user suspended
+      connection.on("ReceiveUserUnsuspended", (data) => {
+        setUsers((prevUsers) => {
+          const index = prevUsers.findIndex((u) => u.userId === data.userId);
+          if (index === -1) return prevUsers;
+          const next = [...prevUsers];
+          next[index] = {
+            ...next[index],
+            isActive: true,
+          };
+          return next;
+        });
+      });
 
       // Start realtime
       await connection.start();
@@ -281,6 +303,158 @@ export default function Users() {
     }
   };
 
+  // Suspend user
+  const suspendUser = async (userId) => {
+    setIsRequesting(true);
+
+    try {
+      const response = await axiosInstance.put(
+        `/Users/suspend-user/${userId}`,
+        null,
+        {
+          // withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        },
+      );
+
+      if (response.status === 200) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data,
+              status: "success",
+            },
+          }),
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsRequesting(false);
+    }
+  };
+
+  // Unsuspend user
+  const unsuspendUser = async (userId) => {
+    setIsRequesting(true);
+
+    try {
+      const response = await axiosInstance.put(
+        `/Users/unsuspend-user/${userId}`,
+        null,
+        {
+          // withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        },
+      );
+
+      if (response.status === 200) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data,
+              status: "success",
+            },
+          }),
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsRequesting(false);
+    }
+  };
+
   // Fetch data from API
   useEffect(() => {
     handleGetAllUsers();
@@ -353,9 +527,11 @@ export default function Users() {
               <thead>
                 <tr>
                   <th>#</th>
+                  <th>Avatar</th>
                   <th>User</th>
                   <th>Email</th>
                   <th>Role</th>
+                  <th>Student ID</th>
                   <th>Date Created</th>
                   <th>Status</th>
                   <th>Action</th>
@@ -373,10 +549,30 @@ export default function Users() {
                     <tr key={item.userId}>
                       <td>{index + 1}</td>
                       <td>
+                        {item.avatar ? (
+                          <img
+                            src={item.urlAvatar}
+                            alt="user avatar"
+                            style={{ borderRadius: "50%", objectFit: "cover" }}
+                            width={50}
+                            height={50}
+                          />
+                        ) : (
+                          <img
+                            src="/Image/user_icon.png"
+                            alt="user avatar"
+                            style={{ borderRadius: "50%", objectFit: "cover" }}
+                            width={50}
+                            height={50}
+                          />
+                        )}
+                      </td>
+                      <td>
                         {item.firstName} {item.lastName}
                       </td>
                       <td>{item.email}</td>
                       <td>{item.role}</td>
+                      <td>{item.studentId}</td>
                       <td>{dayjs(item.createdAt).format("MM/DD/YYYY")}</td>
                       <td>
                         <span
@@ -395,10 +591,12 @@ export default function Users() {
                           }}
                           type="button"
                           onClick={() => {
-                            handleMarkReceived(item.postId);
+                            item.isActive
+                              ? suspendUser(item.userId)
+                              : unsuspendUser(item.userId);
                           }}
                         >
-                          {isInProcessing ? (
+                          {isRequesting ? (
                             <i className="fas fa-spinner fa-spin"></i>
                           ) : item.isActive ? (
                             "Suspend account"

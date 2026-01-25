@@ -1,7 +1,6 @@
 import { HubConnectionBuilder } from "@microsoft/signalr";
-import axios from "axios";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
@@ -31,6 +30,7 @@ export default function Chat() {
   const [isInProcessing, setIsInProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedChat, setSelectedChat] = useState(null);
+  const chatBodyRef = useRef(null);
 
   // Functions
   // Get my profile
@@ -121,7 +121,7 @@ export default function Chat() {
 
     const payload = {
       messageChatId: 0,
-      chatId: chat.chatId,
+      chatId: temporaryChat.chatId ? temporaryChat.chatId : chat.chatId,
       userAId: temporaryChat.userIdSend
         ? temporaryChat.userIdSend
         : user.userId,
@@ -145,7 +145,6 @@ export default function Chat() {
         validateStatus: (status) =>
           status === 200 || status === 401 || status === 404 || status === 403,
       });
-
       if (response.status === 200) {
         setSendStatus("Sent");
         window.dispatchEvent(
@@ -157,7 +156,6 @@ export default function Chat() {
           }),
         );
       }
-
       if (response.status === 403) {
         window.dispatchEvent(
           new CustomEvent("app-error", {
@@ -446,7 +444,38 @@ export default function Chat() {
 
   useEffect(() => {
     window.addEventListener("contact-owner", (event) => {
-      setTemporaryChat(event.detail);
+      if (chats.find((chat) => chat.postId === event.detail.postId)) {
+        if (chatBodyRef.current) {
+          document.getElementById("chatBody").style.transform =
+            "translateX(-49%)";
+
+          setSelectedChat(chat);
+          setIsMoveToDetailsChat(true);
+          setUserSendId(chat.userSendId);
+
+          // Load a chat clicked
+          handleGetAllMessagesByChatId(chat.chatId);
+          setChat({
+            urlAvatar:
+              user.userId === chat.userAId
+                ? chat.avatarUserB
+                  ? chat.urlAvatarUserB
+                  : "/Image/user_icon.png"
+                : chat.avatarUserA
+                  ? chat.urlAvatarUserA
+                  : "/Image/user_icon.png",
+            fullName:
+              user.userId === chat.userAId
+                ? `${chat.firstNameUserB} ${chat.lastNameUserB}`
+                : `${chat.firstNameUserA} ${chat.lastNameUserA}`,
+            userReceiveId: chat.userSenderId,
+            chatId: chat.chatId,
+            postId: chat.postId,
+          });
+        }
+      } else {
+        setTemporaryChat(event.detail);
+      }
 
       setMessage(event.detail.message);
     });
@@ -479,7 +508,7 @@ export default function Chat() {
           }}
         >
           <i className="fa-solid fa-message"></i>
-          <span className="chat-badge">2</span>
+          {/* <span className="chat-badge">2</span> */}
         </div>
 
         <div className="chat-popup" id="chatPopup">
@@ -693,7 +722,7 @@ export default function Chat() {
 
             {/* Detail chat */}
             {isMoveToDetailsChat && selectedChat && (
-              <div className="chat-details">
+              <div className="chat-details" ref={chatBodyRef}>
                 {/* HEADER */}
                 <div className="chat-details-header">
                   <i

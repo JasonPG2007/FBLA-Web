@@ -1201,21 +1201,23 @@ export default function MyPost() {
                             </button>
                           )}
 
-                        <button
-                          className="btn"
-                          style={{
-                            width: "100%",
-                          }}
-                          onClick={() => {
-                            handleMarkReceived(post.postId);
-                          }}
-                          disabled={
-                            pickUpStatus[post.postId]?.status === "Pending" ||
-                            pickUpStatus[post.postId]?.status === "Confirmed"
-                          }
-                        >
-                          <i className="fa-solid fa-check"></i> Received
-                        </button>
+                        {post.typePost === "Lost" && (
+                          <button
+                            className="btn"
+                            style={{
+                              width: "100%",
+                            }}
+                            onClick={() => {
+                              handleMarkReceived(post.postId);
+                            }}
+                            disabled={
+                              pickUpStatus[post.postId]?.status === "Pending" ||
+                              pickUpStatus[post.postId]?.status === "Confirmed"
+                            }
+                          >
+                            <i className="fa-solid fa-check"></i> Received
+                          </button>
+                        )}
                       </div>
                       {pickUpStatus[post.postId]?.status === "Reschedule" ? (
                         <div

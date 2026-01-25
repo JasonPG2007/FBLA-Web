@@ -524,6 +524,11 @@ export default function DetailPost() {
                     userIdSend: user.userId,
                     userIdReceive: post.user.userId,
                     postId: post.postId,
+                    chatId:
+                      Date.now().toString().slice(-5) +
+                      Math.floor(Math.random() * 10000)
+                        .toString()
+                        .padStart(4, "0"), // Temporary chat id
                   };
 
                   window.dispatchEvent(
@@ -1088,7 +1093,7 @@ export default function DetailPost() {
                         document.body.style.overflow = "hidden";
                       }}
                     >
-                      <i class="fa-solid fa-plus"></i> Create a lost post
+                      <i className="fa-solid fa-plus"></i> Create a lost post
                     </button>
                   </div>
                 )}

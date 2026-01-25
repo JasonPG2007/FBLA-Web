@@ -1435,6 +1435,14 @@ th {
   color: #fff;
 }
 
+.change-delete-avatar img {
+  width: max-content;
+  margin-left: -90%;
+  height: 420px;
+  border-radius: 20px;
+  margin-top: 150px;
+}
+
 .submenu {
   max-height: 0;
   overflow: hidden;
