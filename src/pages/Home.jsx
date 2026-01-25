@@ -15,6 +15,7 @@ export default function Home() {
   let [categoryId, setCategoryId] = useState("");
   let [status, setStatus] = useState("");
   let [isInProcessing, setIsInProcessing] = useState(false);
+  let [isLoadingNewestPosts, setIsLoadingNewestPosts] = useState(false);
 
   // Functions
   // Get category posts
@@ -90,7 +91,7 @@ export default function Home() {
 
   // Get Newest Posts
   const getNewestPosts = async () => {
-    setIsInProcessing(true);
+    setIsLoadingNewestPosts(true);
 
     try {
       const response = await axiosInstance.get("/Post/newest-posts", {
@@ -149,7 +150,7 @@ export default function Home() {
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsLoadingNewestPosts(false);
     }
   };
 
@@ -644,7 +645,7 @@ export default function Home() {
       {/* Newest images */}
       <div className="newest-post-container">
         {/* Cards */}
-        {isInProcessing ? (
+        {isLoadingNewestPosts ? (
           <div
             style={{
               display: "grid",
