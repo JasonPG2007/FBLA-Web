@@ -857,6 +857,16 @@
     margin-bottom: 10%;
   }
 
+  .dropdown.show-mobile {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+    /* overflow: unset; */
+    left: -151px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-width: max-content !important;
+  }
+
   .nav .list-service {
     position: absolute;
     display: flex;
