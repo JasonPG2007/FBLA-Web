@@ -848,6 +848,15 @@
     margin-top: 15%;
   }
 
+  .faq-container {
+    margin-top: 80px;
+  }
+
+  .big-block-about {
+    margin-top: 15%;
+    margin-bottom: 10%;
+  }
+
   .nav .list-service {
     position: absolute;
     display: flex;
