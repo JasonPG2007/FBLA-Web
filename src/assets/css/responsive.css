@@ -322,11 +322,11 @@
 
   /* Profile */
   .sidebarProfile {
-    margin-left: -7px !important;
+    margin-left: -1px !important;
     display: grid !important;
     grid-template-columns: auto !important;
     height: max-content !important;
-    width: 103% !important;
+    max-width: 100% !important;
   }
 
   .sidebarProfile a {
@@ -595,6 +595,28 @@
 
   .detail-filter .form-control {
     width: 100% !important;
+  }
+
+  .btn-my-post-container-no-matched {
+    margin-top: 30px !important;
+  }
+
+  .show-code {
+    font-size: 12px !important;
+    padding: 0 15px !important;
+  }
+
+  .status-post-lost {
+    font-size: 12px !important;
+    padding: 0 15px !important;
+  }
+
+  .skeleton-my-post {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    /* overflow: hidden; */
+    /* width: 30% !important; */
+    gap: 20px !important;
   }
 }
 

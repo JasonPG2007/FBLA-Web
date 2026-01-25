@@ -690,9 +690,12 @@ export default function ModalReportStuff() {
                       )}
                     </div>
 
-                    <div className="sub-upload-img">
+                    {/* Sub upload images */}
+                    {/* <div className="sub-upload-img">
                       <div
-                        className={!imageLostPreview ? "upload-img-box" : ""}
+                        className={
+                          !imageLostPreview ? "upload-sub-img-box" : ""
+                        }
                         onClick={() => {
                           fileInputLostRef.current.click();
                         }}
@@ -702,38 +705,21 @@ export default function ModalReportStuff() {
                         {!imageLostPreview && (
                           <>
                             <i className="fa-solid fa-cloud-arrow-up"></i>
-                            <p>Drag and Drop here</p>
-                            <p
-                              style={{
-                                marginBottom: "30px",
-                                marginTop: "10px",
-                              }}
-                              className="label-or"
-                            >
-                              or
-                            </p>
-                            <label className="btn-yellow">Select image</label>
-                            <input
-                              type="file"
-                              id="upload-img"
-                              ref={fileInputLostRef}
-                              style={{ display: "none" }}
-                              onChange={handleImageLostChange}
-                            />
                           </>
                         )}
                         {imageLostPreview && (
                           <img
                             src={imageLostPreview}
                             alt="Preview lost item"
-                            width="290"
+                            width="100"
                             loading="lazy"
-                            height="297"
+                            height="100"
                             className="preview-img"
+                            style={{ objectFit: "cover" }}
                           />
                         )}
                       </div>
-                    </div>
+                    </div> */}
 
                     {/* Btn change image */}
                     {imageLostPreview && (
@@ -926,7 +912,10 @@ export default function ModalReportStuff() {
                           <br />
                           <div style={{ position: "relative" }}>
                             {isInProcessing ? (
-                              <Skeleton height={50} style={{ width: "100%" }} />
+                              <Skeleton
+                                height={50}
+                                style={{ width: "100%", borderRadius: "20px" }}
+                              />
                             ) : (
                               <input
                                 type="text"
@@ -954,14 +943,24 @@ export default function ModalReportStuff() {
                               </label>
                               <br />
                               <div style={{ position: "relative" }}>
-                                <input
-                                  type="text"
-                                  name=""
-                                  id="student-id-lost"
-                                  className="form-control-input-label-top"
-                                  value={user.student?.studentId || ""}
-                                  readOnly
-                                />
+                                {isInProcessing ? (
+                                  <Skeleton
+                                    height={50}
+                                    style={{
+                                      width: "100%",
+                                      borderRadius: "20px",
+                                    }}
+                                  />
+                                ) : (
+                                  <input
+                                    type="text"
+                                    name=""
+                                    id="student-id-lost"
+                                    className="form-control-input-label-top"
+                                    value={user.student?.studentId || ""}
+                                    readOnly
+                                  />
+                                )}
                               </div>
                               <br />
                             </>
@@ -977,7 +976,10 @@ export default function ModalReportStuff() {
                           <br />
                           <div style={{ position: "relative" }}>
                             {isInProcessing ? (
-                              <Skeleton height={50} style={{ width: "100%" }} />
+                              <Skeleton
+                                height={50}
+                                style={{ width: "100%", borderRadius: "20px" }}
+                              />
                             ) : (
                               <input
                                 type="email"
@@ -1260,7 +1262,10 @@ export default function ModalReportStuff() {
                           <br />
                           <div style={{ position: "relative" }}>
                             {isInProcessing ? (
-                              <Skeleton height={50} style={{ width: "100%" }} />
+                              <Skeleton
+                                height={50}
+                                style={{ width: "100%", borderRadius: "20px" }}
+                              />
                             ) : (
                               <input
                                 type="text"
@@ -1288,14 +1293,24 @@ export default function ModalReportStuff() {
                               </label>
                               <br />
                               <div style={{ position: "relative" }}>
-                                <input
-                                  type="text"
-                                  name=""
-                                  id="student-id-lost"
-                                  className="form-control-input-label-top"
-                                  value={user.student?.studentId || ""}
-                                  readOnly
-                                />
+                                {isInProcessing ? (
+                                  <Skeleton
+                                    height={50}
+                                    style={{
+                                      width: "100%",
+                                      borderRadius: "20px",
+                                    }}
+                                  />
+                                ) : (
+                                  <input
+                                    type="text"
+                                    name=""
+                                    id="student-id-lost"
+                                    className="form-control-input-label-top"
+                                    value={user.student?.studentId || ""}
+                                    readOnly
+                                  />
+                                )}
                               </div>
                               <br />
                             </>
@@ -1311,7 +1326,10 @@ export default function ModalReportStuff() {
                           <br />
                           <div style={{ position: "relative" }}>
                             {isInProcessing ? (
-                              <Skeleton height={50} style={{ width: "100%" }} />
+                              <Skeleton
+                                height={50}
+                                style={{ width: "100%", borderRadius: "20px" }}
+                              />
                             ) : (
                               <input
                                 type="email"
