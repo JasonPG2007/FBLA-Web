@@ -839,6 +839,15 @@
     font-size: 20px;
   }
 
+  .img-right {
+    display: none;
+  }
+
+  .authentication-container {
+    grid-template-columns: auto !important;
+    margin-top: 15%;
+  }
+
   .nav .list-service {
     position: absolute;
     display: flex;
