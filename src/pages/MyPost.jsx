@@ -39,7 +39,7 @@ export default function MyPost() {
   // Functions
   // Handle mark received
   const handleMarkReceived = async (postId) => {
-    setIsInProcessing(true);
+    setIsRequesting(true);
 
     try {
       const response = await axiosInstance.post(
@@ -56,10 +56,6 @@ export default function MyPost() {
       );
 
       if (response.status === 200) {
-        document.getElementById("popup-confirm-signed-in").style.display =
-          "none";
-        document.body.style.overflow = "auto";
-
         window.dispatchEvent(
           new CustomEvent("app-error", {
             detail: {
@@ -127,7 +123,7 @@ export default function MyPost() {
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsRequesting(false);
     }
   };
 
@@ -1201,7 +1197,7 @@ export default function MyPost() {
                             </button>
                           )}
 
-                        {post.typePost === "Lost" && (
+                        {post.typePost === "Lost" && !post.isReceived && (
                           <button
                             className="btn"
                             style={{
@@ -1212,10 +1208,18 @@ export default function MyPost() {
                             }}
                             disabled={
                               pickUpStatus[post.postId]?.status === "Pending" ||
-                              pickUpStatus[post.postId]?.status === "Confirmed"
+                              pickUpStatus[post.postId]?.status ===
+                                "Confirmed" ||
+                              isRequesting
                             }
                           >
-                            <i className="fa-solid fa-check"></i> Received
+                            {isRequesting ? (
+                              <i className="fas fa-spinner fa-spin"></i>
+                            ) : (
+                              <>
+                                <i className="fa-solid fa-check"></i> Received
+                              </>
+                            )}
                           </button>
                         )}
                       </div>

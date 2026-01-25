@@ -473,12 +473,10 @@ export default function Search() {
                 <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
                   <a href={`/detail-post/${item.postId}`}>{item.title}</a>
                 </h3>
-                <a href={`/detail-post/${item.postId}`}>
-                  <ReactMarkdown
-                    children={item.description}
-                    rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                  ></ReactMarkdown>
-                </a>
+                <ReactMarkdown
+                  children={item.description}
+                  rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                ></ReactMarkdown>
               </div>
 
               {/* Status */}
