@@ -625,8 +625,12 @@ export default function Chat() {
                       setChat({
                         urlAvatar:
                           user.userId === chat.userAId
-                            ? chat.urlAvatarUserB
-                            : chat.urlAvatarUserA,
+                            ? chat.avatarUserB
+                              ? chat.urlAvatarUserB
+                              : "/Image/user_icon.png"
+                            : chat.avatarUserA
+                              ? chat.urlAvatarUserA
+                              : "/Image/user_icon.png",
                         fullName:
                           user.userId === chat.userAId
                             ? `${chat.firstNameUserB} ${chat.lastNameUserB}`
@@ -640,8 +644,10 @@ export default function Chat() {
                     <img
                       src={
                         user.userId === chat.userAId
-                          ? chat.urlAvatarUserB
-                          : chat.urlAvatarUserA
+                          ? chat.avatarUserB
+                            ? chat.urlAvatarUserB
+                            : "/Image/user_icon.png"
+                          : chat.avatarUserA
                             ? chat.urlAvatarUserA
                             : "/Image/user_icon.png"
                       }
@@ -701,7 +707,13 @@ export default function Chat() {
                       setIsMoveToDetailsChat(false);
                     }}
                   ></i>
-                  <img src={chat.urlAvatar} loading="lazy" className="avatar" />
+                  <img
+                    src={
+                      chat.urlAvatar ? chat.urlAvatar : "/Image/user_icon.png"
+                    }
+                    loading="lazy"
+                    className="avatar"
+                  />
                   <span>{chat.fullName}</span>
                 </div>
 

@@ -1151,6 +1151,36 @@ footer .right button {
   margin-bottom: 15px;
 }
 
+.sub-upload-img {
+  display: grid;
+  grid-template-columns: 33% 33% 33%;
+  overflow: hidden;
+  margin-top: 20px;
+}
+
+.upload-sub-img-box {
+  text-align: center;
+  border: 1px solid #072138;
+  padding: 40px 0;
+  height: 110px;
+  width: 100%;
+  border-radius: 20px;
+  margin-left: 10px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.upload-sub-img-box i {
+  font-size: 30px;
+  margin-bottom: 15px;
+}
+
+.upload-sub-img-box label {
+  font-size: 14px;
+  height: auto;
+  display: block;
+}
+
 .preview-img {
   border-radius: 20px;
   /* margin-left: -20px; */
@@ -2060,6 +2090,14 @@ th {
   font-style: italic;
   margin-top: 4px;
   margin-bottom: 10px;
+}
+
+.btn-my-post-container {
+  display: grid;
+  grid-template-columns: auto auto;
+  /* justify-content: center; */
+  align-items: center;
+  gap: 10px;
 }
 
 .results-container-my-post-to-match {

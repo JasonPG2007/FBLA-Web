@@ -473,7 +473,6 @@ export default function MyPost() {
           },
         }),
       );
-      setIsInProcessing(false);
       return;
     }
 
@@ -631,8 +630,6 @@ export default function MyPost() {
 
   // Handle check matched post
   const handleCheckMatchedPost = async (postId) => {
-    setIsInProcessing(true);
-
     try {
       const response = await axiosInstance.get(
         `/Match/check-matched-post/${postId}`,
@@ -696,13 +693,13 @@ export default function MyPost() {
         );
       }
     } finally {
-      setIsInProcessing(false);
+      // setIsInProcessing(false);
     }
   };
 
   // Get my profile
   const getMyProfile = async () => {
-    setIsInProcessing(true);
+    // setIsInProcessing(true);
 
     try {
       const response = await axiosInstance.get("/Users/profile", {
@@ -717,7 +714,7 @@ export default function MyPost() {
     } catch (error) {
       console.log(error);
     } finally {
-      setIsInProcessing(false);
+      // setIsInProcessing(false);
     }
   };
 
@@ -788,7 +785,7 @@ export default function MyPost() {
 
   // Get status hand over
   const handleGetStatusHandover = async () => {
-    setIsInProcessing(true);
+    // setIsInProcessing(true);
 
     const results = {};
 
@@ -858,13 +855,13 @@ export default function MyPost() {
         );
       }
     } finally {
-      setIsInProcessing(false);
+      // setIsInProcessing(false);
     }
   };
 
   // Get status pick up
   const handleGetStatusPickUp = async () => {
-    setIsInProcessing(true);
+    // setIsInProcessing(true);
 
     const results = {};
 
@@ -934,7 +931,7 @@ export default function MyPost() {
         );
       }
     } finally {
-      setIsInProcessing(false);
+      // setIsInProcessing(false);
     }
   };
 
@@ -1046,7 +1043,10 @@ export default function MyPost() {
           {/* Cards */}
           <div className="newest-post-container">
             {isInProcessing ? (
-              <div style={{ display: "flex", gap: "20px" }}>
+              <div
+                style={{ display: "flex", gap: "20px" }}
+                className="skeleton-my-post"
+              >
                 {Array.from({ length: 4 }).map((_, index) => (
                   <div className="" key={index}>
                     <Skeleton
@@ -1098,15 +1098,6 @@ export default function MyPost() {
                       <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
                         <a href={`/detail-post/${post.postId}`}>{post.title}</a>
                       </h3>
-                      {!post.isReceived && post.typePost === "Lost" && (
-                        <label
-                          onClick={() => {
-                            handleMarkReceived(post.postId);
-                          }}
-                        >
-                          Mark as received
-                        </label>
-                      )}
                       {post.isReceived && (
                         <label
                           style={{
@@ -1150,54 +1141,82 @@ export default function MyPost() {
                     {post.typePost}
                   </div>
 
-                  {/* Show Code */}
+                  {/* Buttons */}
                   {(post.typePost === "Lost" || user.role === "Admin") && (
                     <>
                       <div className="show-code">{post.code}</div>
-                      {matchedPosts[post.postId] &&
-                        !post.isReceived &&
-                        pickUpStatus[post.postId]?.status !== "Reschedule" && (
-                          <button
-                            className="btn-yellow btn-pick-up"
-                            style={{
-                              width: "100%",
-                            }}
-                            onClick={() => {
-                              document.getElementById(
-                                "popup-pick-up",
-                              ).style.display = "flex";
-                              document.body.style.overflow = "hidden";
+                      <div
+                        className={
+                          matchedPosts[post.postId] && !post.isReceived
+                            ? "btn-my-post-container"
+                            : "btn-my-post-container-no-matched"
+                        }
+                      >
+                        {matchedPosts[post.postId] &&
+                          !post.isReceived &&
+                          pickUpStatus[post.postId]?.status !==
+                            "Reschedule" && (
+                            <button
+                              className="btn-yellow btn-pick-up"
+                              style={{
+                                width: "100%",
+                              }}
+                              onClick={() => {
+                                document.getElementById(
+                                  "popup-pick-up",
+                                ).style.display = "flex";
+                                document.body.style.overflow = "hidden";
 
-                              setObjectToShowPopup({
-                                name: post.title,
-                                code: post.code,
-                                postId: post.postId,
-                              });
-                            }}
-                            disabled={
-                              pickUpStatus[post.postId]?.status === "Pending" ||
-                              pickUpStatus[post.postId]?.status === "Confirmed"
-                            }
-                          >
-                            {pickUpStatus[post.postId]?.status === "Pending" ? (
-                              <>
-                                <i className="fa-solid fa-user-clock"></i>{" "}
-                                Awaiting admin
-                              </>
-                            ) : pickUpStatus[post.postId]?.status ===
-                              "Confirmed" ? (
-                              <>
-                                <i className="fa-solid fa-circle-check"></i>{" "}
-                                You're good to go!
-                              </>
-                            ) : (
-                              <>
-                                <i className="fa-solid fa-person-walking"></i>{" "}
-                                I'm picking up
-                              </>
-                            )}
-                          </button>
-                        )}
+                                setObjectToShowPopup({
+                                  name: post.title,
+                                  code: post.code,
+                                  postId: post.postId,
+                                });
+                              }}
+                              disabled={
+                                pickUpStatus[post.postId]?.status ===
+                                  "Pending" ||
+                                pickUpStatus[post.postId]?.status ===
+                                  "Confirmed"
+                              }
+                            >
+                              {pickUpStatus[post.postId]?.status ===
+                              "Pending" ? (
+                                <>
+                                  <i className="fa-solid fa-user-clock"></i>{" "}
+                                  Awaiting admin
+                                </>
+                              ) : pickUpStatus[post.postId]?.status ===
+                                "Confirmed" ? (
+                                <>
+                                  <i className="fa-solid fa-circle-check"></i>{" "}
+                                  You're good to go!
+                                </>
+                              ) : (
+                                <>
+                                  <i className="fa-solid fa-person-walking"></i>{" "}
+                                  I'm picking up
+                                </>
+                              )}
+                            </button>
+                          )}
+
+                        <button
+                          className="btn"
+                          style={{
+                            width: "100%",
+                          }}
+                          onClick={() => {
+                            handleMarkReceived(post.postId);
+                          }}
+                          disabled={
+                            pickUpStatus[post.postId]?.status === "Pending" ||
+                            pickUpStatus[post.postId]?.status === "Confirmed"
+                          }
+                        >
+                          <i className="fa-solid fa-check"></i> Received
+                        </button>
+                      </div>
                       {pickUpStatus[post.postId]?.status === "Reschedule" ? (
                         <div
                           className="btn-yellow"
