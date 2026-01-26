@@ -1068,6 +1068,7 @@ export default function MyPost() {
                   onClick={() => {
                     window.location.href = `/detail-post/${post.postId}`;
                   }}
+                  style={{ cursor: "pointer" }}
                 >
                   {/* Image */}
                   {post.image ? (
