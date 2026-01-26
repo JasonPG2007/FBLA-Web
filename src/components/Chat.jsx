@@ -527,7 +527,11 @@ export default function Chat() {
                   {/* HEADER */}
                   <div className="chat-details-header">
                     <img
-                      src={temporaryChat.urlAvatar}
+                      src={
+                        temporaryChat.avatar
+                          ? temporaryChat.urlAvatar
+                          : "/Image/user_icon.png"
+                      }
                       loading="lazy"
                       className="avatar"
                     />

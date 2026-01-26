@@ -453,7 +453,7 @@ export default function DetailPost() {
       </div>
 
       {/* Check post if available */}
-      {isInProcessing ? (
+      {isGettingPost ? (
         <div className="not-found">
           <Suspense fallback={<p>Loading animation...</p>}>
             <Lottie
@@ -477,6 +477,7 @@ export default function DetailPost() {
                 color: "#072138",
                 padding: "20px 0",
                 fontSize: "40px",
+                textTransform: "capitalize",
               }}
             >
               {isInProcessing ? (
@@ -528,10 +529,11 @@ export default function DetailPost() {
                           ? `Hello, I'm contacting you regarding your lost item post: "${post.title}" (Post ID: ${post.postId}). I may have information related to it.`
                           : `Hello, I'm contacting you regarding your found item post: "${post.title}" (Post ID: ${post.postId}). I think this item might belong to me.`,
                       urlAvatar: post.user.urlAvatar,
+                      avatar: post.user.avatar,
                       firstName: post.user.firstName,
                       lastName: post.user.lastName,
-                      userIdSend: user.userId,
-                      userIdReceive: post.user.userId,
+                      userAId: user.userId,
+                      userBId: post.user.userId,
                       postId: post.postId,
                       chatId:
                         Date.now().toString().slice(-5) +
