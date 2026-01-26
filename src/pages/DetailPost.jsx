@@ -1030,7 +1030,14 @@ export default function DetailPost() {
                   </div>
                 ) : posts.length > 0 ? (
                   posts.map((item) => (
-                    <div className="card card-my-post" key={item.postId}>
+                    <div
+                      className="card card-my-post"
+                      key={item.postId}
+                      onClick={() => {
+                        window.location.href = `/detail-post/${item.postId}`;
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
                       {/* Image */}
                       {item.image ? (
                         <img
