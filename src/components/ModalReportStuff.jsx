@@ -318,7 +318,6 @@ export default function ModalReportStuff() {
         );
 
         closeModalReport();
-        document.getElementById("popup-notice-code").style.display = "flex"; // Show popup notice code
       }
 
       if (response.status === 403) {
@@ -423,7 +422,7 @@ export default function ModalReportStuff() {
         );
 
         closeModalReport();
-        document.getElementById("popup-notice-code").style.display = "flex"; // Show popup notice code
+        document.getElementById("popup-instruction").style.display = "flex"; // Show popup notice code
       }
 
       if (response.status === 403) {
@@ -1403,56 +1402,30 @@ export default function ModalReportStuff() {
       {/* Overlay */}
       <div className="modal-overlay-report-stuff"></div>
 
-      {/* Popup notice code */}
-      <div className="modal" id="popup-notice-code">
+      {/* Popup instruction */}
+      <div className="modal" id="popup-instruction">
         <div className="modal-content">
-          {lostOrFound === "Lost" ? (
-            <>
-              <h2 style={{ backgroundColor: "transparent" }}>Your Code:</h2>
+          <h2 style={{ backgroundColor: "transparent" }}>Instruction:</h2>
 
-              <div className="policy-section">
-                <h3>{code || "Not available"}</h3>
-                <p
-                  style={{
-                    fontSize: "16px",
-                    color: "#555",
-                    fontStyle: "italic",
-                    marginTop: "4px",
-                  }}
-                >
-                  This code is used to retrieve your lost item. Keep it private.
-                  You can view it again in your profile post.
-                </p>
-              </div>
-            </>
-          ) : (
-            user.role !== "Admin" && (
-              <>
-                <h2 style={{ backgroundColor: "transparent" }}>Instruction:</h2>
-
-                <div className="policy-section">
-                  <p
-                    style={{
-                      fontSize: "16px",
-                      color: "#555",
-                      fontStyle: "italic",
-                      marginTop: "4px",
-                    }}
-                  >
-                    Please bring this item to the <strong>Media Center</strong>{" "}
-                    within <strong> 2 days</strong> to complete the found item
-                    process.
-                  </p>
-                </div>
-              </>
-            )
-          )}
+          <div className="policy-section">
+            <p
+              style={{
+                fontSize: "16px",
+                color: "#555",
+                fontStyle: "italic",
+                marginTop: "4px",
+              }}
+            >
+              Please bring this item to the <strong>Media Center</strong> within{" "}
+              <strong> 2 days</strong> to complete the found item process.
+            </p>
+          </div>
 
           <div style={{ marginTop: "40px" }}>
             <button
               className="btn"
               onClick={() => {
-                document.getElementById("popup-notice-code").style.display =
+                document.getElementById("popup-instruction").style.display =
                   "none";
               }}
               aria-label="Okay button"
