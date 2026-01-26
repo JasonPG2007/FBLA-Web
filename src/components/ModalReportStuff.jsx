@@ -493,7 +493,7 @@ export default function ModalReportStuff() {
 
     try {
       const res = await axiosInstance.post(
-        "https://contamination-final-heated-gradually.trycloudflare.com/embed",
+        "https://ai-image-ma5f.onrender.com/embed",
         formData,
         {
           headers: {

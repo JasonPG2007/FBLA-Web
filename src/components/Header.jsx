@@ -123,7 +123,7 @@ export default function Header() {
 
     try {
       const res = await axiosInstance.post(
-        "https://contamination-final-heated-gradually.trycloudflare.com/embed",
+        "https://ai-image-ma5f.onrender.com/embed",
         formData,
         {
           headers: {
@@ -135,6 +135,8 @@ export default function Header() {
       if (res.status === 200) {
         // Call search API
         searchImageSimilarity(res.data);
+
+        console.log(res.data);
 
         // Reset input file
         e.target.value = null;
@@ -654,6 +656,10 @@ export default function Header() {
               resultByAI.map((item) => (
                 <div
                   className="card card-search-by-image"
+                  onClick={() => {
+                    window.location.href = `/detail-post/${item.post.postId}`;
+                  }}
+                  style={{ cursor: "pointer" }}
                   key={item.post.postId}
                 >
                   {item.post.image ? (
@@ -707,7 +713,8 @@ export default function Header() {
                     className="btn"
                     style={{ width: "100%" }}
                   >
-                    This is my item
+                    <i className="fa-solid fa-hand-point-up"></i> This is my
+                    item
                   </button>
 
                   {/* Status */}
