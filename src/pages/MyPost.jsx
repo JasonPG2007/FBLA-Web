@@ -1062,7 +1062,13 @@ export default function MyPost() {
               </div>
             ) : posts.length > 0 ? (
               posts.map((post) => (
-                <div className="card card-my-post" key={post.postId}>
+                <div
+                  className="card card-my-post"
+                  key={post.postId}
+                  onClick={() => {
+                    window.location.href = `/detail-post/${post.postId}`;
+                  }}
+                >
                   {/* Image */}
                   {post.image ? (
                     <img
