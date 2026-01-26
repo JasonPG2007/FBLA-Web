@@ -375,8 +375,8 @@ export default function Home() {
                 window.location.href = "/search?status=lost";
               }}
             >
-              <strong>
-                <span style={{ fontSize: "25px", color: "#072138" }}>
+              <strong style={{ color: "#072138" }}>
+                <span style={{ fontSize: "25px" }}>
                   {isInProcessing ? (
                     <i className="fas fa-spinner fa-spin"></i>
                   ) : (
@@ -397,8 +397,8 @@ export default function Home() {
                 cursor: "pointer",
               }}
             >
-              <strong>
-                <span style={{ fontSize: "25px", color: "#072138" }}>
+              <strong style={{ color: "#072138" }}>
+                <span style={{ fontSize: "25px" }}>
                   {isInProcessing ? (
                     <i className="fas fa-spinner fa-spin"></i>
                   ) : (
