@@ -371,9 +371,6 @@ export default function Home() {
                 backgroundColor: "transparent",
                 cursor: "pointer",
               }}
-              onClick={() => {
-                window.location.href = "/search?status=lost";
-              }}
             >
               <strong style={{ color: "#072138" }}>
                 <span style={{ fontSize: "25px" }}>
