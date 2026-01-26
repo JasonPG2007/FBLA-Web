@@ -765,7 +765,7 @@ export default function ModalReportStuff() {
                             htmlFor="stuff-name"
                             style={{ fontWeight: "600" }}
                           >
-                            Item Name*
+                            Title*
                           </label>
                           <br />
                           <div
@@ -783,7 +783,7 @@ export default function ModalReportStuff() {
                                 setStuffNameLost(e.target.value);
                               }}
                             />
-                            <label className="label-top">Enter name</label>
+                            <label className="label-top">Enter title</label>
                           </div>
                           <br />
                         </div>
@@ -1123,7 +1123,7 @@ export default function ModalReportStuff() {
                             htmlFor="stuff-name"
                             style={{ fontWeight: "600" }}
                           >
-                            Item Name*
+                            Title*
                           </label>
                           <br />
                           <div
@@ -1141,7 +1141,7 @@ export default function ModalReportStuff() {
                                 setStuffNameLost(e.target.value);
                               }}
                             />
-                            <label className="label-top">Enter name</label>
+                            <label className="label-top">Enter title</label>
                           </div>
                           <br />
                         </div>
