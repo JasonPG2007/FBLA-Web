@@ -15,6 +15,8 @@ export default function Home() {
   let [categoryId, setCategoryId] = useState("");
   let [status, setStatus] = useState("");
   let [isInProcessing, setIsInProcessing] = useState(false);
+  let [isGettingReceivedItem, setIsGettingReceivedItem] = useState(false);
+  let [isGettingLostItems, setIsGettingLostItems] = useState(false);
   let [isLoadingNewestPosts, setIsLoadingNewestPosts] = useState(false);
 
   // Functions
@@ -156,7 +158,7 @@ export default function Home() {
 
   // Get Pick 60 Lost Posts
   const getPick60LostPosts = async () => {
-    setIsInProcessing(true);
+    setIsGettingLostItems(true);
 
     try {
       const response = await axiosInstance.get("/Post/quick-60-lost-posts", {
@@ -215,13 +217,13 @@ export default function Home() {
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsGettingLostItems(false);
     }
   };
 
   // Get Pick 60 Received Posts
   const getPick60ReceivedPosts = async () => {
-    setIsInProcessing(true);
+    setIsGettingReceivedItem(true);
 
     try {
       const response = await axiosInstance.get(
@@ -283,7 +285,7 @@ export default function Home() {
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsGettingReceivedItem(false);
     }
   };
 
@@ -374,7 +376,7 @@ export default function Home() {
             >
               <strong style={{ color: "#072138" }}>
                 <span style={{ fontSize: "25px" }}>
-                  {isInProcessing ? (
+                  {isGettingLostItems ? (
                     <i className="fas fa-spinner fa-spin"></i>
                   ) : (
                     pick60LostPosts || "0"
@@ -396,7 +398,7 @@ export default function Home() {
             >
               <strong style={{ color: "#072138" }}>
                 <span style={{ fontSize: "25px" }}>
-                  {isInProcessing ? (
+                  {isGettingReceivedItem ? (
                     <i className="fas fa-spinner fa-spin"></i>
                   ) : (
                     pick60ReceivedPosts || "0"
