@@ -1140,7 +1140,6 @@ export default function MyPost() {
                   {/* Buttons */}
                   {(post.typePost === "Lost" || user.role === "Admin") && (
                     <>
-                      <div className="show-code">{post.code}</div>
                       <div
                         className={
                           matchedPosts[post.postId] && !post.isReceived
