@@ -1288,39 +1288,41 @@ export default function MyPost() {
                     </>
                   )}
 
-                  {post.typePost === "Found" && user.role !== "Admin" && (
-                    <button
-                      className="btn"
-                      style={{ width: "100%" }}
-                      onClick={() => {
-                        document.getElementById(
-                          "popup-confirm-handover",
-                        ).style.display = "flex";
-                        document.body.style.overflow = "hidden";
+                  {post.typePost === "Found" &&
+                    user.role !== "Admin" &&
+                    !post.isReceived && (
+                      <button
+                        className="btn"
+                        style={{ width: "100%" }}
+                        onClick={() => {
+                          document.getElementById(
+                            "popup-confirm-handover",
+                          ).style.display = "flex";
+                          document.body.style.overflow = "hidden";
 
-                        setObjectToShowPopup({
-                          name: post.title,
-                          code: post.code,
-                          postId: post.postId,
-                        });
-                      }}
-                      disabled={
-                        handoverStatus[post.postId]?.status === "Pending"
-                      }
-                    >
-                      {handoverStatus[post.postId]?.status === "Pending" ? (
-                        <>
-                          <i className="fa-solid fa-user-clock"></i> Awaiting
-                          admin
-                        </>
-                      ) : (
-                        <>
-                          <i className="fa-solid fa-arrow-right-to-bracket"></i>{" "}
-                          Handed over to admin
-                        </>
-                      )}
-                    </button>
-                  )}
+                          setObjectToShowPopup({
+                            name: post.title,
+                            code: post.code,
+                            postId: post.postId,
+                          });
+                        }}
+                        disabled={
+                          handoverStatus[post.postId]?.status === "Pending"
+                        }
+                      >
+                        {handoverStatus[post.postId]?.status === "Pending" ? (
+                          <>
+                            <i className="fa-solid fa-user-clock"></i> Awaiting
+                            admin
+                          </>
+                        ) : (
+                          <>
+                            <i className="fa-solid fa-arrow-right-to-bracket"></i>{" "}
+                            Handed over to admin
+                          </>
+                        )}
+                      </button>
+                    )}
 
                   {user.role === "Admin" &&
                     post.typePost === "Found" &&
