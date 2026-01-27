@@ -276,6 +276,7 @@ export default function ModalReportStuff() {
     handleFoundFile(file);
   };
 
+  // Create post lost item
   const handleSubmitPostLost = async (e) => {
     e.preventDefault();
 
@@ -381,6 +382,7 @@ export default function ModalReportStuff() {
     }
   };
 
+  // Create post found item
   const handleSubmitPostFound = async (e) => {
     e.preventDefault();
 

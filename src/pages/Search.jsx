@@ -14,7 +14,7 @@ export default function Search() {
   let [categoryPosts, setCategoryPosts] = useState([]);
   let [posts, setPosts] = useState([]);
   let [isDropdownOpenType, setIsDropdownOpenType] = useState(false);
-  let [isDropdownOpenLocation, setIsDropdownOpenLocation] = useState(false);
+  let [isGettingPosts, setIsGettingPosts] = useState(false);
   let [isInProcessing, setIsInProcessing] = useState(false);
   let [status, setStatus] = useState("");
   let [categoryId, setCategoryId] = useState("");
@@ -91,7 +91,7 @@ export default function Search() {
 
   // Get all Posts
   const getAllPosts = async () => {
-    setIsInProcessing(true);
+    setIsGettingPosts(true);
 
     try {
       const response = await axiosInstance.get("/Post/", {
@@ -150,7 +150,7 @@ export default function Search() {
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsGettingPosts(false);
     }
   };
 
@@ -330,7 +330,7 @@ export default function Search() {
                 <i className="fa-solid fa-caret-down caret-type"></i>
               )}
             </div>
-            <div className="detail-filter">
+            <div className="detail-filter name-item">
               <p>
                 <label htmlFor="name">Item name</label>
               </p>
@@ -345,7 +345,7 @@ export default function Search() {
               />
             </div>
             <button
-              className="btn-yellow"
+              className="btn-yellow btn-use-filter"
               style={{ marginLeft: "auto" }}
               disabled={isInProcessing}
             >
@@ -363,7 +363,7 @@ export default function Search() {
 
       {/* Cards section */}
       <div className={posts.length > 0 ? `card-row` : ""}>
-        {isInProcessing ? (
+        {isGettingPosts ? (
           <div
             style={{
               display: "grid",
@@ -416,100 +416,103 @@ export default function Search() {
               </div>
             ))}
           </div>
-        ) : posts.length > 0 ? (
-          posts.map((item) => (
+        ) : (
+          !isGettingPosts &&
+          (posts.length > 0 ? (
+            posts.map((item) => (
+              <div
+                className="card card-search"
+                style={{ cursor: "pointer" }}
+                key={item.postId}
+                onClick={() => {
+                  window.location.href = `/detail-post/${item.postId}`;
+                }}
+              >
+                {item.image ? (
+                  <img
+                    src={item.urlImage}
+                    alt="picture of item"
+                    style={{
+                      width: "100%",
+                      height: "300px",
+                      objectFit: "cover",
+                      backgroundColor: "white",
+                    }}
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="image-placeholder">
+                    <i className="icon-image"></i>
+                    <span>No image</span>
+                  </div>
+                )}
+                <div
+                  className="card-text suggestion-card-text"
+                  style={{ marginBottom: "40px" }}
+                >
+                  <div className="info-user-suggestion">
+                    {item.user.avatar ? (
+                      <img
+                        src={item.user.urlAvatar}
+                        alt="avatar"
+                        width={50}
+                        height={50}
+                        style={{ borderRadius: "50%" }}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <img
+                        src="/Image/user_icon.png"
+                        alt="avatar"
+                        width={50}
+                        height={50}
+                        style={{ borderRadius: "50%" }}
+                        loading="lazy"
+                      />
+                    )}
+                    <span>{`${item.user.firstName} ${item.user.lastName}`}</span>
+                  </div>
+                  <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                    <a href={`/detail-post/${item.postId}`}>{item.title}</a>
+                  </h3>
+                  <ReactMarkdown
+                    children={item.description}
+                    rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                  ></ReactMarkdown>
+                </div>
+
+                {/* Status */}
+                <div
+                  className={
+                    item.typePost === "Found"
+                      ? "status-post-found"
+                      : "status-post-lost"
+                  }
+                >
+                  {item.typePost}
+                </div>
+              </div>
+            ))
+          ) : (
             <div
-              className="card card-search"
-              style={{ cursor: "pointer" }}
-              key={item.postId}
-              onClick={() => {
-                window.location.href = `/detail-post/${item.postId}`;
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                flexDirection: "column",
+                textAlign: "center",
               }}
             >
-              {item.image ? (
-                <img
-                  src={item.urlImage}
-                  alt="picture of item"
-                  style={{
-                    width: "100%",
-                    height: "300px",
-                    objectFit: "cover",
-                    backgroundColor: "white",
-                  }}
-                  loading="lazy"
+              <Suspense fallback={<p>Loading animation...</p>}>
+                <Lottie
+                  animationData={NotFoundPost}
+                  className="m-auto no-data"
+                  style={{ width: "15%" }}
                 />
-              ) : (
-                <div className="image-placeholder">
-                  <i className="icon-image"></i>
-                  <span>No image</span>
-                </div>
-              )}
-              <div
-                className="card-text suggestion-card-text"
-                style={{ marginBottom: "40px" }}
-              >
-                <div className="info-user-suggestion">
-                  {item.user.avatar ? (
-                    <img
-                      src={item.user.urlAvatar}
-                      alt="avatar"
-                      width={50}
-                      height={50}
-                      style={{ borderRadius: "50%" }}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <img
-                      src="/Image/user_icon.png"
-                      alt="avatar"
-                      width={50}
-                      height={50}
-                      style={{ borderRadius: "50%" }}
-                      loading="lazy"
-                    />
-                  )}
-                  <span>{`${item.user.firstName} ${item.user.lastName}`}</span>
-                </div>
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  <a href={`/detail-post/${item.postId}`}>{item.title}</a>
-                </h3>
-                <ReactMarkdown
-                  children={item.description}
-                  rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                ></ReactMarkdown>
-              </div>
-
-              {/* Status */}
-              <div
-                className={
-                  item.typePost === "Found"
-                    ? "status-post-found"
-                    : "status-post-lost"
-                }
-              >
-                {item.typePost}
-              </div>
+              </Suspense>
+              <h1 className="no-posts">No posts yet</h1>
             </div>
           ))
-        ) : (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              flexDirection: "column",
-              textAlign: "center",
-            }}
-          >
-            <Suspense fallback={<p>Loading animation...</p>}>
-              <Lottie
-                animationData={NotFoundPost}
-                className="m-auto no-data"
-                style={{ width: "15%" }}
-              />
-            </Suspense>
-            <h1 className="no-posts">No posts yet</h1>
-          </div>
         )}
       </div>
     </>

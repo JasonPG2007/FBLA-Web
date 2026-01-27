@@ -24,6 +24,10 @@ body {
   background-repeat: no-repeat;
 }
 
+select {
+  cursor: pointer;
+}
+
 ul {
   list-style: none;
 }
@@ -132,7 +136,7 @@ a {
   border-radius: 20px;
   margin-top: 10px;
   margin-bottom: 10px;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .btn-yellow {
@@ -148,7 +152,7 @@ a {
   border-radius: 20px;
   margin-top: 10px;
   margin-bottom: 10px;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .btn-with-border {
@@ -164,19 +168,34 @@ a {
   border-radius: 20px;
   margin-top: 10px;
   margin-bottom: 10px;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .btn:hover {
-  transform: scale(1.05);
+  background-color: #d96506;
+}
+
+.btn:active {
+  background-color: #c85f05;
+  transform: scale(0.97);
 }
 
 .btn-yellow:hover {
-  transform: scale(1.05);
+  background-color: #f0be3f;
+}
+
+.btn-yellow:active {
+  background-color: #e0ad2e;
+  transform: scale(0.97);
 }
 
 .btn-with-border:hover {
-  transform: scale(1.05);
+  background-color: #f2bf3a;
+}
+
+.btn-with-border:hover {
+  background-color: #e3ae25;
+  transform: scale(0.97);
 }
 
 .poppins-font {
@@ -1105,7 +1124,7 @@ footer .right button {
 }
 
 .modal-header-report-stuff .tab {
-  padding: 10px 50px;
+  /* padding: 10px 50px; */
   font-size: 18px;
   font-weight: normal;
   border-radius: 20px;
@@ -1114,6 +1133,7 @@ footer .right button {
   cursor: pointer;
   width: 100%;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
 }
 
 .modal-header-report-stuff .active {
@@ -1125,6 +1145,11 @@ footer .right button {
   line-height: 40px;
   background-color: #fff;
   box-shadow: unset;
+  transition: all 0.2s ease-in-out;
+}
+
+.modal-title-report-stuff {
+  padding: 10px 50px;
 }
 
 .modal-content-container {
@@ -1494,6 +1519,11 @@ th {
   max-height: 36px;
   overflow: hidden;
   position: relative;
+}
+
+.search-by-image:hover {
+  background-color: #fff;
+  transform: scale(1.05);
 }
 
 .search-by-image div {
