@@ -21,7 +21,7 @@ export default function Home() {
 
   // Functions
   // Get category posts
-  const searchCategoryPosts = async () => {
+  const getCategoryPosts = async () => {
     setIsInProcessing(true);
 
     try {
@@ -291,7 +291,7 @@ export default function Home() {
 
   // UseEffect
   useEffect(() => {
-    searchCategoryPosts();
+    getCategoryPosts();
     getPick60LostPosts();
     getPick60ReceivedPosts();
     getNewestPosts();

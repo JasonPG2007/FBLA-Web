@@ -20,26 +20,192 @@ export default function DetailPost() {
   let [isGettingSuggestion, setIsGettingSuggestion] = useState(false);
   let [isLoadingMyPost, setIsLoadingMyPost] = useState(false);
   let [isRequesting, setIsRequesting] = useState(false);
+  let [isUpdating, setIsUpdating] = useState(false);
+  let [isGettingCategories, setIsGettingCategories] = useState(false);
   const [isShowPopup, setIsShowPopup] = useState(false);
+  const [isLoadedCategories, setIsLoadedCategories] = useState(false);
   let [suggestPosts, setSuggestPosts] = useState([]);
   let [posts, setPosts] = useState([]);
+  let [categoryPosts, setCategoryPosts] = useState([]);
   let [post, setPost] = useState("");
   let [user, setUser] = useState("");
   let [code, setCode] = useState("");
   let [statusPost, setStatusPost] = useState("");
-  let [categoryPostName, setCategoryPostName] = useState("");
+  let [categoryId, setCategoryId] = useState("");
   let [description, setDescription] = useState("");
+  let [title, setTitle] = useState("");
   const postId = location.pathname.split("/").pop();
 
   // APIs
   const API_URL_Auth = `/CheckAuth/check-auth`;
 
   // Functions
+  const getCategoryPosts = async () => {
+    setIsGettingCategories(true);
+
+    try {
+      const response = await axiosInstance.get(`/CategoryPost`, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
+
+      if (response.status === 200) {
+        setCategoryPosts(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsGettingCategories(false);
+      setIsLoadedCategories(true);
+    }
+  };
+
   // Check authentication status and redirect if not authenticated
   const checkAuthentication = () => {
     axiosInstance.get(API_URL_Auth).catch((err) => {
       console.error(err);
     });
+  };
+
+  // Update post
+  const handleUpdatePost = async (e) => {
+    e.preventDefault();
+
+    setIsUpdating(true);
+
+    const payload = {
+      userId: user.userId,
+      title: title,
+      description: description,
+      pickUpDate: pickUpDate,
+      status: "Pending",
+    };
+
+    try {
+      const response = await axiosInstance.put("/Post", payload, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
+
+      if (response.status === 200) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data,
+              status: "success",
+            },
+          }),
+        );
+
+        closeModalReport();
+        document.getElementById("popup-instruction").style.display = "flex"; // Show popup notice code
+      }
+
+      if (response.status === 403) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Please verify your email address to continue",
+              status: "warning",
+            },
+          }),
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   // Get my posts
@@ -437,6 +603,7 @@ export default function DetailPost() {
             alignItems: "center",
             padding: "10px 1px",
           }}
+          className="breadcrumb-menu"
         >
           <a href="/">
             <p>Home</p>
@@ -486,6 +653,19 @@ export default function DetailPost() {
                   width={300}
                   style={{
                     borderRadius: "12px",
+                  }}
+                />
+              ) : isEdit ? (
+                <input
+                  type="text"
+                  className="form-control-input input-update-post"
+                  style={{
+                    marginBottom: "20px",
+                    marginTop: "-40px",
+                  }}
+                  value={title}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
                   }}
                 />
               ) : (
@@ -563,8 +743,9 @@ export default function DetailPost() {
 
                     if (isEdit) {
                       setStatusPost(post.typePost);
-                      setCategoryPostName(post.categoryPost?.categoryPostName);
                       setDescription(post.description);
+                      setTitle(post.title);
+                      setCategoryId(post.categoryId);
                     }
                   }}
                 >
@@ -789,15 +970,32 @@ export default function DetailPost() {
                         />
                       ) : post.categoryPost?.categoryPostName ? (
                         isEdit ? (
-                          <input
-                            type="text"
+                          <select
+                            name=""
+                            id="type"
                             className="form-control-input input-update-post"
-                            style={{
-                              marginBottom: "20px",
-                              marginTop: "-40px",
+                            onClick={() => {
+                              isLoadedCategories || getCategoryPosts(); // Load categories only once
                             }}
-                            value={categoryPostName}
-                          />
+                            value={categoryId}
+                            onChange={(e) => {
+                              setCategoryId(e.target.value);
+                            }}
+                          >
+                            <option value="">Select type</option>
+                            {isGettingCategories ? (
+                              <option>Loading...</option>
+                            ) : (
+                              categoryPosts.map((item) => (
+                                <option
+                                  key={item.categoryPostId}
+                                  value={item.categoryPostId}
+                                >
+                                  {item.categoryPostName}
+                                </option>
+                              ))
+                            )}
+                          </select>
                         ) : (
                           post.categoryPost?.categoryPostName
                         )
@@ -980,6 +1178,19 @@ export default function DetailPost() {
                   }}
                 >
                   <i className="fa-solid fa-hand-point-up"></i> This is my item
+                </button>
+              )}
+
+              {isEdit && (
+                <button
+                  className="btn"
+                  style={{ width: "100%" }}
+                  onClick={() => {
+                    handleUpdatePost();
+                  }}
+                  disabled={isUpdating}
+                >
+                  Save Changes
                 </button>
               )}
             </div>
