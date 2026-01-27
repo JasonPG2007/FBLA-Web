@@ -556,8 +556,6 @@ export default function ModalReportStuff() {
       }
 
       throw error;
-    } finally {
-      setIsPosting(false);
     }
   };
 
