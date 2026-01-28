@@ -122,8 +122,8 @@ export default function DetailPost() {
       userId: user.userId,
       title: title,
       description: description,
-      pickUpDate: pickUpDate,
-      status: "Pending",
+      typePost: statusPost,
+      categoryPostId: categoryId,
     };
 
     try {
@@ -143,7 +143,6 @@ export default function DetailPost() {
           }),
         );
 
-        closeModalReport();
         document.getElementById("popup-instruction").style.display = "flex"; // Show popup notice code
       }
 
@@ -204,6 +203,7 @@ export default function DetailPost() {
         );
       }
     } finally {
+      setIsEdit(false);
       setIsUpdating(false);
     }
   };
@@ -271,11 +271,6 @@ export default function DetailPost() {
     } finally {
       setIsLoadingMyPost(false);
     }
-  };
-
-  const handleChangeImage = (srcOld, srcNew, idImg) => {
-    document.getElementById("big-img").src = srcNew;
-    document.getElementById(idImg).src = srcOld;
   };
 
   // Get my profile
@@ -578,6 +573,15 @@ export default function DetailPost() {
     getMyProfile();
   }, []);
 
+  useEffect(() => {
+    if (isEdit) {
+      setStatusPost(post.typePost);
+      setDescription(post.description);
+      setTitle(post.title);
+      setCategoryId(post.categoryId);
+    }
+  }, [isEdit]);
+
   return (
     <>
       {/* Helmet for setting the page title */}
@@ -740,13 +744,6 @@ export default function DetailPost() {
                   className="btn-yellow btn-edit-discard-post"
                   onClick={() => {
                     setIsEdit(!isEdit);
-
-                    if (isEdit) {
-                      setStatusPost(post.typePost);
-                      setDescription(post.description);
-                      setTitle(post.title);
-                      setCategoryId(post.categoryId);
-                    }
                   }}
                 >
                   {isEdit ? (

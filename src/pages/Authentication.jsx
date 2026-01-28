@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import axiosInstance from "../api/axiosInstance";
+import { useSearchParams } from "react-router-dom";
 
 export default function Authentication() {
   // Variables
@@ -43,6 +43,7 @@ export default function Authentication() {
     msg: "",
     status: "",
   });
+  const [searchParams] = new useSearchParams();
   let [firstName, setFirstName] = useState("");
   let [lastName, setLastName] = useState("");
   let [email, setEmail] = useState("");
@@ -464,6 +465,25 @@ export default function Authentication() {
       setIsValidStudentId(false);
     }
   }, [studentId]);
+
+  // Handle with param in url for sign in
+  useEffect(() => {
+    const withParam = searchParams.get("with");
+    if (withParam === "sign-in") {
+      document
+        .getElementById("form-sign-up-in-container")
+        .classList.add("move-sign-up");
+      document
+        .getElementById("form-sign-up-in-container")
+        .classList.remove("move-sign-in");
+      document
+        .getElementById("form-sign-up-in-container")
+        .classList.remove("move-forgot-password");
+      document
+        .getElementById("form-sign-up-in-container")
+        .classList.remove("move-cancel-forgot");
+    }
+  }, []);
 
   // Check password if valid
   useEffect(() => {

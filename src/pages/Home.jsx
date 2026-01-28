@@ -14,7 +14,7 @@ export default function Home() {
   let [pick60ReceivedPosts, setPick60ReceivedPosts] = useState("");
   let [categoryId, setCategoryId] = useState("");
   let [status, setStatus] = useState("");
-  let [isInProcessing, setIsInProcessing] = useState(false);
+  let [isGettingCategories, setIsGettingCategories] = useState(false);
   let [isGettingReceivedItem, setIsGettingReceivedItem] = useState(false);
   let [isGettingLostItems, setIsGettingLostItems] = useState(false);
   let [isLoadingNewestPosts, setIsLoadingNewestPosts] = useState(false);
@@ -22,7 +22,7 @@ export default function Home() {
   // Functions
   // Get category posts
   const getCategoryPosts = async () => {
-    setIsInProcessing(true);
+    setIsGettingCategories(true);
 
     try {
       const response = await axiosInstance.get(`/CategoryPost`, {
@@ -81,7 +81,7 @@ export default function Home() {
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsGettingCategories(false);
     }
   };
 
@@ -358,9 +358,9 @@ export default function Home() {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              gap: "50px",
+              gap: "30px",
               background: "linear-gradient(to right, #ec7207, #fadf45ff)",
-              padding: "20px 20px",
+              padding: "10px",
               width: "400px",
               borderRadius: "100px",
               marginTop: "40px",
@@ -723,9 +723,27 @@ export default function Home() {
                   )}
                   <span>{`${item.user.firstName} ${item.user.lastName}`}</span>
                 </div>
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  <a href={`/detail-post/${item.postId}`}>{item.title}</a>
-                </h3>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                    <a href={`/detail-post/${item.postId}`}>{item.title}</a>
+                  </h3>
+                  {item.isReceived && (
+                    <label
+                      style={{
+                        // fontSize: "13px",
+                        fontWeight: 500,
+                        color: "green",
+                      }}
+                    >
+                      (<i className="fa-solid fa-circle-check"></i> Received)
+                    </label>
+                  )}
+                </div>
                 <a href={`/detail-post/${item.postId}`}>
                   <ReactMarkdown
                     children={item.description}
@@ -751,7 +769,13 @@ export default function Home() {
         )}
       </div>
 
-      <div style={{ textAlign: "center", marginBottom: "100px" }}>
+      <div
+        style={{
+          textAlign: "center",
+          marginBottom: "100px",
+          marginTop: "-60px",
+        }}
+      >
         <a href="/lost-and-found" className="btn">
           View all <i className="fa-solid fa-arrow-right"></i>
         </a>
@@ -796,11 +820,18 @@ export default function Home() {
                 className="select"
               >
                 <option value="">Select type</option>
-                {categoryPosts.map((item) => (
-                  <option key={item.categoryPostId} value={item.categoryPostId}>
-                    {item.categoryPostName}
-                  </option>
-                ))}
+                {isGettingCategories ? (
+                  <option>Loading...</option>
+                ) : (
+                  categoryPosts.map((item) => (
+                    <option
+                      key={item.categoryPostId}
+                      value={item.categoryPostId}
+                    >
+                      {item.categoryPostName}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
             <div className="right">

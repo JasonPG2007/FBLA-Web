@@ -114,11 +114,6 @@
     font-size: 18px !important;
   }
 
-  .pipe {
-    display: block !important;
-    font-weight: 400 !important;
-  }
-
   .easy {
     display: none !important;
   }
@@ -152,10 +147,6 @@
 
   .paddingp p {
     left: 20% !important;
-  }
-
-  .learn-how-it-works {
-    margin-top: -10px !important;
   }
 
   .newest-post-container {
@@ -195,13 +186,13 @@
     margin: auto;
     display: grid;
     grid-template-columns: auto auto;
-    gap: 16px;
+    gap: 20px;
     padding: 20px 20px 70px;
     border-radius: 20px;
     background-color: #fff;
   }
 
-  .pipe {
+  .pipe:not(:last-child) {
     display: none;
   }
 
@@ -215,7 +206,8 @@
 
   .btn-quick-search {
     position: absolute;
-    left: 26%;
+    left: 50%;
+    transform: translateX(-50%);
     bottom: 10px;
     color: #072138 !important;
   }
