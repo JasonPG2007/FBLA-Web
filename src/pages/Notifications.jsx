@@ -35,7 +35,6 @@ export default function Notifications() {
       );
 
       if (response.status === 200) {
-        console.log(JSON.stringify(response.data));
         setNotificationsMatchImage(response.data);
       }
     } catch (error) {
@@ -104,7 +103,6 @@ export default function Notifications() {
       );
 
       if (response.status === 200) {
-        console.log(JSON.stringify(response.data));
         setNotificationsMatchDescription(response.data);
       }
     } catch (error) {
@@ -237,7 +235,7 @@ export default function Notifications() {
             ) : notificationsMatchImage.length > 0 ? (
               notificationsMatchImage.map((item) => (
                 <div
-                  className="card card-my-post"
+                  className="card card-notification"
                   key={item.notificationId}
                   style={{ cursor: "pointer" }}
                 >
@@ -267,7 +265,10 @@ export default function Notifications() {
                     )}
 
                     {/* Content */}
-                    <div className="card-text" style={{ marginBottom: "20px" }}>
+                    <div
+                      className="card-text card-text-notification"
+                      style={{ marginBottom: "20px" }}
+                    >
                       <div className="info-user-suggestion">
                         {item.avatarUserMatched ? (
                           <img
@@ -298,7 +299,7 @@ export default function Notifications() {
                       >
                         <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
                           <a href={`/detail-post/${item.postMatchedId}`}>
-                            {item.title}
+                            {item.titlePostMatched}
                           </a>
                         </h3>
                       </div>
@@ -393,7 +394,7 @@ export default function Notifications() {
             ) : notificationsMatchDescription.length > 0 ? (
               notificationsMatchDescription.map((item) => (
                 <div
-                  className="card card-my-post"
+                  className="card card-notification"
                   key={item.notificationId}
                   style={{ cursor: "pointer" }}
                 >
@@ -423,7 +424,10 @@ export default function Notifications() {
                     )}
 
                     {/* Content */}
-                    <div className="card-text" style={{ marginBottom: "20px" }}>
+                    <div
+                      className="card-text card-text-notification"
+                      style={{ marginBottom: "20px" }}
+                    >
                       <div className="info-user-suggestion">
                         {item.avatarUserMatched ? (
                           <img
@@ -454,7 +458,7 @@ export default function Notifications() {
                       >
                         <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
                           <a href={`/detail-post/${item.postId}`}>
-                            {item.title}
+                            {item.titlePostMatched}
                           </a>
                         </h3>
                       </div>
