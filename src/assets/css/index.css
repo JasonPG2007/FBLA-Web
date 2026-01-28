@@ -2542,3 +2542,11 @@ th {
 .notification-container {
   margin-bottom: 0px;
 }
+
+.card-text-notification {
+  height: 170px;
+}
+
+.card-notification {
+  height: 500px;
+}
