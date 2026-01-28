@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
 import SidebarProfile from "../components/SidebarProfile";
-import axios from "axios";
 import dayjs from "dayjs";
 import ReactMarkdown from "react-markdown";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { debounce } from "lodash";
-import rehypeRaw from "rehype-raw";
-import rehypeSanitize from "rehype-sanitize";
 import axiosInstance from "../api/axiosInstance";
 
 export default function ConfirmReceived() {

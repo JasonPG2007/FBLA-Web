@@ -219,9 +219,27 @@ export default function LostAndFound() {
                   )}
                   <span>{`${item.user.firstName} ${item.user.lastName}`}</span>
                 </div>
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  <a href={`/detail-post/${item.postId}`}>{item.title}</a>
-                </h3>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                    <a href={`/detail-post/${item.postId}`}>{item.title}</a>
+                  </h3>
+                  {item.isReceived && (
+                    <label
+                      style={{
+                        // fontSize: "13px",
+                        fontWeight: 500,
+                        color: "green",
+                      }}
+                    >
+                      (<i className="fa-solid fa-circle-check"></i> Received)
+                    </label>
+                  )}
+                </div>
                 <a href={`/detail-post/${item.postId}`}>
                   <ReactMarkdown
                     children={item.description}

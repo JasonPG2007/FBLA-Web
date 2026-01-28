@@ -2538,3 +2538,7 @@ th {
 .sidebar-and-content {
   /* grid-template-columns: 15% 50% 28% !important; */
 }
+
+.notification-container {
+  margin-bottom: 0px;
+}

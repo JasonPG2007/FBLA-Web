@@ -16,11 +16,8 @@ export default function ModalReportStuff() {
   let [categoryPosts, setCategoryPosts] = useState([]);
   let [user, setUser] = useState("");
   let [categoryPostId, setCategoryPostId] = useState("");
-  let [code, setCode] = useState("");
   let [query, setQuery] = useState("");
   let [lostOrFound, setLostOrFound] = useState("Lost");
-  let [studentId, setStudentId] = useState("");
-  let [email, setEmail] = useState("");
   let [stuffNameLost, setStuffNameLost] = useState("");
   let [categoryLost, setCategoryLost] = useState("");
   let [descriptionLost, setDescriptionLost] = useState("");
@@ -57,10 +54,6 @@ export default function ModalReportStuff() {
 
       if (response.status === 200) {
         setUser(response.data);
-
-        // Set details
-        setEmail(response.data.email);
-        setStudentId(response.data.student?.studentId);
       }
     } catch (error) {
       if (error.response) {
@@ -132,10 +125,6 @@ export default function ModalReportStuff() {
 
       if (response.status === 200) {
         setCategoryPosts(response.data);
-
-        // Set details
-        setEmail(response.data.email);
-        setStudentId(response.data.student?.studentId);
       }
     } catch (error) {
       if (error.response) {
@@ -283,7 +272,6 @@ export default function ModalReportStuff() {
     setIsPosting(true);
 
     const codeIntoDb = getRandomString(6);
-    setCode(codeIntoDb);
 
     const formData = new FormData();
     if (selectedFileLost) {
@@ -389,7 +377,7 @@ export default function ModalReportStuff() {
     setIsPosting(true);
 
     const codeIntoDb = getRandomString(6);
-    setCode(codeIntoDb);
+
     const formData = new FormData();
     if (selectedFileFound) {
       selectedFileFound && formData.append("imageUpload", selectedFileFound); // Image
@@ -1403,54 +1391,57 @@ export default function ModalReportStuff() {
       <div className="modal-overlay-report-stuff"></div>
 
       {/* Popup instruction */}
-      <div className="modal" id="popup-instruction">
-        <div className="modal-content">
-          <h2 style={{ backgroundColor: "transparent" }}>Instruction:</h2>
+      {user.role !== "Admin" && (
+        <div className="modal" id="popup-instruction">
+          <div className="modal-content">
+            <h2 style={{ backgroundColor: "transparent" }}>Instruction:</h2>
 
-          <div className="policy-section">
-            <p
-              style={{
-                fontSize: "16px",
-                color: "#555",
-                fontStyle: "italic",
-                marginTop: "4px",
-              }}
-            >
-              Please bring this item to the <strong>Media Center</strong> within{" "}
-              <strong> 2 days</strong> to complete the found item process.
-            </p>
-          </div>
-
-          <div style={{ marginTop: "40px" }}>
-            <button
-              className="btn"
-              onClick={() => {
-                document.getElementById("popup-instruction").style.display =
-                  "none";
-              }}
-              aria-label="Okay button"
-            >
-              Okay
-            </button>
-            {user.role === "Admin" && (
-              <button
-                className="btn-yellow"
-                onClick={() => {
-                  window.dispatchEvent(
-                    new CustomEvent("codeToPrint", {
-                      detail: `Code: ${code}`,
-                    }),
-                  );
+            <div className="policy-section">
+              <p
+                style={{
+                  fontSize: "16px",
+                  color: "#555",
+                  fontStyle: "italic",
+                  marginTop: "4px",
                 }}
-                style={{ marginLeft: "10px", cursor: "pointer" }}
-                aria-label="Print this code button"
               >
-                Print this code
+                Please bring this item to the <strong>Media Center</strong>{" "}
+                within <strong> 2 days</strong> to complete the found item
+                process.
+              </p>
+            </div>
+
+            <div style={{ marginTop: "40px" }}>
+              <button
+                className="btn"
+                onClick={() => {
+                  document.getElementById("popup-instruction").style.display =
+                    "none";
+                }}
+                aria-label="Okay button"
+              >
+                Okay
               </button>
-            )}
+              {/* {user.role === "Admin" && (
+                <button
+                  className="btn-yellow"
+                  onClick={() => {
+                    window.dispatchEvent(
+                      new CustomEvent("codeToPrint", {
+                        detail: `Code: ${code}`,
+                      }),
+                    );
+                  }}
+                  style={{ marginLeft: "10px", cursor: "pointer" }}
+                  aria-label="Print this code button"
+                >
+                  Print this code
+                </button>
+              )} */}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

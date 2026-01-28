@@ -490,7 +490,7 @@ export default function Header() {
                       </>
                     )}
                   </a>
-                  <a href="/authentication">
+                  <a href="/authentication?with=sign-in">
                     <i className="fa-solid fa-arrow-right-to-bracket"></i> Sign
                     In
                   </a>
