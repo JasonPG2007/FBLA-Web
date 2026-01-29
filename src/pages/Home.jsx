@@ -1,36 +1,106 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import Skeleton from "react-loading-skeleton";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
+import axiosInstance from "../api/axiosInstance";
 
 export default function Home() {
   // Variables
+  let [categoryPosts, setCategoryPosts] = useState([]);
   let [newestPosts, setNewestPosts] = useState([]);
-  let [isInProcessing, setIsInProcessing] = useState(false);
+  let [pick60LostPosts, setPick60LostPosts] = useState("");
+  let [pick60ReceivedPosts, setPick60ReceivedPosts] = useState("");
+  let [categoryId, setCategoryId] = useState("");
+  let [status, setStatus] = useState("");
+  let [isGettingCategories, setIsGettingCategories] = useState(false);
+  let [isGettingReceivedItem, setIsGettingReceivedItem] = useState(false);
+  let [isGettingLostItems, setIsGettingLostItems] = useState(false);
+  let [isLoadingNewestPosts, setIsLoadingNewestPosts] = useState(false);
 
   // Functions
+  // Get category posts
+  const getCategoryPosts = async () => {
+    setIsGettingCategories(true);
+
+    try {
+      const response = await axiosInstance.get(`/CategoryPost`, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
+
+      if (response.status === 200) {
+        setCategoryPosts(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsGettingCategories(false);
+    }
+  };
+
   function handleSearch(e) {
     e.preventDefault();
 
-    window.location.href = "/search";
+    window.location.href = `/search${categoryId && !status ? `?categoryId=${categoryId}` : ""}${!categoryId && status ? `?status=${status}` : ""}${categoryId && status ? `?categoryId=${categoryId}&status=${status}` : ""}`;
   }
 
   // Get Newest Posts
   const getNewestPosts = async () => {
-    setIsInProcessing(true);
+    setIsLoadingNewestPosts(true);
 
     try {
-      const response = await axios.get(
-        "https://localhost:44306/api/Post/newest-posts",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.get("/Post/newest-posts", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setNewestPosts(response.data);
@@ -45,7 +115,7 @@ export default function Home() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -56,7 +126,7 @@ export default function Home() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -67,7 +137,7 @@ export default function Home() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -78,16 +148,152 @@ export default function Home() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsLoadingNewestPosts(false);
+    }
+  };
+
+  // Get Pick 60 Lost Posts
+  const getPick60LostPosts = async () => {
+    setIsGettingLostItems(true);
+
+    try {
+      const response = await axiosInstance.get("/Post/quick-60-lost-posts", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
+
+      if (response.status === 200) {
+        setPick60LostPosts(response.data.length);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsGettingLostItems(false);
+    }
+  };
+
+  // Get Pick 60 Received Posts
+  const getPick60ReceivedPosts = async () => {
+    setIsGettingReceivedItem(true);
+
+    try {
+      const response = await axiosInstance.get(
+        "/Post/quick-60-received-posts",
+        {
+          // withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        },
+      );
+
+      if (response.status === 200) {
+        setPick60ReceivedPosts(response.data.length);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsGettingReceivedItem(false);
     }
   };
 
   // UseEffect
   useEffect(() => {
+    getCategoryPosts();
+    getPick60LostPosts();
+    getPick60ReceivedPosts();
     getNewestPosts();
   }, []);
 
@@ -100,10 +306,17 @@ export default function Home() {
 
       <div
         className="hero"
-        style={{ display: "flex", justifyContent: "space-around" }}>
+        style={{ display: "flex", justifyContent: "space-around" }}
+      >
         <div
           className="hero-text"
-          style={{ marginTop: "83px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+          style={{
+            marginTop: "83px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <p
             style={{
               fontSize: "32px",
@@ -125,7 +338,7 @@ export default function Home() {
               LOST
             </strong>
             <br />
-            items or reunite{" "}
+            Items or reunite{" "}
             <strong
               style={{
                 fontSize: "55px",
@@ -134,7 +347,7 @@ export default function Home() {
             >
               FOUND
             </strong>{" "}
-            items with
+            Items with
             <br />
             their owners
           </p>
@@ -145,9 +358,9 @@ export default function Home() {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              gap: "50px",
+              gap: "30px",
               background: "linear-gradient(to right, #ec7207, #fadf45ff)",
-              padding: "20px 20px",
+              padding: "10px",
               width: "400px",
               borderRadius: "100px",
               marginTop: "40px",
@@ -161,16 +374,19 @@ export default function Home() {
                 backgroundColor: "transparent",
                 cursor: "pointer",
               }}
-              onClick={() => {
-                window.location.href = "/search?status=lost";
-              }}
             >
-              <strong>
-                <span style={{ fontSize: "25px", color: "#072138" }}>30</span> <br /> Lost Items
+              <strong style={{ color: "#072138" }}>
+                <span style={{ fontSize: "25px" }}>
+                  {isGettingLostItems ? (
+                    <i className="fas fa-spinner fa-spin"></i>
+                  ) : (
+                    pick60LostPosts || "0"
+                  )}
+                </span>{" "}
+                <br /> Lost Items
               </strong>
             </button>
             <p style={{ fontSize: "20px" }}>
-              {" "}
               <strong className="pipe">|</strong>
             </p>
             <button
@@ -182,9 +398,15 @@ export default function Home() {
                 cursor: "pointer",
               }}
             >
-              {" "}
-              <strong>
-                <span style={{ fontSize: "25px" }}>60</span> <br /> Found Items
+              <strong style={{ color: "#072138" }}>
+                <span style={{ fontSize: "25px" }}>
+                  {isGettingReceivedItem ? (
+                    <i className="fas fa-spinner fa-spin"></i>
+                  ) : (
+                    pick60ReceivedPosts || "0"
+                  )}
+                </span>{" "}
+                <br /> Received Items
               </strong>
             </button>
           </div>
@@ -199,7 +421,7 @@ export default function Home() {
               marginLeft: "2%",
             }}
           >
-            It’s quick and easy—just provide your items’ details, a photo,
+            It's super easy and takes only minutes. Just add your item's info,
             <br />
             and your contact information.
           </p>
@@ -273,7 +495,9 @@ export default function Home() {
             Register
           </p>
           <p>
-            Create an account to access a personalized space for managing your items. You can update your profile, contact other users, and use helpful tools.
+            This step allows you to have a personalized space for managing your
+            item. You can edit and update your profile, contact other users, and
+            access useful tools.
           </p>
         </div>
 
@@ -416,7 +640,7 @@ export default function Home() {
       {/* Newest images */}
       <div className="newest-post-container">
         {/* Cards */}
-        {isInProcessing ? (
+        {isLoadingNewestPosts ? (
           <div
             style={{
               display: "grid",
@@ -441,13 +665,20 @@ export default function Home() {
               </div>
             ))}
           </div>
-        ) : (
+        ) : newestPosts.length > 0 ? (
           newestPosts.map((item) => (
-            <div className="card suggestion-card" key={item.postId}>
+            <div
+              className="card suggestion-card"
+              key={item.postId}
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                window.location.href = `/detail-post/${item.postId}`;
+              }}
+            >
               {item.image ? (
                 <img
                   src={item.urlImage}
-                  alt="picture of stuff"
+                  alt="picture of item"
                   style={{
                     width: "100%",
                     height: "300px",
@@ -467,19 +698,48 @@ export default function Home() {
                 style={{ marginBottom: "40px" }}
               >
                 <div className="info-user-suggestion">
-                  <img
-                    src={item.user.urlAvatar}
-                    alt="avatar"
-                    width={50}
-                    height={50}
-                    style={{ borderRadius: "50%" }}
-                    loading="lazy"
-                  />
+                  {item.user.avatar ? (
+                    <img
+                      src={item.user.urlAvatar}
+                      alt="avatar"
+                      width={50}
+                      height={50}
+                      style={{ borderRadius: "50%" }}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <img
+                      src="/Image/user_icon.png"
+                      alt="avatar"
+                      width={50}
+                      height={50}
+                      style={{ borderRadius: "50%" }}
+                      loading="lazy"
+                    />
+                  )}
                   <span>{`${item.user.firstName} ${item.user.lastName}`}</span>
                 </div>
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>{item.title}</a>
-                </h3>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                    <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>{item.title}</a>
+                  </h3>
+                  {item.isReceived && (
+                    <label
+                      style={{
+                        // fontSize: "13px",
+                        fontWeight: 500,
+                        color: "green",
+                      }}
+                    >
+                      (<i className="fa-solid fa-circle-check"></i> Received)
+                    </label>
+                  )}
+                </div>
                 <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>
                   <ReactMarkdown
                     children={item.description}
@@ -500,10 +760,18 @@ export default function Home() {
               </div>
             </div>
           ))
+        ) : (
+          <h2>No posts yet</h2>
         )}
       </div>
 
-      <div style={{ textAlign: "center", marginBottom: "100px" }}>
+      <div
+        style={{
+          textAlign: "center",
+          marginBottom: "100px",
+          marginTop: "-60px",
+        }}
+      >
         <a href="/lost-and-found" className="btn" aria-label="View all posts link">
           View all <i className="fa-solid fa-arrow-right"></i>
         </a>
@@ -521,7 +789,7 @@ export default function Home() {
         >
           Search
         </span>{" "}
-        for Stuffs in your
+        for <strong>Items</strong> in your
         <span
           style={{
             fontFamily: "Mochiy Pop One, sans-serif",
@@ -536,11 +804,30 @@ export default function Home() {
         <div className="quick-search">
           <div className="categories">
             <div className="left">
-              <label htmlFor="category">Type of Stuff</label>
+              <label htmlFor="category">Type of Item</label>
               <br />
-              <select className="select" name="" id="category">
+              <select
+                name=""
+                id="type"
+                value={categoryId}
+                onChange={(e) => {
+                  setCategoryId(e.target.value);
+                }}
+                className="select"
+              >
                 <option value="">Select type</option>
-                <option value="">Iphone</option>
+                {isGettingCategories ? (
+                  <option>Loading...</option>
+                ) : (
+                  categoryPosts.map((item) => (
+                    <option
+                      key={item.categoryPostId}
+                      value={item.categoryPostId}
+                    >
+                      {item.categoryPostName}
+                    </option>
+                  ))
+                )}
               </select>
             </div>
             <div className="right">
@@ -548,26 +835,31 @@ export default function Home() {
             </div>
           </div>
           <div className="pipe">|</div>
-          <div className="location">
+          <div className="status-quick-search">
             <div className="left">
-              <label htmlFor="location">Location</label>
+              <label htmlFor="status">Status</label>
               <br />
-              <select className="select" name="" id="location">
-                <option value="">Select location</option>
-                <option value="">Hall 500</option>
-                <option value="">Hall 600</option>
+              <select
+                className="select"
+                name=""
+                id="status"
+                onChange={(e) => {
+                  setStatus(e.target.value);
+                }}
+              >
+                <option value="">Select Status</option>
+                <option value="Lost">Lost</option>
+                <option value="Found">Found</option>
               </select>
             </div>
             <div className="right">
-              <i className="fa-solid fa-location-dot"></i>
+              <i className="fa-solid fa-tag"></i>
             </div>
           </div>
           <div className="pipe">|</div>
-          <div className="btn-quick-search">
-            <button
-              aria-label="Find a stuff button"
-            >
-              Find a stuff <i className="fa-solid fa-arrow-right"></i>
+          <div className="">
+            <button className="btn-yellow" aria-label="Search item button">
+              Search item <i className="fa-solid fa-arrow-right"></i>
             </button>
           </div>
         </div>

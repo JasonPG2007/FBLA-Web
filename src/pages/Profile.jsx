@@ -1,10 +1,10 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import InputMask from "react-input-mask";
 import SidebarProfile from "../components/SidebarProfile";
 import Skeleton from "react-loading-skeleton";
 import dayjs from "dayjs";
+import axiosInstance from "../api/axiosInstance";
 
 export default function Profile() {
   // Variables
@@ -15,12 +15,104 @@ export default function Profile() {
   let [avatarPreview, setAvatarPreview] = useState(null);
   let [selectedFileAvatar, setSelectedFileAvatar] = useState(null);
   let [isChangeDateOfBirth, setIsChangeDateOfBirth] = useState(false);
+  let [isSending, setIsSending] = useState(false);
   let [isModify, setIsModify] = useState(false);
   let [isInProcessing, setIsInProcessing] = useState(false);
 
   // APIs
 
   // Functions
+  // Handle resend verification email
+  const handleResendVerify = async () => {
+    setIsSending(true);
+
+    try {
+      const response = await axiosInstance.post(
+        "/Users/resend-verify-email",
+        null,
+        {
+          // withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        },
+      );
+
+      if (response.status === 200) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data?.message
+                ? response.data?.message
+                : response.data,
+              status: "success",
+            },
+          }),
+        );
+      }
+
+      if (response.status === 404) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data?.message
+                ? response.data?.message
+                : response.data,
+              status: "error",
+            },
+          }),
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsSending(false);
+    }
+  };
+
   // Handle change avatar
   const handleChangeAvatar = (file) => {
     if (!file) return;
@@ -70,14 +162,11 @@ export default function Profile() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.get("/Users/profile", {
+        // // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setUser(response.data);
@@ -97,7 +186,7 @@ export default function Profile() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -108,7 +197,7 @@ export default function Profile() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -119,7 +208,7 @@ export default function Profile() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -130,7 +219,7 @@ export default function Profile() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -153,15 +242,11 @@ export default function Profile() {
     }
 
     try {
-      const response = await axios.put(
-        "https://localhost:44306/api/Users/update-user",
-        formData,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.put("/Users/update-user", formData, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         await getMyProfile();
@@ -172,7 +257,7 @@ export default function Profile() {
               message: response.data,
               status: "success",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -185,7 +270,7 @@ export default function Profile() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -196,7 +281,7 @@ export default function Profile() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -207,7 +292,7 @@ export default function Profile() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -218,7 +303,7 @@ export default function Profile() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -300,8 +385,8 @@ export default function Profile() {
                         <Skeleton
                           className="skeleton-input"
                           height={45}
-                          width={630}
-                          style={{ marginBottom: "5px" }}
+                          width={530}
+                          style={{ marginBottom: "5px", borderRadius: "20px" }}
                         />
                       )}
                     </td>
@@ -333,8 +418,8 @@ export default function Profile() {
                         <Skeleton
                           className="skeleton-input"
                           height={45}
-                          width={630}
-                          style={{ marginBottom: "5px" }}
+                          width={530}
+                          style={{ marginBottom: "5px", borderRadius: "20px" }}
                         />
                       )}
                     </td>
@@ -369,8 +454,8 @@ export default function Profile() {
                       ) : (
                         <Skeleton
                           height={45}
-                          width={630}
-                          style={{ marginBottom: "5px" }}
+                          width={530}
+                          style={{ marginBottom: "5px", borderRadius: "20px" }}
                         />
                       )}
                     </td>
@@ -391,8 +476,8 @@ export default function Profile() {
                         <Skeleton
                           className="skeleton-input"
                           height={45}
-                          width={630}
-                          style={{ marginBottom: "5px" }}
+                          width={530}
+                          style={{ marginBottom: "5px", borderRadius: "20px" }}
                         />
                       )}
                     </td>
@@ -403,20 +488,51 @@ export default function Profile() {
                     </th>
                     <td style={{ verticalAlign: "top" }} className="table-td">
                       {!isInProcessing ? (
-                        <input
-                          placeholder="Ex: demo@ex.io"
-                          type="email"
-                          className="form-control-input-label-top"
-                          value={user.email}
-                          style={{ cursor: "not-allowed" }}
-                          disabled
-                        />
+                        <>
+                          <input
+                            placeholder="Ex: demo@ex.io"
+                            type="email"
+                            className="form-control-input-label-top"
+                            value={`${user.email}`}
+                            style={{ cursor: "not-allowed" }}
+                            disabled
+                          />
+                          {!user.isVerifiedEmail ? (
+                            <>
+                              <span className="badge-not-verified">
+                                <i className="fa-solid fa-triangle-exclamation"></i>{" "}
+                                Not Verified
+                              </span>
+
+                              <button
+                                className="btn btn-verify"
+                                onClick={() => {
+                                  handleResendVerify();
+                                }}
+                                type="button"
+                                disabled={isSending}
+                                aria-label="Send verification email button"
+                              >
+                                {isSending ? (
+                                  <i className="fas fa-spinner fa-spin"></i>
+                                ) : (
+                                  "Verify Now"
+                                )}
+                              </button>
+                            </>
+                          ) : (
+                            <span className="badge-verified">
+                              <i className="fa-solid fa-circle-check"></i>{" "}
+                              Verified
+                            </span>
+                          )}
+                        </>
                       ) : (
                         <Skeleton
                           className="skeleton-input"
                           height={45}
-                          width={630}
-                          style={{ marginBottom: "5px" }}
+                          width={530}
+                          style={{ marginBottom: "5px", borderRadius: "20px" }}
                         />
                       )}
                     </td>
@@ -424,87 +540,17 @@ export default function Profile() {
                 </tbody>
               </table>
 
-              {/* Notify me */}
-              <div
-                className="notify-me-section"
-                style={{
-                  padding: "10px 10px 30px",
-                }}
-              >
-                <div
-                  style={{
-                    padding: " 10px 0 10px",
-                  }}
-                >
-                  <div className="notify-me">
-                    <label className="switch">
-                      <input type="checkbox" />
-                      <span className="slider"></span>
-                    </label>
-                    <label
-                      style={{
-                        textAlign: "center",
-                        fontSize: "14px",
-                        color: "#072138",
-                        marginRight: "50%",
-                        className: "notify-text",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      Notify me when there is a new lost stuff post
-                    </label>
-                  </div>
-
-                  <div className="notify-me">
-                    <label className="switch">
-                      <input type="checkbox" />
-                      <span className="slider"></span>
-                    </label>
-                    <label
-                      style={{
-                        textAlign: "center",
-                        fontSize: "14px",
-                        color: "#072138",
-                        marginRight: "48%",
-                        className: "notify-text",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      Notify me when there is a new found stuff post
-                    </label>
-                  </div>
-
-                  <div className="notify-me">
-                    <label className="switch">
-                      <input type="checkbox" />
-                      <span className="slider"></span>
-                    </label>
-                    <label
-                      style={{
-                        textAlign: "center",
-                        fontSize: "14px",
-                        color: "#072138",
-                        marginRight: "45%",
-                        className: "notify-text",
-                      }}
-                      htmlFor="notify-similar-mine"
-                    >
-                      Notify me when there is a post that similar to mine
-                    </label>
-                  </div>
-                </div>
-              </div>
               <button
                 aria-label="Save changes button"
                 className="btn-yellow"
                 style={{
+                  marginTop: "20px",
                   width: "100%",
                   backgroundColor:
                     isModify && !isInProcessing ? "#ec7207" : "#d3d3d3",
                   color: isModify && !isInProcessing ? "#fff" : "#8c8c8c",
                   cursor:
                     isModify && !isInProcessing ? "pointer" : "not-allowed",
-                  pointerEvents: isModify && !isInProcessing ? "auto" : "none",
                   opacity: isModify && !isInProcessing ? 1 : 0.6,
                 }}
                 disabled={!isModify || isInProcessing}
@@ -512,7 +558,10 @@ export default function Profile() {
                 {isInProcessing ? (
                   <i className="fas fa-spinner fa-spin"></i>
                 ) : (
-                  "Save changes"
+                  <>
+                    <i className="fa-solid fa-floppy-disk me-2"></i> Save
+                    changes
+                  </>
                 )}
               </button>
             </form>
@@ -521,9 +570,10 @@ export default function Profile() {
 
         {/* Avatar */}
         <div
-          style={{ marginLeft: "100px" }}
           onDragOver={(e) => e.preventDefault()}
           onDrop={handleDropAvatar}
+          className="change-delete-avatar"
+          style={{ marginLeft: "100px" }}
         >
           {isInProcessing ? (
             <Skeleton
@@ -541,16 +591,9 @@ export default function Profile() {
                   ? avatarPreview
                   : user?.avatar
                     ? user.urlAvatar
-                    : "./Image/user_icon.png"
+                    : "/Image/user_icon.png"
               }
               alt="avatar"
-              style={{
-                borderRadius: "12px",
-                width: "420px",
-                height: "420px",
-                objectFit: "cover",
-                marginTop: "150px",
-              }}
               loading="lazy"
             />
           )}
@@ -558,7 +601,6 @@ export default function Profile() {
             style={{
               display: "flex",
               gap: "20px",
-              marginLeft: "90px",
             }}
           >
             <div style={{ display: "flex" }}>
@@ -569,7 +611,7 @@ export default function Profile() {
                 }}
                 htmlFor="update-avatar"
               >
-                Change
+                <i className="fa-solid fa-repeat"></i> Change
               </label>
               <input
                 type="file"
@@ -591,7 +633,7 @@ export default function Profile() {
                   setIsModify(false);
                 }}
               >
-                Delete
+                <i className="fa-solid fa-trash"></i> Delete
               </button>
             </div>
           </div>

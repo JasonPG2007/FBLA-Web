@@ -1,9 +1,9 @@
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import Skeleton from "react-loading-skeleton";
 import { debounce } from "lodash";
+import axiosInstance from "../api/axiosInstance";
 
 export default function ModalReportStuff() {
   // Variables
@@ -16,20 +16,18 @@ export default function ModalReportStuff() {
   let [categoryPosts, setCategoryPosts] = useState([]);
   let [user, setUser] = useState("");
   let [categoryPostId, setCategoryPostId] = useState("");
-  let [code, setCode] = useState("");
   let [query, setQuery] = useState("");
   let [lostOrFound, setLostOrFound] = useState("Lost");
-  let [studentId, setStudentId] = useState("");
-  let [email, setEmail] = useState("");
   let [stuffNameLost, setStuffNameLost] = useState("");
   let [categoryLost, setCategoryLost] = useState("");
   let [descriptionLost, setDescriptionLost] = useState("");
   let [isInProcessing, setIsInProcessing] = useState(false);
+  let [isPosting, setIsPosting] = useState(false);
   let [isTypeSearch, setIsTypeSearch] = useState(false);
   let [isSearchingCategory, setIsSearchingCategory] = useState(false);
 
   // APIs
-  const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `/CheckAuth/check-auth`;
 
   // Functions
   // Close modal report
@@ -48,21 +46,14 @@ export default function ModalReportStuff() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.get("/Users/profile", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setUser(response.data);
-
-        // Set details
-        setEmail(response.data.email);
-        setStudentId(response.data.student?.studentId);
       }
     } catch (error) {
       if (error.response) {
@@ -74,7 +65,7 @@ export default function ModalReportStuff() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -85,7 +76,7 @@ export default function ModalReportStuff() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -96,7 +87,7 @@ export default function ModalReportStuff() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -107,7 +98,7 @@ export default function ModalReportStuff() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -123,21 +114,17 @@ export default function ModalReportStuff() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        `https://localhost:44306/api/CategoryPost/search-category-post?query=${query}`,
+      const response = await axiosInstance.get(
+        `/CategoryPost/search-category-post?query=${query}`,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
         setCategoryPosts(response.data);
-
-        // Set details
-        setEmail(response.data.email);
-        setStudentId(response.data.student?.studentId);
       }
     } catch (error) {
       if (error.response) {
@@ -149,7 +136,7 @@ export default function ModalReportStuff() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -160,7 +147,7 @@ export default function ModalReportStuff() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -171,7 +158,7 @@ export default function ModalReportStuff() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -182,7 +169,7 @@ export default function ModalReportStuff() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -278,112 +265,21 @@ export default function ModalReportStuff() {
     handleFoundFile(file);
   };
 
+  // Create post lost item
   const handleSubmitPostLost = async (e) => {
     e.preventDefault();
 
-    setIsInProcessing(true);
+    setIsPosting(true);
 
     const codeIntoDb = getRandomString(6);
-    setCode(codeIntoDb);
 
     const formData = new FormData();
-    selectedFileLost && formData.append("imageUpload", selectedFileLost); // Image
-    formData.append("userId", user.userId);
-    formData.append("title", stuffNameLost);
-    formData.append("description", descriptionLost);
-    formData.append("typePost", lostOrFound);
-    formData.append("code", codeIntoDb);
-    formData.append("categoryPostId", categoryPostId);
-
-    try {
-      const response = await axios.post(
-        "https://localhost:44306/api/Post",
-        formData,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
-
-      if (response.status === 200) {
-        window.dispatchEvent(
-          new CustomEvent("app-error", {
-            detail: {
-              message: response.data,
-              status: "success",
-            },
-          })
-        );
-
-        closeModalReport();
-        document.getElementById("popup-notice-code").style.display = "flex"; // Show popup notice code
-      }
-    } catch (error) {
-      if (error.response) {
-        const message = error.response.data?.message || "Server error";
-
-        window.dispatchEvent(
-          new CustomEvent("app-error", {
-            detail: {
-              message: message,
-              status: "error",
-            },
-          })
-        );
-      } else if (error.request) {
-        // If offline
-        if (!navigator.onLine) {
-          window.dispatchEvent(
-            new CustomEvent("app-error", {
-              detail: {
-                message: "Network error. Please check your internet connection",
-                status: "error",
-              },
-            })
-          );
-        } else {
-          // Server offline
-          window.dispatchEvent(
-            new CustomEvent("app-error", {
-              detail: {
-                message:
-                  "Server is currently unavailable. Please try again later.",
-                status: "error",
-              },
-            })
-          );
-        }
-      } else {
-        // Other errors
-        window.dispatchEvent(
-          new CustomEvent("app-error", {
-            detail: {
-              message: "Something went wrong. Please try again",
-              status: "error",
-            },
-          })
-        );
-      }
-    } finally {
-      setIsInProcessing(false);
-    }
-  };
-
-  const handleSubmitPostFound = async (e) => {
-    e.preventDefault();
-
-    setIsInProcessing(true);
-
-    const codeIntoDb = getRandomString(6);
-    setCode(codeIntoDb);
-    const formData = new FormData();
-    if (selectedFileFound) {
-      selectedFileFound && formData.append("imageUpload", selectedFileFound); // Image
-      selectedFileFound &&
+    if (selectedFileLost) {
+      selectedFileLost && formData.append("imageUpload", selectedFileLost); // Image
+      selectedFileLost &&
         formData.append(
           "vector",
-          JSON.stringify(await handleGetVectorFromImage(selectedFileFound))
+          JSON.stringify(await handleGetVectorFromImage(selectedFileLost)),
         ); // Vector of image
     }
     formData.append("userId", user.userId);
@@ -394,15 +290,11 @@ export default function ModalReportStuff() {
     formData.append("categoryPostId", categoryPostId);
 
     try {
-      const response = await axios.post(
-        "https://localhost:44306/api/Post",
-        formData,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.post("/Post", formData, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         window.dispatchEvent(
@@ -411,11 +303,21 @@ export default function ModalReportStuff() {
               message: response.data,
               status: "success",
             },
-          })
+          }),
         );
 
         closeModalReport();
-        document.getElementById("popup-notice-code").style.display = "flex"; // Show popup notice code
+      }
+
+      if (response.status === 403) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Please verify your email address to continue",
+              status: "warning",
+            },
+          }),
+        );
       }
     } catch (error) {
       if (error.response) {
@@ -427,7 +329,7 @@ export default function ModalReportStuff() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -438,7 +340,7 @@ export default function ModalReportStuff() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -449,7 +351,7 @@ export default function ModalReportStuff() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -460,11 +362,117 @@ export default function ModalReportStuff() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsPosting(false);
+    }
+  };
+
+  // Create post found item
+  const handleSubmitPostFound = async (e) => {
+    e.preventDefault();
+
+    setIsPosting(true);
+
+    const codeIntoDb = getRandomString(6);
+
+    const formData = new FormData();
+    if (selectedFileFound) {
+      selectedFileFound && formData.append("imageUpload", selectedFileFound); // Image
+      selectedFileFound &&
+        formData.append(
+          "vector",
+          JSON.stringify(await handleGetVectorFromImage(selectedFileFound)),
+        ); // Vector of image
+    }
+    formData.append("userId", user.userId);
+    formData.append("title", stuffNameLost);
+    formData.append("description", descriptionLost);
+    formData.append("typePost", lostOrFound);
+    formData.append("code", codeIntoDb);
+    formData.append("categoryPostId", categoryPostId);
+
+    try {
+      const response = await axiosInstance.post("/Post", formData, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
+
+      if (response.status === 200) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data,
+              status: "success",
+            },
+          }),
+        );
+
+        closeModalReport();
+        document.getElementById("popup-instruction").style.display = "flex"; // Show popup notice code
+      }
+
+      if (response.status === 403) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Please verify your email address to continue",
+              status: "warning",
+            },
+          }),
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsPosting(false);
     }
   };
 
@@ -473,14 +481,14 @@ export default function ModalReportStuff() {
     formData.append("image", imageFile);
 
     try {
-      const res = await axios.post(
-        "https://contamination-final-heated-gradually.trycloudflare.com/embed",
+      const res = await axiosInstance.post(
+        "https://ai-image-ma5f.onrender.com/embed",
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
 
       if (res.status === 200) {
@@ -501,7 +509,7 @@ export default function ModalReportStuff() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -512,17 +520,17 @@ export default function ModalReportStuff() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
           window.dispatchEvent(
             new CustomEvent("app-error", {
               detail: {
-                message: "Found item posting is temporarily unavailable.",
-                status: "error",
+                message: "Posting item with image is temporarily unavailable.",
+                status: "warning",
               },
-            })
+            }),
           );
         }
       } else {
@@ -533,13 +541,11 @@ export default function ModalReportStuff() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
 
       throw error;
-    } finally {
-      setIsInProcessing(false);
     }
   };
 
@@ -598,7 +604,7 @@ export default function ModalReportStuff() {
                 setLostOrFound("Lost");
               }}
             >
-              Lost <span className="stuff-header">Stuff</span>
+              Lost <span className="stuff-header">Item</span>
             </h2>
           </div>
 
@@ -617,7 +623,7 @@ export default function ModalReportStuff() {
                 setLostOrFound("Found");
               }}
             >
-              Found <span className="stuff-header">Stuff</span>
+              Found <span className="stuff-header">Item</span>
             </h2>
           </div>
 
@@ -679,6 +685,37 @@ export default function ModalReportStuff() {
                       )}
                     </div>
 
+                    {/* Sub upload images */}
+                    {/* <div className="sub-upload-img">
+                      <div
+                        className={
+                          !imageLostPreview ? "upload-sub-img-box" : ""
+                        }
+                        onClick={() => {
+                          fileInputLostRef.current.click();
+                        }}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={handleDropLostImage}
+                      >
+                        {!imageLostPreview && (
+                          <>
+                            <i className="fa-solid fa-cloud-arrow-up"></i>
+                          </>
+                        )}
+                        {imageLostPreview && (
+                          <img
+                            src={imageLostPreview}
+                            alt="Preview lost item"
+                            width="100"
+                            loading="lazy"
+                            height="100"
+                            className="preview-img"
+                            style={{ objectFit: "cover" }}
+                          />
+                        )}
+                      </div>
+                    </div> */}
+
                     {/* Btn change image */}
                     {imageLostPreview && (
                       <div className="btn-change-img">
@@ -709,16 +746,14 @@ export default function ModalReportStuff() {
                   <div className="stuff-information-right-container">
                     <div className="stuff-information-box">
                       {/* Stuff info */}
-                      <h2 style={{ marginBottom: "20px" }}>
-                        Stuff Information
-                      </h2>
+                      <h2 style={{ marginBottom: "20px" }}>Item Information</h2>
                       <div className="stuff-information">
                         <div className="left">
                           <label
                             htmlFor="stuff-name"
                             style={{ fontWeight: "600" }}
                           >
-                            Stuff Name*
+                            Title*
                           </label>
                           <br />
                           <div
@@ -736,7 +771,7 @@ export default function ModalReportStuff() {
                                 setStuffNameLost(e.target.value);
                               }}
                             />
-                            <label className="label-top">Enter name</label>
+                            <label className="label-top">Enter title</label>
                           </div>
                           <br />
                         </div>
@@ -872,7 +907,10 @@ export default function ModalReportStuff() {
                           <br />
                           <div style={{ position: "relative" }}>
                             {isInProcessing ? (
-                              <Skeleton height={50} style={{ width: "100%" }} />
+                              <Skeleton
+                                height={50}
+                                style={{ width: "100%", borderRadius: "20px" }}
+                              />
                             ) : (
                               <input
                                 type="text"
@@ -900,14 +938,24 @@ export default function ModalReportStuff() {
                               </label>
                               <br />
                               <div style={{ position: "relative" }}>
-                                <input
-                                  type="text"
-                                  name=""
-                                  id="student-id-lost"
-                                  className="form-control-input-label-top"
-                                  value={user.student?.studentId || ""}
-                                  readOnly
-                                />
+                                {isInProcessing ? (
+                                  <Skeleton
+                                    height={50}
+                                    style={{
+                                      width: "100%",
+                                      borderRadius: "20px",
+                                    }}
+                                  />
+                                ) : (
+                                  <input
+                                    type="text"
+                                    name=""
+                                    id="student-id-lost"
+                                    className="form-control-input-label-top"
+                                    value={user.student?.studentId || ""}
+                                    readOnly
+                                  />
+                                )}
                               </div>
                               <br />
                             </>
@@ -923,7 +971,10 @@ export default function ModalReportStuff() {
                           <br />
                           <div style={{ position: "relative" }}>
                             {isInProcessing ? (
-                              <Skeleton height={50} style={{ width: "100%" }} />
+                              <Skeleton
+                                height={50}
+                                style={{ width: "100%", borderRadius: "20px" }}
+                              />
                             ) : (
                               <input
                                 type="email"
@@ -952,15 +1003,23 @@ export default function ModalReportStuff() {
                       }
                       style={{ width: "100%" }}
                       disabled={
-                        user.role && !isInProcessing
+                        user.role && !isPosting
                           ? handleValidateFormReport()
                           : true
                       }
                     >
-                      Post Lost Item{" "}
-                      {categoryPostId === "" &&
-                        isTypeSearch &&
-                        "(Please select a category name)"}
+                      {isPosting ? (
+                        <>
+                          <i className="fas fa-spinner fa-spin"></i>
+                        </>
+                      ) : (
+                        <>
+                          Post Lost Item{" "}
+                          {categoryPostId === "" &&
+                            isTypeSearch &&
+                            "(Please select a category name)"}
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -1045,16 +1104,14 @@ export default function ModalReportStuff() {
                   <div className="stuff-information-right-container">
                     <div className="stuff-information-box">
                       {/* Stuff info */}
-                      <h2 style={{ marginBottom: "20px" }}>
-                        Stuff Information
-                      </h2>
+                      <h2 style={{ marginBottom: "20px" }}>Item Information</h2>
                       <div className="stuff-information">
                         <div className="left">
                           <label
                             htmlFor="stuff-name"
                             style={{ fontWeight: "600" }}
                           >
-                            Stuff Name*
+                            Title*
                           </label>
                           <br />
                           <div
@@ -1072,7 +1129,7 @@ export default function ModalReportStuff() {
                                 setStuffNameLost(e.target.value);
                               }}
                             />
-                            <label className="label-top">Enter name</label>
+                            <label className="label-top">Enter title</label>
                           </div>
                           <br />
                         </div>
@@ -1208,7 +1265,10 @@ export default function ModalReportStuff() {
                           <br />
                           <div style={{ position: "relative" }}>
                             {isInProcessing ? (
-                              <Skeleton height={50} style={{ width: "100%" }} />
+                              <Skeleton
+                                height={50}
+                                style={{ width: "100%", borderRadius: "20px" }}
+                              />
                             ) : (
                               <input
                                 type="text"
@@ -1236,14 +1296,24 @@ export default function ModalReportStuff() {
                               </label>
                               <br />
                               <div style={{ position: "relative" }}>
-                                <input
-                                  type="text"
-                                  name=""
-                                  id="student-id-lost"
-                                  className="form-control-input-label-top"
-                                  value={user.student?.studentId || ""}
-                                  readOnly
-                                />
+                                {isInProcessing ? (
+                                  <Skeleton
+                                    height={50}
+                                    style={{
+                                      width: "100%",
+                                      borderRadius: "20px",
+                                    }}
+                                  />
+                                ) : (
+                                  <input
+                                    type="text"
+                                    name=""
+                                    id="student-id-lost"
+                                    className="form-control-input-label-top"
+                                    value={user.student?.studentId || ""}
+                                    readOnly
+                                  />
+                                )}
                               </div>
                               <br />
                             </>
@@ -1259,7 +1329,10 @@ export default function ModalReportStuff() {
                           <br />
                           <div style={{ position: "relative" }}>
                             {isInProcessing ? (
-                              <Skeleton height={50} style={{ width: "100%" }} />
+                              <Skeleton
+                                height={50}
+                                style={{ width: "100%", borderRadius: "20px" }}
+                              />
                             ) : (
                               <input
                                 type="email"
@@ -1287,16 +1360,24 @@ export default function ModalReportStuff() {
                           : ""
                       }
                       disabled={
-                        user.role && !isInProcessing
+                        user.role && !isPosting
                           ? handleValidateFormReport()
                           : true
                       }
                       aria-label="Post found item button"
                     >
-                      Post Found Item{" "}
-                      {categoryPostId === "" &&
-                        isTypeSearch &&
-                        "(Please select a category name)"}
+                      {isPosting ? (
+                        <>
+                          <i className="fas fa-spinner fa-spin"></i>
+                        </>
+                      ) : (
+                        <>
+                          Post Found Item{" "}
+                          {categoryPostId === "" &&
+                            isTypeSearch &&
+                            "(Please select a category name)"}
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>
@@ -1309,81 +1390,58 @@ export default function ModalReportStuff() {
       {/* Overlay */}
       <div className="modal-overlay-report-stuff"></div>
 
-      {/* Popup notice code */}
-      <div className="modal" id="popup-notice-code">
-        <div className="modal-content">
-          {lostOrFound === "Lost" ? (
-            <>
-              <h2 style={{ backgroundColor: "transparent" }}>Your Code:</h2>
+      {/* Popup instruction */}
+      {user.role !== "Admin" && (
+        <div className="modal" id="popup-instruction">
+          <div className="modal-content">
+            <h2 style={{ backgroundColor: "transparent" }}>Instruction:</h2>
 
-              <div className="policy-section">
-                <h3>{code || "Not available"}</h3>
-                <p
-                  style={{
-                    fontSize: "16px",
-                    color: "#555",
-                    fontStyle: "italic",
-                    marginTop: "4px",
-                  }}
-                >
-                  This code is used to retrieve your lost item. Keep it private.
-                  You can view it again in your profile post.
-                </p>
-              </div>
-            </>
-          ) : (
-            user.role !== "Admin" && (
-              <>
-                <h2 style={{ backgroundColor: "transparent" }}>Instruction:</h2>
-
-                <div className="policy-section">
-                  <p
-                    style={{
-                      fontSize: "16px",
-                      color: "#555",
-                      fontStyle: "italic",
-                      marginTop: "4px",
-                    }}
-                  >
-                    Please bring this item to the <strong>Media Center</strong>{" "}
-                    within <strong> 2 days</strong> to complete the found item
-                    process.
-                  </p>
-                </div>
-              </>
-            )
-          )}
-
-          <div style={{ marginTop: "40px" }}>
-            <button
-              className="btn"
-              onClick={() => {
-                document.getElementById("popup-notice-code").style.display =
-                  "none";
-              }}
-              aria-label="Okay button"
-            >
-              Okay
-            </button>
-            {user.role === "Admin" && (
-              <button
-                className="btn-yellow"
-                onClick={() => {
-                  window.dispatchEvent(
-                    new CustomEvent("codeToPrint", {
-                      detail: `Code: ${code}`,
-                    })
-                  );
+            <div className="policy-section">
+              <p
+                style={{
+                  fontSize: "16px",
+                  color: "#555",
+                  fontStyle: "italic",
+                  marginTop: "4px",
                 }}
-                style={{ marginLeft: "10px", cursor: "pointer" }}
-                aria-label="Print this code button"
               >
-                Print this code
+                Please bring this item to the <strong>Media Center</strong>{" "}
+                within <strong> 2 days</strong> to complete the found item
+                process.
+              </p>
+            </div>
+
+            <div style={{ marginTop: "40px" }}>
+              <button
+                className="btn"
+                onClick={() => {
+                  document.getElementById("popup-instruction").style.display =
+                    "none";
+                }}
+                aria-label="Okay button"
+              >
+                Okay
               </button>
-            )}
+              {/* {user.role === "Admin" && (
+                <button
+                  className="btn-yellow"
+                  onClick={() => {
+                    window.dispatchEvent(
+                      new CustomEvent("codeToPrint", {
+                        detail: `Code: ${code}`,
+                      }),
+                    );
+                  }}
+                  style={{ marginLeft: "10px", cursor: "pointer" }}
+                  aria-label="Print this code button"
+                >
+                  Print this code
+                </button>
+              )} */}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

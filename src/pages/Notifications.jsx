@@ -1,6 +1,168 @@
+import Lottie from "lottie-react";
 import SidebarProfile from "../components/SidebarProfile";
+import { Suspense, useEffect, useState } from "react";
+import NotFoundPost from "../assets/animations/Not-Found-Post.json";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import dayjs from "dayjs";
+import axiosInstance from "../api/axiosInstance";
 
 export default function Notifications() {
+  // Variables
+  const [isInProcessing, setIsInProcessing] = useState(false);
+  const [notificationsMatchImage, setNotificationsMatchImage] = useState([]);
+  const [notificationsMatchDescription, setNotificationsMatchDescription] =
+    useState([]);
+  const [user, setUser] = useState({ role: "User" });
+  const [matchedPosts, setMatchedPosts] = useState({});
+
+  // Functions
+  // Get notifications with similar images
+  const handleFetchNotificationsMatchImage = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axiosInstance.get(
+        "/Notification/my-notifications-match-image",
+        {
+          // withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        },
+      );
+
+      if (response.status === 200) {
+        setNotificationsMatchImage(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  // Get notifications with similar descriptions
+  const handleFetchNotificationsMatchDescription = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axiosInstance.get(
+        "/Notification/my-notifications-match-description",
+        {
+          // withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        },
+      );
+
+      if (response.status === 200) {
+        setNotificationsMatchDescription(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
+  // UseEffects
+  // Fetch notifications on load
+  useEffect(() => {
+    handleFetchNotificationsMatchImage();
+    handleFetchNotificationsMatchDescription();
+  }, []);
+
   return (
     <>
       <div
@@ -31,7 +193,7 @@ export default function Notifications() {
                 fontWeight: "500",
               }}
             >
-              We found serveral
+              We found some posts with
               <span
                 style={{
                   fontFamily: "Mochiy Pop One, sans-serif",
@@ -40,221 +202,308 @@ export default function Notifications() {
                   marginLeft: "10px",
                 }}
               >
-                posts similar to yours
+                similar images
               </span>
             </h3>
           </div>
 
           {/* Card */}
-          <div className="newest-post-container">
-            {/* Card img 1 */}
-            <div className="card">
-              <img
-                src="./Image/ipad.webp"
-                alt="picture of stuff"
-                loading="lazy"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
-                  <a href="/detail-post" aria-label="Detail link for Ipad 11th Gen">Ipad 11th Gen</a>
-                </h3>
-                <p>
-                  <a href="/detail-post" aria-label="Detail link for Ipad 11th Gen description">
-                    Lost my Ipad 11th Gen last week near Central Park. If found,
-                    please contact me!
-                  </a>
-                </p>
+          <div className="newest-post-container notification-container">
+            {/* Cards */}
+            {isInProcessing ? (
+              <div
+                style={{ display: "flex", gap: "20px" }}
+                className="skeleton-my-post"
+              >
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div className="" key={index}>
+                    <Skeleton
+                      height={290}
+                      style={{ marginBottom: "10px", borderRadius: "20px" }}
+                    />
+                    <div className="">
+                      <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                        <Skeleton height={35} width={345} />
+                      </h3>
+                      <p>
+                        <Skeleton count={3} />
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
+            ) : notificationsMatchImage.length > 0 ? (
+              notificationsMatchImage.map((item) => (
+                <div
+                  className="card card-notification"
+                  key={item.notificationId}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div
+                    onClick={() => {
+                      window.location.href = `/detail-post/${item.postMatchedId}`;
+                    }}
+                  >
+                    {/* Image */}
+                    {item.imagePostMatched ? (
+                      <img
+                        src={item.urlImagePostMatched}
+                        alt="picture of item"
+                        loading="lazy"
+                        style={{
+                          width: "100%",
+                          height: "300px",
+                          objectFit: "cover",
+                          backgroundColor: "white",
+                        }}
+                      />
+                    ) : (
+                      <div className="image-placeholder">
+                        <i className="icon-image"></i>
+                        <span>No image</span>
+                      </div>
+                    )}
 
-              {/* Status */}
-              <div className="status-post-lost">Lost</div>
-            </div>
+                    {/* Content */}
+                    <div
+                      className="card-text card-text-notification"
+                      style={{ marginBottom: "20px" }}
+                    >
+                      <div className="info-user-suggestion">
+                        {item.avatarUserMatched ? (
+                          <img
+                            src={item.urlAvatarUserMatched}
+                            alt="avatar"
+                            width={50}
+                            height={50}
+                            style={{ borderRadius: "50%" }}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <img
+                            src="/Image/user_icon.png"
+                            alt="avatar"
+                            width={50}
+                            height={50}
+                            style={{ borderRadius: "50%" }}
+                            loading="lazy"
+                          />
+                        )}
+                        <span>{`${item.firstNameMatched} ${item.lastNameMatched}`}</span>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                          <a href={`/detail-post/${item.postMatchedId}`}>
+                            {item.titlePostMatched}
+                          </a>
+                        </h3>
+                      </div>
+                      <a href={`/detail-post/${item.postMatchedId}`}>
+                        <ReactMarkdown
+                          children={item.descriptionPostMatched}
+                          rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                        ></ReactMarkdown>
+                      </a>
+                    </div>
 
-            {/* Card img 2 */}
-            <div className="card">
-              <img
-                src="./Image/charger.webp"
-                alt="picture of stuff"
+                    {/* Status */}
+                    <div
+                      className={
+                        item.typePost === "Lost"
+                          ? "status-post-lost"
+                          : "status-post-found"
+                      }
+                    >
+                      {item.typePost}
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <>
+                <div
+                  style={{
+                    marginLeft: "100%",
+                    width: "100%",
+                    textAlign: "center",
+                    marginTop: "50px",
+                  }}
+                >
+                  <Suspense fallback={<p>Loading animation...</p>}>
+                    <Lottie
+                      animationData={NotFoundPost}
+                      className="m-auto"
+                      style={{ width: "60%", margin: "auto" }}
+                    />
+                  </Suspense>
+                  <h1>No posts yet</h1>
+                </div>
+              </>
+            )}
+          </div>
+          <div style={{ width: "100%" }}>
+            <h3
+              style={{
+                fontWeight: "500",
+              }}
+            >
+              We found some posts with
+              <span
                 style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
+                  fontFamily: "Mochiy Pop One, sans-serif",
+                  fontSize: "20px",
+                  fontWeight: "100",
+                  marginLeft: "10px",
                 }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  Charger USB-C
-                </h3>
-                <p>
-                  Lost my charger USB-C last week near Central Park. If found,
-                  please contact me!
-                </p>
+              >
+                similar descriptions
+              </span>
+            </h3>
+          </div>
+
+          {/* Card */}
+          <div className="newest-post-container notification-container">
+            {/* Cards */}
+            {isInProcessing ? (
+              <div
+                style={{ display: "flex", gap: "20px" }}
+                className="skeleton-my-post"
+              >
+                {Array.from({ length: 4 }).map((_, index) => (
+                  <div className="" key={index}>
+                    <Skeleton
+                      height={290}
+                      style={{ marginBottom: "10px", borderRadius: "20px" }}
+                    />
+                    <div className="">
+                      <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                        <Skeleton height={35} width={345} />
+                      </h3>
+                      <p>
+                        <Skeleton count={3} />
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
+            ) : notificationsMatchDescription.length > 0 ? (
+              notificationsMatchDescription.map((item) => (
+                <div
+                  className="card card-notification"
+                  key={item.notificationId}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div
+                    onClick={() => {
+                      window.location.href = `/detail-post/${item.postMatchedId}`;
+                    }}
+                  >
+                    {/* Image */}
+                    {item.imagePostMatched ? (
+                      <img
+                        src={item.urlImagePostMatched}
+                        alt="picture of item"
+                        loading="lazy"
+                        style={{
+                          width: "100%",
+                          height: "300px",
+                          objectFit: "cover",
+                          backgroundColor: "white",
+                        }}
+                      />
+                    ) : (
+                      <div className="image-placeholder">
+                        <i className="icon-image"></i>
+                        <span>No image</span>
+                      </div>
+                    )}
 
-              {/* Status */}
-              <div className="status-post-found">Found</div>
-            </div>
+                    {/* Content */}
+                    <div
+                      className="card-text card-text-notification"
+                      style={{ marginBottom: "20px" }}
+                    >
+                      <div className="info-user-suggestion">
+                        {item.avatarUserMatched ? (
+                          <img
+                            src={item.urlAvatarUserMatched}
+                            alt="avatar"
+                            width={50}
+                            height={50}
+                            style={{ borderRadius: "50%" }}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <img
+                            src="/Image/user_icon.png"
+                            alt="avatar"
+                            width={50}
+                            height={50}
+                            style={{ borderRadius: "50%" }}
+                            loading="lazy"
+                          />
+                        )}
+                        <span>{`${item.firstNameMatched} ${item.lastNameMatched}`}</span>
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                          <a href={`/detail-post/${item.postId}`}>
+                            {item.titlePostMatched}
+                          </a>
+                        </h3>
+                      </div>
+                      <a href={`/detail-post/${item.postId}`}>
+                        <ReactMarkdown
+                          children={item.descriptionPostMatched}
+                          rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                        ></ReactMarkdown>
+                      </a>
+                    </div>
 
-            {/* Card img 3 */}
-            <div className="card">
-              <img
-                src="./Image/chromebook.jpg"
-                alt="picture of stuff"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  Chromebook
-                </h3>
-                <p>
-                  Lost my chromebook last week near Central Park. If found,
-                  please contact me!
-                </p>
-              </div>
-
-              {/* Status */}
-              <div className="status-post-lost">Lost</div>
-            </div>
-
-            {/* Card img 4 */}
-            <div className="card">
-              <img
-                src="./Image/earbuds.webp"
-                alt="picture of stuff"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  Earbuds
-                </h3>
-                <p>
-                  Lost my earbuds last week near Central Park. If found, please
-                  contact me!
-                </p>
-              </div>
-
-              {/* Status */}
-              <div className="status-post-lost">Lost</div>
-            </div>
-
-            {/* Card img 1 */}
-            <div className="card">
-              <img
-                src="./Image/phone.webp"
-                alt="picture of stuff"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  Sponebob
-                </h3>
-                <p>
-                  Lost my sponebob plush toy last week near Central Park. If
-                  found, please contact me!
-                </p>
-              </div>
-
-              {/* Status */}
-              <div className="status-post-found">Found</div>
-            </div>
-
-            {/* Card img 2 */}
-            <div className="card">
-              <img
-                src="./Image/key.jpg"
-                alt="picture of stuff"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>Key</h3>
-                <p>
-                  Lost my sponebob plush toy last week near Central Park. If
-                  found, please contact me!
-                </p>
-              </div>
-
-              {/* Status */}
-              <div className="status-post-lost">Lost</div>
-            </div>
-
-            {/* Card img 3 */}
-            <div className="card">
-              <img
-                src="./Image/wallet.jpg"
-                alt="picture of stuff"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  Wallet
-                </h3>
-                <p>
-                  Lost my wallet last week near Central Park. If found, please
-                  contact me!
-                </p>
-              </div>
-
-              {/* Status */}
-              <div className="status-post-found">Found</div>
-            </div>
-
-            {/* Card img 4 */}
-            <div className="card">
-              <img
-                src="./Image/keychain.avif"
-                alt="picture of stuff"
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                  backgroundColor: "white",
-                }}
-              />
-              <div className="card-text">
-                <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  Keychain
-                </h3>
-                <p>
-                  Lost my keychain last week near Central Park. If found, please
-                  contact me!
-                </p>
-              </div>
-
-              {/* Status */}
-              <div className="status-post-found">Found</div>
-            </div>
+                    {/* Status */}
+                    <div
+                      className={
+                        item.typePost === "Lost"
+                          ? "status-post-lost"
+                          : "status-post-found"
+                      }
+                    >
+                      {item.typePost}
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <>
+                <div
+                  style={{
+                    marginLeft: "100%",
+                    width: "100%",
+                    textAlign: "center",
+                    marginTop: "50px",
+                  }}
+                >
+                  <Suspense fallback={<p>Loading animation...</p>}>
+                    <Lottie
+                      animationData={NotFoundPost}
+                      className="m-auto"
+                      style={{ width: "60%", margin: "auto" }}
+                    />
+                  </Suspense>
+                  <h1>No posts yet</h1>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

@@ -18,12 +18,24 @@ import Users from "../pages/Users";
 import TransferRequests from "../pages/TransferRequests";
 import VerificationCodes from "../pages/VerificationCodes";
 import PickUpRequest from "../pages/PickUpRequest";
+import VerifyEmail from "../pages/VerifyEmail";
 
 export default function Router() {
   return (
     <BrowserRouter>
       <SkeletonTheme baseColor="#E0CFC1" highlightColor="#F5EDE5">
-        <Suspense fallback={<div>Please wait...</div>}>
+        <Suspense
+          fallback={
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: "5%",
+              }}
+            >
+              Please wait...
+            </div>
+          }
+        >
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/*" element={<NotFound />} />
@@ -38,6 +50,7 @@ export default function Router() {
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/my-posts" element={<MyPost />} />
             <Route path="/verification-codes" element={<VerificationCodes />} />
+            <Route path="/verify-email/*" element={<VerifyEmail />} />
             <Route path="/dashboard/report" element={<Dashboard />} />
             <Route
               path="/dashboard/confirm-received"

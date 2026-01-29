@@ -7,6 +7,7 @@ import { debounce } from "lodash";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
+import axiosInstance from "../api/axiosInstance";
 
 export default function PickUpRequest() {
   // Variables
@@ -29,14 +30,11 @@ export default function PickUpRequest() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.get("/Users/profile", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setUser(response.data);
@@ -50,18 +48,22 @@ export default function PickUpRequest() {
 
   // Realtime
   const connectToSignalR = async () => {
+    const token = localStorage.getItem("accessToken");
     try {
       const connection = new HubConnectionBuilder()
-        .withUrl("https://localhost:44306/SystemHub", {
-          withCredentials: true,
-        })
+        .withUrl(
+          "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/SystemHub",
+          {
+            // withCredentials: true,
+            accessTokenFactory: () => token,
+          },
+        )
         .withAutomaticReconnect()
         .build();
 
       // Listen event from backend
       // Get new pick up request
       connection.on("ReceiveNewPickUpRequest", (data) => {
-        console.log(data);
         setRequests((preRequests) => {
           if (preRequests.some((p) => p.requestId == data.request.requestId))
             return preRequests;
@@ -86,17 +88,17 @@ export default function PickUpRequest() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.post(
-        `https://localhost:44306/api/PickUpRequest/accept-time/${requestId}`,
+      const response = await axiosInstance.post(
+        `/PickUpRequest/accept-time/${requestId}`,
         null,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||
             status === 404 ||
             status === 403,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -106,7 +108,7 @@ export default function PickUpRequest() {
               message: response.data?.message,
               status: "success",
             },
-          })
+          }),
         );
       }
 
@@ -117,7 +119,7 @@ export default function PickUpRequest() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -130,7 +132,7 @@ export default function PickUpRequest() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -141,7 +143,7 @@ export default function PickUpRequest() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -152,7 +154,7 @@ export default function PickUpRequest() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -163,7 +165,7 @@ export default function PickUpRequest() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -178,14 +180,11 @@ export default function PickUpRequest() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        `https://localhost:44306/api/TransferRequests`,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.get(`/TransferRequests`, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setRequests(response.data);
@@ -200,7 +199,7 @@ export default function PickUpRequest() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -211,7 +210,7 @@ export default function PickUpRequest() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -222,7 +221,7 @@ export default function PickUpRequest() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -233,7 +232,7 @@ export default function PickUpRequest() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -243,18 +242,16 @@ export default function PickUpRequest() {
 
   const debouncedFetch = debounce(searchEmail, 500);
 
-  // Handle cancel hand over
+  // Handle change time
   const handleChangeTime = async (requestId) => {
-    console.log(requestId);
-    console.log(pickUpDate);
     setIsInProcessing(true);
 
     try {
-      const response = await axios.post(
-        `https://localhost:44306/api/PickUpRequest/change-time/${requestId}`,
+      const response = await axiosInstance.post(
+        `/PickUpRequest/change-time/${requestId}`,
         pickUpDate,
         {
-          withCredentials: true,
+          // withCredentials: true,
           headers: {
             "Content-Type": "application/json",
           },
@@ -263,17 +260,22 @@ export default function PickUpRequest() {
             status === 401 ||
             status === 404 ||
             status === 403,
-        }
+        },
       );
 
       if (response.status === 200) {
+        document.getElementById("popup-change-pick-up-time").style.display =
+          "none";
+        document.body.style.overflow = "auto";
+        setPickUpDate("");
+
         window.dispatchEvent(
           new CustomEvent("app-error", {
             detail: {
               message: response.data?.message,
               status: "success",
             },
-          })
+          }),
         );
       }
 
@@ -284,7 +286,7 @@ export default function PickUpRequest() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -297,7 +299,7 @@ export default function PickUpRequest() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -308,7 +310,7 @@ export default function PickUpRequest() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -319,7 +321,7 @@ export default function PickUpRequest() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -330,7 +332,7 @@ export default function PickUpRequest() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -343,17 +345,11 @@ export default function PickUpRequest() {
     setIsLoading(true);
 
     try {
-      const response = await axios.get(
-        "https://localhost:44306/api/PickUpRequest",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        }
-      );
+      const response = await axiosInstance.get("/PickUpRequest", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         setRequests(response.data);
@@ -366,7 +362,7 @@ export default function PickUpRequest() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -379,7 +375,7 @@ export default function PickUpRequest() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -390,7 +386,7 @@ export default function PickUpRequest() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -401,7 +397,7 @@ export default function PickUpRequest() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -412,7 +408,7 @@ export default function PickUpRequest() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -521,12 +517,13 @@ export default function PickUpRequest() {
                       <td>{dayjs(item.createdDate).format("MM/DD/YYYY")}</td>
                       <td>
                         <span
-                          className={`status ${item.status === "Pending"
-                            ? "warning"
-                            : item.status === "Cancelled"
-                              ? "inactive"
-                              : "active"
-                            }`}
+                          className={`status ${
+                            item.status === "Pending"
+                              ? "warning"
+                              : item.status === "Cancelled"
+                                ? "inactive"
+                                : "active"
+                          }`}
                         >
                           {item.status}
                         </span>
@@ -551,6 +548,11 @@ export default function PickUpRequest() {
                             ) : (
                               "Accept"
                             )
+                          ) : item.status === "Reschedule" ? (
+                            <>
+                              <i className="fa-solid fa-user-clock"></i>{" "}
+                              Awaiting user
+                            </>
                           ) : (
                             item.status
                           )}
@@ -562,14 +564,14 @@ export default function PickUpRequest() {
                             type="button"
                             onClick={() => {
                               document.getElementById(
-                                "popup-change-pick-up-time"
+                                "popup-change-pick-up-time",
                               ).style.display = "flex";
                               document.body.style.overflow = "hidden";
 
                               setObjectToShowPopup({
                                 requestId: item.requestId,
                                 pickUpDate: dayjs(item.pickUpDate).format(
-                                  "MM/DD/YYYY h:mm:ss A"
+                                  "MM/DD/YYYY h:mm:ss A",
                                 ),
                               });
                             }}
@@ -652,7 +654,7 @@ export default function PickUpRequest() {
               className="btn-yellow btn-cancel-pick-up"
               onClick={() => {
                 document.getElementById(
-                  "popup-change-pick-up-time"
+                  "popup-change-pick-up-time",
                 ).style.display = "none";
                 document.body.style.overflow = "auto";
               }}

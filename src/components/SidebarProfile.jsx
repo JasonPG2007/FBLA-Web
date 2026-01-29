@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import axiosInstance from "../api/axiosInstance";
 
 export default function SidebarProfile() {
   // Variables
@@ -19,20 +20,17 @@ export default function SidebarProfile() {
     // e.preventDefault();
 
     try {
-      const response = await axios.post(
-        `https://localhost:44306/api/Users/sign-out`,
-        null,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.post(`/Users/sign-out`, null, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status == 200) {
+        localStorage.removeItem("accessToken");
         window.location.href = "/";
       }
     } catch (error) {
@@ -45,14 +43,11 @@ export default function SidebarProfile() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.get("/Users/profile", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setUser(response.data);
@@ -109,7 +104,7 @@ export default function SidebarProfile() {
           ) : (
             <img
               className="user-avatar"
-              src="./Image/user_icon.png"
+              src="/Image/user_icon.png"
               alt="avatar"
               style={{
                 borderRadius: "50%",
@@ -171,22 +166,6 @@ export default function SidebarProfile() {
         >
           {" "}
           <i className="fa-solid fa-file-lines"></i> My post
-        </a>
-        <br />
-
-        {/* Messages */}
-        <a
-
-          href="/messages"
-          style={{
-            fontWeight: "400",
-            lineHeight: "50px",
-          }}
-          aria-label="Messages link"
-          className={`${isActive("/messages") ? "active" : ""}`}
-        >
-          {" "}
-          <i className="fa-solid fa-envelope"></i> Messages
         </a>
         <br />
 

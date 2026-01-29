@@ -4,24 +4,52 @@ import axios from "axios";
 import dayjs from "dayjs";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { debounce } from "lodash";
+import axiosInstance from "../api/axiosInstance";
 
 export default function VerificationCodes() {
   // Variables
   const [codes, setCodes] = useState([]);
   const [query, setQuery] = useState("");
+  const [user, setUser] = useState("");
   const [isInProcessing, setIsInProcessing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   // APIs
 
   // Functions
+  // Get my profile
+  const getMyProfile = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axiosInstance.get("/Users/profile", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
+
+      if (response.status === 200) {
+        setUser(response.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
   // Realtime
   const connectToSignalR = async () => {
+    const token = localStorage.getItem("accessToken");
     try {
       const connection = new HubConnectionBuilder()
-        .withUrl("https://localhost:44306/SystemHub", {
-          withCredentials: true,
-        })
+        .withUrl(
+          "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/SystemHub",
+          {
+            // withCredentials: true,
+            accessTokenFactory: () => token,
+          },
+        )
         .withAutomaticReconnect()
         .build();
 
@@ -64,13 +92,13 @@ export default function VerificationCodes() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        `https://localhost:44306/api/Post/search-codes?query=${query}`,
+      const response = await axiosInstance.get(
+        `/Post/search-codes?query=${query}`,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -86,7 +114,7 @@ export default function VerificationCodes() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -97,7 +125,7 @@ export default function VerificationCodes() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -108,7 +136,7 @@ export default function VerificationCodes() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -119,7 +147,7 @@ export default function VerificationCodes() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -134,17 +162,17 @@ export default function VerificationCodes() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.post(
-        `https://localhost:44306/api/Post/mark-received/${postId}`,
+      const response = await axiosInstance.post(
+        `/Post/mark-received/${postId}`,
         null,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||
             status === 404 ||
             status === 403,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -154,7 +182,7 @@ export default function VerificationCodes() {
               message: response.data?.message,
               status: "success",
             },
-          })
+          }),
         );
       }
 
@@ -165,7 +193,7 @@ export default function VerificationCodes() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -178,7 +206,7 @@ export default function VerificationCodes() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -189,7 +217,7 @@ export default function VerificationCodes() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -200,7 +228,7 @@ export default function VerificationCodes() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -211,7 +239,7 @@ export default function VerificationCodes() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -224,17 +252,11 @@ export default function VerificationCodes() {
     setIsLoading(true);
 
     try {
-      const response = await axios.get(
-        `https://localhost:44306/api/Match/match-user`,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        }
-      );
+      const response = await axiosInstance.get(`/Match/match-user`, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         setCodes(response.data);
@@ -247,7 +269,7 @@ export default function VerificationCodes() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -260,7 +282,7 @@ export default function VerificationCodes() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -271,7 +293,7 @@ export default function VerificationCodes() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -282,7 +304,7 @@ export default function VerificationCodes() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -293,7 +315,7 @@ export default function VerificationCodes() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -308,6 +330,7 @@ export default function VerificationCodes() {
 
   // Run realtime
   useEffect(() => {
+    getMyProfile();
     connectToSignalR();
   }, []);
 
@@ -373,12 +396,11 @@ export default function VerificationCodes() {
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>User</th>
+                  <th>Matched User</th>
                   <th>Post</th>
                   <th>Code</th>
                   <th>Date Posted</th>
                   <th>Status</th>
-                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -393,7 +415,9 @@ export default function VerificationCodes() {
                     <tr key={item.matchId}>
                       <td>{index + 1}</td>
                       <td>
-                        {item.firstNameFound} {item.lastNameFound}
+                        {user.userId !== item.userIdLost // If it is not user lost, show name of user lost
+                          ? `${item.firstNameLost} ${item.lastNameLost}`
+                          : `${item.firstNameFound} ${item.lastNameFound}`}
                       </td>
                       <td>
                         <a
@@ -404,34 +428,18 @@ export default function VerificationCodes() {
                           {item.titlePost}
                         </a>
                       </td>
-                      <td>{item.code}</td>
+                      <td>
+                        <strong>{item.code}</strong>
+                      </td>
                       <td>{dayjs(item.createdAt).format("MM/DD/YYYY")}</td>
                       <td>
                         <span
-                          className={`status ${item.isReceived ? "active" : "inactive"
-                            }`}
+                          className={`status ${
+                            item.isUsed ? "active" : "inactive"
+                          }`}
                         >
-                          {item.isReceived ? "Received" : "Not Receive"}
+                          {item.isUsed ? "Already used" : "Unused"}
                         </span>
-                      </td>
-                      <td>
-                        <button
-                          aria-label="Mark as received button"
-                          className="btn"
-                          type="button"
-                          onClick={() => {
-                            handleMarkReceived(item.postId);
-                          }}
-                          disabled={isInProcessing || item.isReceived}
-                        >
-                          {isInProcessing ? (
-                            <i className="fas fa-spinner fa-spin"></i>
-                          ) : item.isReceived ? (
-                            "Received"
-                          ) : (
-                            "Mark as received"
-                          )}
-                        </button>
                       </td>
                     </tr>
                   ))

@@ -1,9 +1,88 @@
 import { Helmet } from "react-helmet-async";
 import axiosInstance from "../api/axiosInstance";
+import { useEffect, useState } from "react";
 
 export default function About() {
+  // Variables
+  let [categoryPosts, setCategoryPosts] = useState([]);
+  let [categoryId, setCategoryId] = useState("");
+  let [status, setStatus] = useState("");
+  let [isInProcessing, setIsInProcessing] = useState(false);
+
   // APIs
-  const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `/CheckAuth/check-auth`;
+
+  // Functions
+  function handleSearch(e) {
+    e.preventDefault();
+
+    window.location.href = `/search${categoryId && !status ? `?categoryId=${categoryId}` : ""}${!categoryId && status ? `?status=${status}` : ""}${categoryId && status ? `?categoryId=${categoryId}&status=${status}` : ""}`;
+  }
+
+  // Get category posts
+  const searchCategoryPosts = async () => {
+    setIsInProcessing(true);
+
+    try {
+      const response = await axiosInstance.get(`/CategoryPost`, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
+
+      if (response.status === 200) {
+        setCategoryPosts(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
 
   // Check authentication status and redirect if not authenticated
   const checkAuthentication = () => {
@@ -11,6 +90,10 @@ export default function About() {
       console.error(err);
     });
   };
+
+  useEffect(() => {
+    searchCategoryPosts();
+  }, []);
 
   return (
     <>
@@ -37,14 +120,14 @@ export default function About() {
         <div className="content-bottom">
           <p></p>
           <button
-            aria-label="Report a stuff button"
+            aria-label="Report a item button"
             className="btn"
             onClick={() => {
               checkAuthentication();
 
               const modal = document.querySelector(".modal-report-stuff");
               const overlay = document.querySelector(
-                ".modal-overlay-report-stuff"
+                ".modal-overlay-report-stuff",
               );
               modal.style.visibility = "visible";
               modal.style.opacity = "1";
@@ -95,15 +178,27 @@ export default function About() {
         </div>
       </div>
 
-      <form onSubmit={() => { }}>
+      <form onSubmit={handleSearch}>
         <div className="quick-search">
           <div className="categories">
             <div className="left">
-              <label htmlFor="category">Type of Stuff</label>
+              <label htmlFor="category">Type of Item</label>
               <br />
-              <select className="select" name="" id="category" required>
+              <select
+                name=""
+                id="type"
+                value={categoryId}
+                onChange={(e) => {
+                  setCategoryId(e.target.value);
+                }}
+                className="select"
+              >
                 <option value="">Select type</option>
-                <option value="">Iphone</option>
+                {categoryPosts.map((item) => (
+                  <option key={item.categoryPostId} value={item.categoryPostId}>
+                    {item.categoryPostName}
+                  </option>
+                ))}
               </select>
             </div>
             <div className="right">
@@ -111,25 +206,31 @@ export default function About() {
             </div>
           </div>
           <div className="pipe">|</div>
-          <div className="location">
+          <div className="status-quick-search">
             <div className="left">
-              <label htmlFor="location">Location</label>
+              <label htmlFor="status">Status</label>
               <br />
-              <select className="select" name="" id="location" required>
-                <option value="">Select location</option>
-                <option value="">Hall 500</option>
-                <option value="">Hall 600</option>
+              <select
+                className="select"
+                name=""
+                id="status"
+                onChange={(e) => {
+                  setStatus(e.target.value);
+                }}
+              >
+                <option value="">Select Status</option>
+                <option value="Lost">Lost</option>
+                <option value="Found">Found</option>
               </select>
             </div>
             <div className="right">
-              <i className="fa-solid fa-location-dot"></i>
+              <i className="fa-solid fa-tag"></i>
             </div>
           </div>
           <div className="pipe">|</div>
           <div className="btn-quick-search">
-            <button
-              aria-label="Find a stuff button">
-              Find a stuff <i className="fa-solid fa-arrow-right"></i>
+            <button aria-label="Search item button">
+              Search item <i className="fa-solid fa-arrow-right"></i>
             </button>
           </div>
         </div>

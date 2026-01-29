@@ -1,6 +1,7 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
+import axiosInstance from "../api/axiosInstance";
+import { useSearchParams } from "react-router-dom";
 
 export default function Authentication() {
   // Variables
@@ -42,6 +43,7 @@ export default function Authentication() {
     msg: "",
     status: "",
   });
+  const [searchParams] = new useSearchParams();
   let [firstName, setFirstName] = useState("");
   let [lastName, setLastName] = useState("");
   let [email, setEmail] = useState("");
@@ -90,29 +92,28 @@ export default function Authentication() {
         role: "Student",
       };
 
-      const response = await axios.post(
-        "https://localhost:44306/api/Users/sign-up",
-        payload,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-          validateStatus: (status) => status === 200 || status === 401,
-        }
-      );
+      const response = await axiosInstance.post("/Users/sign-up", payload, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // withCredentials: true,
+        validateStatus: (status) => status === 200 || status === 401,
+      });
 
       // Success
       if (response.status == 200) {
         sessionStorage.removeItem("requiredSignIn");
 
+        // Set token
+        localStorage.setItem("accessToken", response.data.accessToken);
+
         window.dispatchEvent(
           new CustomEvent("app-error", {
             detail: {
-              message: "Signed up successfully",
+              message: response.data?.message,
               status: "success",
             },
-          })
+          }),
         );
 
         setMsgSignIn({
@@ -183,8 +184,8 @@ export default function Authentication() {
 
     setIsInProcessing(true);
     try {
-      const responseSignInUser = await axios.post(
-        `https://localhost:44306/api/Users/sign-in`,
+      const responseSignInUser = await axiosInstance.post(
+        `/Users/sign-in`,
         {
           studentId: studentIdOrEmailForSignIn.includes("@")
             ? 0
@@ -196,10 +197,13 @@ export default function Authentication() {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 403,
+        },
       );
 
       // Success, then pick image
@@ -216,6 +220,13 @@ export default function Authentication() {
         handleCloseSelectImage();
         setMsgSignIn({
           msg: responseSignInUser.data,
+          status: responseSignInUser.status,
+        });
+      }
+
+      if (responseSignInUser.status === 403) {
+        setMsgSignIn({
+          msg: "Your account is currently disabled. Please contact admin for assistance",
           status: responseSignInUser.status,
         });
       }
@@ -268,8 +279,8 @@ export default function Authentication() {
       .filter((i) => i !== null);
 
     try {
-      const responseSignInUser = await axios.post(
-        `https://localhost:44306/api/Users/select-image`,
+      const responseSignInUser = await axiosInstance.post(
+        `/Users/select-images`,
         {
           studentId: studentIdOrEmailForSignIn.includes("@")
             ? 0
@@ -282,10 +293,10 @@ export default function Authentication() {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true,
+          // // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       // Success, then pick image
@@ -293,13 +304,19 @@ export default function Authentication() {
         handleChangeToSelectImage(e);
         sessionStorage.removeItem("requiredSignIn");
 
+        // Set token
+        localStorage.setItem(
+          "accessToken",
+          responseSignInUser.data.accessToken,
+        );
+
         window.dispatchEvent(
           new CustomEvent("app-error", {
             detail: {
-              message: "Signed in successfully",
+              message: responseSignInUser.data?.message,
               status: "success",
             },
-          })
+          }),
         );
 
         setMsgSignIn({
@@ -383,7 +400,7 @@ export default function Authentication() {
         }
 
         return item;
-      })
+      }),
     );
   };
 
@@ -448,6 +465,25 @@ export default function Authentication() {
       setIsValidStudentId(false);
     }
   }, [studentId]);
+
+  // Handle with param in url for sign in
+  useEffect(() => {
+    const withParam = searchParams.get("with");
+    if (withParam === "sign-in") {
+      document
+        .getElementById("form-sign-up-in-container")
+        .classList.add("move-sign-up");
+      document
+        .getElementById("form-sign-up-in-container")
+        .classList.remove("move-sign-in");
+      document
+        .getElementById("form-sign-up-in-container")
+        .classList.remove("move-forgot-password");
+      document
+        .getElementById("form-sign-up-in-container")
+        .classList.remove("move-cancel-forgot");
+    }
+  }, []);
 
   // Check password if valid
   useEffect(() => {
@@ -556,7 +592,10 @@ export default function Authentication() {
                 >
                   {msgSignIn.msg}
                 </p>
-                <div style={{ display: "flex", gap: "20px" }}>
+                <div
+                  style={{ display: "flex", gap: "20px" }}
+                  className="form-sign-up-last-first"
+                >
                   <div className="form-control-authentication">
                     <input
                       type="text"
@@ -634,7 +673,7 @@ export default function Authentication() {
                       setEmail(e.target.value);
                     }}
                   />
-                  <label htmlFor="email">School Email*</label>
+                  <label htmlFor="email">Email*</label>
                 </div>
                 <div className="form-control-authentication">
                   <input
@@ -642,7 +681,7 @@ export default function Authentication() {
                     name=""
                     id="password"
                     className="form-control-input"
-                    placeholder=""
+                    placeholder="Ex: Here is password"
                     required
                     onChange={(e) => {
                       setPasswordSignUp(e.target.value);
@@ -653,7 +692,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye-slash"
                       onClick={() => {
                         setIsClickShowPasswordSignUp(
-                          !isClickShowPasswordSignUp
+                          !isClickShowPasswordSignUp,
                         );
                       }}
                     ></i>
@@ -662,7 +701,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye"
                       onClick={() => {
                         setIsClickShowPasswordSignUp(
-                          !isClickShowPasswordSignUp
+                          !isClickShowPasswordSignUp,
                         );
                       }}
                     ></i>
@@ -673,7 +712,7 @@ export default function Authentication() {
                 {/* Password Requirement */}
                 {!isExistSpecialChar && (
                   <div
-                    className="form-control-authentication"
+                    className="form-control-authentication label-required-password"
                     style={{
                       marginTop: "-15px",
                       justifyContent: "left",
@@ -690,7 +729,7 @@ export default function Authentication() {
 
                 {!isExistNumber && (
                   <div
-                    className="form-control-authentication"
+                    className="form-control-authentication label-required-password"
                     style={{
                       marginTop: "-15px",
                       justifyContent: "left",
@@ -706,7 +745,7 @@ export default function Authentication() {
 
                 {!isExistUppercase && (
                   <div
-                    className="form-control-authentication"
+                    className="form-control-authentication label-required-password"
                     style={{
                       marginTop: "-15px",
                       justifyContent: "left",
@@ -722,7 +761,7 @@ export default function Authentication() {
 
                 {!isExistLowercase && (
                   <div
-                    className="form-control-authentication"
+                    className="form-control-authentication label-required-password"
                     style={{
                       marginTop: "-15px",
                       justifyContent: "left",
@@ -738,7 +777,7 @@ export default function Authentication() {
 
                 {!isValidLength && (
                   <div
-                    className="form-control-authentication"
+                    className="form-control-authentication label-required-password"
                     style={{
                       marginTop: "-15px",
                       justifyContent: "left",
@@ -759,7 +798,7 @@ export default function Authentication() {
                     name=""
                     id="confirm-password"
                     className="form-control-input"
-                    placeholder=""
+                    placeholder="Ex: Here is password"
                     required
                     onChange={(e) => {
                       setConfirmPasswordSignUp(e.target.value); // Used to set real password value
@@ -771,7 +810,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye-slash"
                       onClick={() => {
                         setIsClickShowConfirmPassword(
-                          !isClickShowConfirmPassword
+                          !isClickShowConfirmPassword,
                         );
                       }}
                     ></i>
@@ -780,7 +819,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye"
                       onClick={() => {
                         setIsClickShowConfirmPassword(
-                          !isClickShowConfirmPassword
+                          !isClickShowConfirmPassword,
                         );
                       }}
                     ></i>
@@ -846,9 +885,18 @@ export default function Authentication() {
                   Already have an account?{" "}
                   <span
                     onClick={() => {
-                      document.getElementById(
-                        "form-sign-up-in-container"
-                      ).style.transform = "translateX(-35%)";
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.add("move-sign-up");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-sign-in");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-forgot-password");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-cancel-forgot");
                     }}
                     style={{
                       color: "#072138",
@@ -910,7 +958,7 @@ export default function Authentication() {
                     name=""
                     id="password-sign-in"
                     className="form-control-input"
-                    placeholder=""
+                    placeholder="Ex: Here is password"
                     required
                     onChange={(e) => {
                       setPasswordSignIn(e.target.value);
@@ -921,7 +969,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye-slash"
                       onClick={() => {
                         setIsClickShowPasswordSignIn(
-                          !isClickShowPasswordSignIn
+                          !isClickShowPasswordSignIn,
                         );
                       }}
                     ></i>
@@ -930,7 +978,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye"
                       onClick={() => {
                         setIsClickShowPasswordSignIn(
-                          !isClickShowPasswordSignIn
+                          !isClickShowPasswordSignIn,
                         );
                       }}
                     ></i>
@@ -940,9 +988,18 @@ export default function Authentication() {
                 <div className="form-control-authentication">
                   <span
                     onClick={() => {
-                      document.getElementById(
-                        "form-sign-up-in-container"
-                      ).style.transform = "translateX(-70%)";
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-sign-up");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-sign-in");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.add("move-forgot-password");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-cancel-forgot");
                     }}
                     style={{
                       color: "#5d6d7c",
@@ -993,9 +1050,18 @@ export default function Authentication() {
                   No account?{" "}
                   <span
                     onClick={() => {
-                      document.getElementById(
-                        "form-sign-up-in-container"
-                      ).style.transform = "translateX(0)";
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-sign-up");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.add("move-sign-in");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-forgot-password");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-cancel-forgot");
                     }}
                     style={{
                       color: "#072138",
@@ -1038,7 +1104,7 @@ export default function Authentication() {
                       setEmail(e.target.value);
                     }}
                   />
-                  <label htmlFor="email-forgot-password">School Email*</label>
+                  <label htmlFor="email-forgot-password">Email*</label>
                 </div>
                 <div className="form-control-authentication">
                   <input
@@ -1094,7 +1160,7 @@ export default function Authentication() {
                     name=""
                     id="password-forgot-password"
                     className="form-control-input"
-                    placeholder=""
+                    placeholder="Ex: Here is password"
                     required
                     disabled={!isSentVerificationCodeEmail}
                     onChange={(e) => {
@@ -1153,7 +1219,7 @@ export default function Authentication() {
                     name=""
                     id="confirm-password-forgot-password"
                     className="form-control-input"
-                    placeholder=""
+                    placeholder="Ex: Here is password"
                     required
                     disabled={!isSentVerificationCodeEmail}
                     onChange={(e) => {
@@ -1165,7 +1231,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye-slash"
                       onClick={() => {
                         setIsClickShowConfirmNewPassword(
-                          !isClickShowConfirmNewPassword
+                          !isClickShowConfirmNewPassword,
                         );
                       }}
                     ></i>
@@ -1174,7 +1240,7 @@ export default function Authentication() {
                       className="fa-solid fa-eye"
                       onClick={() => {
                         setIsClickShowConfirmNewPassword(
-                          !isClickShowConfirmNewPassword
+                          !isClickShowConfirmNewPassword,
                         );
                       }}
                     ></i>
@@ -1238,9 +1304,18 @@ export default function Authentication() {
                 >
                   <span
                     onClick={() => {
-                      document.getElementById(
-                        "form-sign-up-in-container"
-                      ).style.transform = "translateX(-35%)";
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-sign-up");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-sign-in");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.remove("move-forgot-password");
+                      document
+                        .getElementById("form-sign-up-in-container")
+                        .classList.add("move-cancel-forgot");
                     }}
                     style={{
                       color: "#072138",

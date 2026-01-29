@@ -3,6 +3,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import SidebarProfile from "../components/SidebarProfile";
 import { data } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
+import axiosInstance from "../api/axiosInstance";
 
 export default function Dashboard() {
   // Variables
@@ -17,7 +18,7 @@ export default function Dashboard() {
   let [countFoundPosts, setCountFoundPosts] = useState([]);
   let [countReceivedPosts, setCountReceivedPosts] = useState([]);
   let [countFoundPostsNotReceived, setCountFoundPostsNotReceived] = useState(
-    []
+    [],
   );
   let [isInProcessing, setIsInProcessing] = useState(false);
 
@@ -29,17 +30,11 @@ export default function Dashboard() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://localhost:44306/api/Post/lost-posts-per-month",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        }
-      );
+      const response = await axiosInstance.get("/Post/lost-posts-per-month", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         const defaultMonthsArray = new Array(12).fill(0);
@@ -59,7 +54,7 @@ export default function Dashboard() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -72,7 +67,7 @@ export default function Dashboard() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -83,7 +78,7 @@ export default function Dashboard() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -94,7 +89,7 @@ export default function Dashboard() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -105,7 +100,7 @@ export default function Dashboard() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -118,17 +113,11 @@ export default function Dashboard() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://localhost:44306/api/Post/found-posts-per-month",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 ||
-            status === 401 ||
-            status === 404 ||
-            status === 403,
-        }
-      );
+      const response = await axiosInstance.get("/Post/found-posts-per-month", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
 
       if (response.status === 200) {
         const defaultMonthsArray = new Array(12).fill(0);
@@ -148,7 +137,7 @@ export default function Dashboard() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -161,7 +150,7 @@ export default function Dashboard() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -172,7 +161,7 @@ export default function Dashboard() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -183,7 +172,7 @@ export default function Dashboard() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -194,7 +183,7 @@ export default function Dashboard() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -207,16 +196,16 @@ export default function Dashboard() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://localhost:44306/api/Post/received-posts-per-month",
+      const response = await axiosInstance.get(
+        "/Post/received-posts-per-month",
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||
             status === 404 ||
             status === 403,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -237,7 +226,7 @@ export default function Dashboard() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -250,7 +239,7 @@ export default function Dashboard() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -261,7 +250,7 @@ export default function Dashboard() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -272,7 +261,7 @@ export default function Dashboard() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -283,7 +272,7 @@ export default function Dashboard() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -296,16 +285,16 @@ export default function Dashboard() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://localhost:44306/api/Post/found-posts-not-received",
+      const response = await axiosInstance.get(
+        "/Post/found-posts-not-received",
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 ||
             status === 401 ||
             status === 404 ||
             status === 403,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -318,7 +307,7 @@ export default function Dashboard() {
 
         setCountFoundPostsNotReceived(defaultMonthsArray);
         setTotalPendingFoundItems(
-          defaultMonthsArray.reduce((a, b) => a + b, 0)
+          defaultMonthsArray.reduce((a, b) => a + b, 0),
         );
       }
 
@@ -329,7 +318,7 @@ export default function Dashboard() {
               message: "You don't have permission to perform this action",
               status: "error",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -342,7 +331,7 @@ export default function Dashboard() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -353,7 +342,7 @@ export default function Dashboard() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -364,7 +353,7 @@ export default function Dashboard() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -375,7 +364,7 @@ export default function Dashboard() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -537,7 +526,7 @@ export default function Dashboard() {
                     const value = context.raw; // Get y value
                     const total = context.dataset.data.reduce(
                       (a, b) => a + b,
-                      0
+                      0,
                     );
                     const percent = total
                       ? ((value / total) * 100).toFixed(1)

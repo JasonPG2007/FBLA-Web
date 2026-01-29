@@ -2,8 +2,6 @@ import ModalReportStuff from "./ModalReportStuff";
 import { lazy, Suspense, useEffect, useState } from "react";
 const Lottie = lazy(() => import("lottie-react"));
 import DocumentScan from "../assets/animations/Document-OCR-Scan.json";
-import Cookies from "js-cookie";
-import axios from "axios";
 import axiosInstance from "../api/axiosInstance";
 import Skeleton from "react-loading-skeleton";
 import ReactMarkdown from "react-markdown";
@@ -20,19 +18,26 @@ export default function Header() {
   let [msgErrorAI, setMsgErrorAI] = useState("");
 
   // APIs
-  const API_URL_Auth = `https://localhost:44306/api/CheckAuth/check-auth`;
+  const API_URL_Auth = `/CheckAuth/check-auth`;
 
   // Functions
   // Realtime
   const connectToSignalR = async () => {
+    const token = localStorage.getItem("accessToken");
     try {
       const connection = new HubConnectionBuilder()
-        .withUrl("https://localhost:44306/SystemHub")
+        .withUrl(
+          "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/SystemHub",
+          {
+            // withCredentials: true,
+            accessTokenFactory: () => token,
+          },
+        )
         .withAutomaticReconnect()
         .build();
 
       // Listen event from backend
-      // Get new lost post code
+      // Get new request
       connection.on("ReceiveNewRequest", (data) => {
         // notice admin toast
         window.dispatchEvent(
@@ -41,8 +46,24 @@ export default function Header() {
               message: data.message,
               status: "success",
             },
-          })
+          }),
         );
+      });
+
+      // Auto sign out when account is suspended
+      connection.on("ReceiveForceSignOut", (data) => {
+        // notice admin toast
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: data.message,
+              status: "success",
+            },
+          }),
+        );
+
+        localStorage.removeItem("accessToken");
+        window.location.href = "/authentication";
       });
 
       connection.on("ReceiveNewPickUpRequest", (data) => {
@@ -53,7 +74,7 @@ export default function Header() {
               message: data.message,
               status: "success",
             },
-          })
+          }),
         );
       });
 
@@ -101,19 +122,21 @@ export default function Header() {
     formData.append("image", file);
 
     try {
-      const res = await axios.post(
-        "https://contamination-final-heated-gradually.trycloudflare.com/embed",
+      const res = await axiosInstance.post(
+        "https://ai-image-ma5f.onrender.com/embed",
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
 
       if (res.status === 200) {
         // Call search API
         searchImageSimilarity(res.data);
+
+        console.log(res.data);
 
         // Reset input file
         e.target.value = null;
@@ -165,20 +188,17 @@ export default function Header() {
     // e.preventDefault();
 
     try {
-      const response = await axios.post(
-        `https://localhost:44306/api/Users/sign-out`,
-        null,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.post(`/Users/sign-out`, null, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status == 200) {
+        localStorage.removeItem("accessToken");
         window.location.href = "/";
       }
     } catch (error) {
@@ -190,14 +210,11 @@ export default function Header() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.get("/Users/profile", {
+        // // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setUser(response.data);
@@ -210,7 +227,7 @@ export default function Header() {
               message: "Unauthorized access. Please sign in again.",
               status: "warning",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -224,14 +241,14 @@ export default function Header() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.post(
-        "https://localhost:44306/api/Post/search-image-similarity",
+      const response = await axiosInstance.post(
+        "/Post/search-image-similarity",
         vector,
         {
-          withCredentials: true,
+          // withCredentials: true,
           validateStatus: (status) =>
             status === 200 || status === 401 || status === 404,
-        }
+        },
       );
 
       if (response.status === 200) {
@@ -255,7 +272,7 @@ export default function Header() {
               message: "Unauthorized access. Please sign in again.",
               status: "warning",
             },
-          })
+          }),
         );
       }
     } catch (error) {
@@ -342,6 +359,9 @@ export default function Header() {
               left: "10px",
               fontSize: "18px",
             }}
+            onClick={() => {
+              window.location.href = "/search";
+            }}
           ></i>
         </div>
         <div
@@ -372,6 +392,9 @@ export default function Header() {
               aria-label="Sign in button"
               onClick={() => {
                 document.getElementById("dropdown").classList.toggle("hidden");
+                document
+                  .getElementById("dropdown")
+                  .classList.toggle("show-mobile");
               }}
             >
               {isInProcessing ? (
@@ -391,7 +414,7 @@ export default function Header() {
                 />
               ) : (
                 <img
-                  src="./Image/user_icon.png"
+                  src="/Image/user_icon.png"
                   alt="avatar"
                   width={45}
                   loading="lazy"
@@ -415,6 +438,26 @@ export default function Header() {
                   )}
                   <a
                     href=""
+                    onClick={() => {
+                      if (localStorage.getItem("mute")) {
+                        localStorage.removeItem("mute");
+                      } else {
+                        localStorage.setItem("mute", true);
+                      }
+                    }}
+                  >
+                    {!localStorage.getItem("mute") ? (
+                      <>
+                        <i className="fa-solid fa-volume-high"></i> Mute
+                      </>
+                    ) : (
+                      <>
+                        <i className="fa-solid fa-volume-xmark"></i> Unmute
+                      </>
+                    )}
+                  </a>
+                  <a
+                    href=""
                     onClick={(e) => {
                       e.preventDefault();
 
@@ -427,7 +470,33 @@ export default function Header() {
                   </a>
                 </>
               ) : (
-                <a href="/authentication" aria-label="Sign in link">Sign In</a>
+                <>
+                  <a
+                    href=""
+                    onClick={() => {
+                      if (localStorage.getItem("mute")) {
+                        localStorage.removeItem("mute");
+                      } else {
+                        localStorage.setItem("mute", true);
+                      }
+                    }}
+                    aria-label="Mute and unmute"
+                  >
+                    {!localStorage.getItem("mute") ? (
+                      <>
+                        <i className="fa-solid fa-volume-high"></i> Mute
+                      </>
+                    ) : (
+                      <>
+                        <i className="fa-solid fa-volume-xmark"></i> Unmute
+                      </>
+                    )}
+                  </a>
+                  <a href="/authentication?with=sign-in" aria-label="Sign in link">
+                    <i className="fa-solid fa-arrow-right-to-bracket"></i> Sign
+                    In
+                  </a>
+                </>
               )}
             </div>
           </div>
@@ -442,7 +511,7 @@ export default function Header() {
 
               const modal = document.querySelector(".modal-report-stuff");
               const overlay = document.querySelector(
-                ".modal-overlay-report-stuff"
+                ".modal-overlay-report-stuff",
               );
               modal.style.visibility = "visible";
               modal.style.opacity = "1";
@@ -590,12 +659,16 @@ export default function Header() {
               resultByAI.map((item) => (
                 <div
                   className="card card-search-by-image"
+                  onClick={() => {
+                    window.location.href = `/detail-post/${item.post.postId}`;
+                  }}
+                  style={{ cursor: "pointer" }}
                   key={item.post.postId}
                 >
                   {item.post.image ? (
                     <img
                       src={item.post.urlImage}
-                      alt="picture of stuff"
+                      alt="picture of item"
                       style={{
                         width: "100%",
                         height: "300px",
@@ -643,7 +716,8 @@ export default function Header() {
                     className="btn"
                     style={{ width: "100%" }}
                   >
-                    This is my item
+                    <i className="fa-solid fa-hand-point-up"></i> This is my
+                    item
                   </button>
 
                   {/* Status */}
@@ -715,7 +789,7 @@ export default function Header() {
               document.body.style.overflow = "auto";
             }}
           >
-            Close
+            <i className="fa-solid fa-xmark"></i> Close
           </button>
         </div>
       </div>

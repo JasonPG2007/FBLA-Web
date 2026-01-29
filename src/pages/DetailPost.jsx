@@ -1,4 +1,3 @@
-import axios from "axios";
 import dayjs from "dayjs";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
@@ -9,20 +8,269 @@ import rehypeSanitize from "rehype-sanitize";
 const Lottie = lazy(() => import("lottie-react"));
 import EmptyGhost from "../assets/animations/empty_ghost.json";
 import LoadingFiles from "../assets/animations/Loading_Files.json";
+import axiosInstance from "../api/axiosInstance";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 export default function DetailPost() {
   // Variables
+  let [isEdit, setIsEdit] = useState(false);
   let [isInProcessing, setIsInProcessing] = useState(false);
+  let [isGettingPost, setIsGettingPost] = useState(false);
+  let [isGettingSuggestion, setIsGettingSuggestion] = useState(false);
+  let [isLoadingMyPost, setIsLoadingMyPost] = useState(false);
+  let [isRequesting, setIsRequesting] = useState(false);
+  let [isUpdating, setIsUpdating] = useState(false);
+  let [isGettingCategories, setIsGettingCategories] = useState(false);
   const [isShowPopup, setIsShowPopup] = useState(false);
+  const [isLoadedCategories, setIsLoadedCategories] = useState(false);
   let [suggestPosts, setSuggestPosts] = useState([]);
+  let [posts, setPosts] = useState([]);
+  let [categoryPosts, setCategoryPosts] = useState([]);
   let [post, setPost] = useState("");
   let [user, setUser] = useState("");
   let [code, setCode] = useState("");
+  let [statusPost, setStatusPost] = useState("");
+  let [categoryId, setCategoryId] = useState("");
+  let [description, setDescription] = useState("");
+  let [title, setTitle] = useState("");
   const postId = location.pathname.split("/").pop();
 
-  const handleChangeImage = (srcOld, srcNew, idImg) => {
-    document.getElementById("big-img").src = srcNew;
-    document.getElementById(idImg).src = srcOld;
+  // APIs
+  const API_URL_Auth = `/CheckAuth/check-auth`;
+
+  // Functions
+  const getCategoryPosts = async () => {
+    setIsGettingCategories(true);
+
+    try {
+      const response = await axiosInstance.get(`/CategoryPost`, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
+
+      if (response.status === 200) {
+        setCategoryPosts(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsGettingCategories(false);
+      setIsLoadedCategories(true);
+    }
+  };
+
+  // Check authentication status and redirect if not authenticated
+  const checkAuthentication = () => {
+    axiosInstance.get(API_URL_Auth).catch((err) => {
+      console.error(err);
+    });
+  };
+
+  // Update post
+  const handleUpdatePost = async (e) => {
+    e.preventDefault();
+
+    setIsUpdating(true);
+
+    const payload = {
+      userId: user.userId,
+      title: title,
+      description: description,
+      typePost: statusPost,
+      categoryPostId: categoryId,
+    };
+
+    try {
+      const response = await axiosInstance.put("/Post", payload, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404 || status === 403,
+      });
+
+      if (response.status === 200) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data,
+              status: "success",
+            },
+          }),
+        );
+
+        document.getElementById("popup-instruction").style.display = "flex"; // Show popup notice code
+      }
+
+      if (response.status === 403) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Please verify your email address to continue",
+              status: "warning",
+            },
+          }),
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsEdit(false);
+      setIsUpdating(false);
+    }
+  };
+
+  // Get my posts
+  const handleFetchPosts = async () => {
+    setIsLoadingMyPost(true);
+
+    try {
+      const response = await axiosInstance.get("/Post/my-posts", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
+
+      if (response.status === 200) {
+        setPosts(response.data.filter((p) => p.typePost === "Lost"));
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsLoadingMyPost(false);
+    }
   };
 
   // Get my profile
@@ -30,14 +278,11 @@ export default function DetailPost() {
     setIsInProcessing(true);
 
     try {
-      const response = await axios.get(
-        "https://localhost:44306/api/Users/profile",
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.get("/Users/profile", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setUser(response.data);
@@ -52,7 +297,7 @@ export default function DetailPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -63,7 +308,7 @@ export default function DetailPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -74,7 +319,7 @@ export default function DetailPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -85,7 +330,7 @@ export default function DetailPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
@@ -109,7 +354,7 @@ export default function DetailPost() {
 
   // Handle match post
   const handleMatchPost = async (lostPostId, foundPostId) => {
-    setIsInProcessing(true);
+    setIsRequesting(true);
 
     const codeIntoDb = getRandomString(6);
     setCode(codeIntoDb);
@@ -122,15 +367,11 @@ export default function DetailPost() {
     };
 
     try {
-      const response = await axios.post(
-        "https://localhost:44306/api/Match",
-        payload,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.post("/Match", payload, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         window.dispatchEvent(
@@ -139,15 +380,13 @@ export default function DetailPost() {
               message: "Match request sent successfully",
               status: "success",
             },
-          })
+          }),
         );
 
         setIsShowPopup(true); // Show popup notice code
       }
     } catch (error) {
-      console.log(error);
       if (error.response) {
-        console.log(error.response.data?.message);
         const message = error.response.data?.message || "Server error";
 
         window.dispatchEvent(
@@ -156,7 +395,7 @@ export default function DetailPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -167,7 +406,7 @@ export default function DetailPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -178,7 +417,7 @@ export default function DetailPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -189,27 +428,24 @@ export default function DetailPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsRequesting(false);
     }
   };
 
-  // Get posts
-  const handleFetchPosts = async () => {
-    setIsInProcessing(true);
+  // Get post by id
+  const handleFetchPost = async () => {
+    setIsGettingPost(true);
 
     try {
-      const response = await axios.get(
-        `https://localhost:44306/api/Post/${postId}`,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.get(`/Post/${postId}`, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setPost(response.data);
@@ -224,7 +460,7 @@ export default function DetailPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -235,7 +471,7 @@ export default function DetailPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -246,7 +482,7 @@ export default function DetailPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -257,27 +493,24 @@ export default function DetailPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsGettingPost(false);
     }
   };
 
   // Get posts
   const handleFetchSuggestPost = async () => {
-    setIsInProcessing(true);
+    setIsGettingSuggestion(true);
 
     try {
-      const response = await axios.get(
-        `https://localhost:44306/api/Post/suggest-post/${postId}`,
-        {
-          withCredentials: true,
-          validateStatus: (status) =>
-            status === 200 || status === 401 || status === 404,
-        }
-      );
+      const response = await axiosInstance.get(`/Post/suggest-post/${postId}`, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
 
       if (response.status === 200) {
         setSuggestPosts(response.data);
@@ -292,7 +525,7 @@ export default function DetailPost() {
               message: message,
               status: "error",
             },
-          })
+          }),
         );
       } else if (error.request) {
         // If offline
@@ -303,7 +536,7 @@ export default function DetailPost() {
                 message: "Network error. Please check your internet connection",
                 status: "error",
               },
-            })
+            }),
           );
         } else {
           // Server offline
@@ -314,7 +547,7 @@ export default function DetailPost() {
                   "Server is currently unavailable. Please try again later.",
                 status: "error",
               },
-            })
+            }),
           );
         }
       } else {
@@ -325,20 +558,29 @@ export default function DetailPost() {
               message: "Something went wrong. Please try again",
               status: "error",
             },
-          })
+          }),
         );
       }
     } finally {
-      setIsInProcessing(false);
+      setIsGettingSuggestion(false);
     }
   };
 
   // Call fetch data from API
   useEffect(() => {
-    handleFetchPosts();
+    handleFetchPost();
     handleFetchSuggestPost();
     getMyProfile();
   }, []);
+
+  useEffect(() => {
+    if (isEdit) {
+      setStatusPost(post.typePost);
+      setDescription(post.description);
+      setTitle(post.title);
+      setCategoryId(post.categoryId);
+    }
+  }, [isEdit]);
 
   return (
     <>
@@ -365,6 +607,7 @@ export default function DetailPost() {
             alignItems: "center",
             padding: "10px 1px",
           }}
+          className="breadcrumb-menu"
         >
           <a href="/" aria-label="Home link">
             <p>Home</p>
@@ -381,7 +624,7 @@ export default function DetailPost() {
       </div>
 
       {/* Check post if available */}
-      {isInProcessing ? (
+      {isGettingPost ? (
         <div className="not-found">
           <Suspense fallback={<p>Loading animation...</p>}>
             <Lottie
@@ -396,6 +639,8 @@ export default function DetailPost() {
           <div
             style={{
               display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             <h1
@@ -403,6 +648,7 @@ export default function DetailPost() {
                 color: "#072138",
                 padding: "20px 0",
                 fontSize: "40px",
+                textTransform: "capitalize",
               }}
             >
               {isInProcessing ? (
@@ -413,33 +659,107 @@ export default function DetailPost() {
                     borderRadius: "12px",
                   }}
                 />
+              ) : isEdit ? (
+                <input
+                  type="text"
+                  className="form-control-input input-update-post"
+                  style={{
+                    marginBottom: "20px",
+                    marginTop: "-40px",
+                  }}
+                  value={title}
+                  onChange={(e) => {
+                    setTitle(e.target.value);
+                  }}
+                />
               ) : (
                 post.title
               )}
             </h1>
-            {user.email !== post.user?.email ? (
-              <button
-                aria-label="Contact owner button"
-                style={{
-                  marginLeft: "auto",
-                  height: "max-content",
-                }}
-                className="btn-yellow"
-              >
-                <i className="fa-solid fa-comments"></i> Contact owner
-              </button>
-            ) : (
-              <button
-                aria-label="Edit post button"
-                style={{
-                  marginLeft: "auto",
-                  height: "max-content",
-                }}
-                className="btn-yellow"
-              >
-                <i className="fa-solid fa-pen-to-square"></i> Edit
-              </button>
-            )}
+
+            {!isGettingPost &&
+              !isGettingSuggestion &&
+              (user.email !== post.user?.email ? (
+                <button
+                  style={{
+                    marginLeft: "auto",
+                    height: "max-content",
+                  }}
+                  aria-label="Contact owner button"
+                  className="btn-yellow btn-contact-owner"
+                  onClick={() => {
+                    // const chatPopup = document.getElementById("chatPopup");
+                    // chatPopup.style.display = "flex";
+
+                    const chatBubble = document.getElementById("chatBubble");
+                    const chatPopup = document.getElementById("chatPopup");
+                    if (chatPopup.style.display === "flex") {
+                      chatPopup.style.display = "none";
+                    } else {
+                      chatPopup.style.display = "flex";
+                    }
+
+                    // Click outside to close
+                    document.addEventListener("click", (e) => {
+                      if (
+                        chatBubble.contains(e.target) &&
+                        chatPopup.contains(e.target)
+                      ) {
+                        chatPopup.style.display = "none";
+                      }
+                    });
+
+                    const temporaryMsg = {
+                      message:
+                        post.typePost === "Lost"
+                          ? `Hello, I'm contacting you regarding your lost item post: "${post.title}" (Post ID: ${post.postId}). I may have information related to it.`
+                          : `Hello, I'm contacting you regarding your found item post: "${post.title}" (Post ID: ${post.postId}). I think this item might belong to me.`,
+                      urlAvatar: post.user.urlAvatar,
+                      avatar: post.user.avatar,
+                      firstName: post.user.firstName,
+                      lastName: post.user.lastName,
+                      userAId: user.userId,
+                      userIdReceive: post.user.userId,
+                      postId: post.postId,
+                      chatId:
+                        Date.now().toString().slice(-5) +
+                        Math.floor(Math.random() * 10000)
+                          .toString()
+                          .padStart(4, "0"), // Temporary chat id
+                    };
+
+                    window.dispatchEvent(
+                      new CustomEvent("contact-owner", {
+                        detail: temporaryMsg,
+                      }),
+                    );
+                  }}
+                >
+                  <i className="fa-solid fa-comments"></i> Contact owner
+                </button>
+              ) : (
+                <button
+                  style={{
+                    marginLeft: "auto",
+                    height: "max-content",
+                  }}
+                  className="btn-yellow btn-edit-discard-post"
+                  onClick={() => {
+                    setIsEdit(!isEdit);
+                  }}
+                  aria-label="Edit post button"
+                >
+                  {isEdit ? (
+                    <>
+                      <i className="fa-solid fa-xmark"></i> Discard changes
+                    </>
+                  ) : (
+                    <>
+                      <i className="fa-solid fa-pen-to-square"></i> Edit Post
+                    </>
+                  )}
+                </button>
+              ))}
           </div>
 
           {/* Image of post */}
@@ -449,6 +769,7 @@ export default function DetailPost() {
               gridTemplateColumns: "auto auto",
               gap: "100px",
             }}
+            className="detail-post-container"
           >
             <div
               style={{
@@ -456,6 +777,7 @@ export default function DetailPost() {
                 gridTemplateColumns: "80% 20%",
                 gap: "20px",
               }}
+              className="image-post-details"
             >
               <div className="post-image-container">
                 <div>
@@ -470,7 +792,7 @@ export default function DetailPost() {
                   ) : post.image ? (
                     <img
                       src={post.image ? post.urlImage : ""}
-                      alt="picture of stuff"
+                      alt="picture of item"
                       loading="lazy"
                       style={{
                         width: "100%",
@@ -501,11 +823,11 @@ export default function DetailPost() {
               </div>
 
               {/* Post image mini */}
-              <div className="post-image-mini">
+              {/* <div className="post-image-mini">
                 {post.image2 ? (
                   <img
                     src={post.image2 ? post.urlImage2 : ""}
-                    alt="picture of stuff"
+                    alt="picture of item"
                     loading="lazy"
                     style={{
                       width: "80%",
@@ -519,7 +841,7 @@ export default function DetailPost() {
                       handleChangeImage(
                         document.getElementById("big-img").src,
                         document.getElementById("img-1").src,
-                        "img-1"
+                        "img-1",
                       )
                     }
                   ></img>
@@ -541,7 +863,7 @@ export default function DetailPost() {
                 {post.image2 ? (
                   <img
                     src={post.image2 ? post.urlImage2 : ""}
-                    alt="picture of stuff"
+                    alt="picture of item"
                     loading="lazy"
                     style={{
                       width: "80%",
@@ -555,7 +877,7 @@ export default function DetailPost() {
                       handleChangeImage(
                         document.getElementById("big-img").src,
                         document.getElementById("img-1").src,
-                        "img-1"
+                        "img-1",
                       )
                     }
                   ></img>
@@ -577,7 +899,7 @@ export default function DetailPost() {
                 {post.image2 ? (
                   <img
                     src={post.image2 ? post.urlImage2 : ""}
-                    alt="picture of stuff"
+                    alt="picture of item"
                     loading="lazy"
                     style={{
                       width: "80%",
@@ -591,7 +913,7 @@ export default function DetailPost() {
                       handleChangeImage(
                         document.getElementById("big-img").src,
                         document.getElementById("img-1").src,
-                        "img-1"
+                        "img-1",
                       )
                     }
                   ></img>
@@ -610,7 +932,7 @@ export default function DetailPost() {
                     <span>No image</span>
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
 
             {/* About me */}
@@ -647,7 +969,36 @@ export default function DetailPost() {
                           style={{ marginBottom: "20px" }}
                         />
                       ) : post.categoryPost?.categoryPostName ? (
-                        post.categoryPost?.categoryPostName
+                        isEdit ? (
+                          <select
+                            name=""
+                            id="type"
+                            className="form-control-input input-update-post"
+                            onClick={() => {
+                              isLoadedCategories || getCategoryPosts(); // Load categories only once
+                            }}
+                            value={categoryId}
+                            onChange={(e) => {
+                              setCategoryId(e.target.value);
+                            }}
+                          >
+                            <option value="">Select type</option>
+                            {isGettingCategories ? (
+                              <option>Loading...</option>
+                            ) : (
+                              categoryPosts.map((item) => (
+                                <option
+                                  key={item.categoryPostId}
+                                  value={item.categoryPostId}
+                                >
+                                  {item.categoryPostName}
+                                </option>
+                              ))
+                            )}
+                          </select>
+                        ) : (
+                          post.categoryPost?.categoryPostName
+                        )
                       ) : (
                         "Not available"
                       )}
@@ -683,7 +1034,25 @@ export default function DetailPost() {
                           style={{ marginBottom: "20px" }}
                         />
                       ) : post.typePost ? (
-                        post.typePost
+                        isEdit ? (
+                          <select
+                            name=""
+                            id=""
+                            className="form-control-input input-update-post"
+                            style={{
+                              marginBottom: "20px",
+                              marginTop: "-40px",
+                            }}
+                            value={statusPost}
+                            onChange={(e) => setStatusPost(e.target.value)}
+                          >
+                            <option value="">Choose Type</option>
+                            <option value="Lost">Lost</option>
+                            <option value="Found">Found</option>
+                          </select>
+                        ) : (
+                          post.typePost
+                        )
                       ) : (
                         "Not available"
                       )}
@@ -699,6 +1068,26 @@ export default function DetailPost() {
                           height={100}
                           width={700}
                           style={{ marginBottom: "20px" }}
+                        />
+                      ) : isEdit ? (
+                        <CKEditor
+                          editor={ClassicEditor}
+                          data={description}
+                          config={{
+                            licenseKey: "GPL",
+                            toolbar: [
+                              "bold",
+                              "italic",
+                              "bulletedList",
+                              "numberedList",
+                              "link",
+                              "undo",
+                              "redo",
+                            ],
+                          }}
+                          onChange={(event, editor) => {
+                            setDescription(editor.getData());
+                          }}
                         />
                       ) : (
                         <ReactMarkdown
@@ -772,133 +1161,385 @@ export default function DetailPost() {
                 </table>
               </div>
 
-              <button
-                aria-label="I found it button"
-                className="btn-yellow"
-                style={{ marginTop: "20px", width: "100%" }}
+              {post.typePost === "Found" && user.email !== post.user?.email && (
+                <button
+                  className="btn-yellow"
+                  style={{ marginTop: "20px", width: "100%" }}
+                  onClick={() => {
+                    document.getElementById(
+                      "modal-my-post-to-match",
+                    ).style.visibility = "visible";
+                    document.getElementById(
+                      "modal-my-post-to-match",
+                    ).style.opacity = "1";
+
+                    // Load my post to pick to match post is showing
+                    handleFetchPosts();
+                  }}
+                >
+                  <i className="fa-solid fa-hand-point-up"></i> This is my item
+                </button>
+              )}
+
+              {isEdit && (
+                <button
+                  className="btn"
+                  style={{ width: "100%" }}
+                  onClick={() => {
+                    handleUpdatePost();
+                  }}
+                  disabled={isUpdating}
+                >
+                  <i className="fa-solid fa-floppy-disk me-2"></i> Save changes
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Modal popup choose my post to math with currently post is showing */}
+          <div className="modal-my-post-to-match" id="modal-my-post-to-match">
+            <div className="modal-content-my-post-to-match">
+              <h2>Select your post?</h2>
+              <p style={{ textAlign: "center" }}>
+                Choose the post that matches this found item
+              </p>
+              <div
+                className={
+                  !isLoadingMyPost ? "results-container-my-post-to-match" : ""
+                }
+                style={{
+                  gridTemplateColumns: posts.length == 0 ? "unset" : "",
+                }}
               >
-                <i className="fa-solid fa-magnifying-glass"></i> I Found It
+                {isLoadingMyPost ? (
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "auto auto auto",
+                      width: "100%",
+                      gap: "10px",
+                    }}
+                  >
+                    {Array.from({ length: 3 }).map((_, index) => (
+                      <div className="" key={index}>
+                        <Skeleton
+                          height={290}
+                          style={{ marginBottom: "10px", borderRadius: "20px" }}
+                        />
+                        <div className="">
+                          <h3
+                            style={{ fontWeight: "700", marginBottom: "10px" }}
+                          >
+                            <Skeleton height={35} width={309} />
+                          </h3>
+                          <p>
+                            <Skeleton count={3} />
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : posts.length > 0 ? (
+                  posts.map((item) => (
+                    <div
+                      className="card card-my-post"
+                      key={item.postId}
+                      onClick={() => {
+                        window.location.href = `/detail-post/${item.postId}`;
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {/* Image */}
+                      {item.image ? (
+                        <img
+                          src={item.image ? item.urlImage : ""}
+                          alt="picture of item"
+                          loading="lazy"
+                          style={{
+                            width: "100%",
+                            height: "300px",
+                            objectFit: "cover",
+                            backgroundColor: "white",
+                          }}
+                        />
+                      ) : (
+                        <div className="image-placeholder">
+                          <i className="icon-image"></i>
+                          <span>No image</span>
+                        </div>
+                      )}
+
+                      {/* Content */}
+                      <div
+                        className="card-text"
+                        style={{ marginBottom: "20px" }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <h3
+                            style={{ fontWeight: "700", marginBottom: "10px" }}
+                          >
+                            <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${suggestion.title}`}>
+                              {item.title}
+                            </a>
+                          </h3>
+                          {item.isReceived && (
+                            <label
+                              style={{
+                                // fontSize: "13px",
+                                fontWeight: 500,
+                                color: "green",
+                              }}
+                            >
+                              (<i className="fa-solid fa-circle-check"></i>{" "}
+                              Received)
+                            </label>
+                          )}
+                          {item.oldUserId && (
+                            <label
+                              style={{
+                                // fontSize: "13px",
+                                fontWeight: 500,
+                                color: "#6b7280",
+                              }}
+                            >
+                              (Transferred)
+                            </label>
+                          )}
+                        </div>
+                        <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${suggestion.title}`}>
+                          <ReactMarkdown
+                            children={item.description}
+                            rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                          ></ReactMarkdown>
+                        </a>
+                      </div>
+
+                      {/* Status */}
+                      <div
+                        className={
+                          item.typePost === "Lost"
+                            ? "status-post-lost"
+                            : "status-post-found"
+                        }
+                      >
+                        {item.typePost}
+                      </div>
+
+                      <button
+                        aria-label="Select this post that matched with this found item"
+                        className="btn"
+                        style={{ width: "100%" }}
+                        onClick={() => {
+                          handleMatchPost(item.postId, post.postId);
+                        }}
+                        aria-label="Select this is my item button"
+                        disabled={isRequesting}
+                      >
+                        {isRequesting ? (
+                          <i className="fas fa-spinner fa-spin"></i>
+                        ) : (
+                          <>
+                            <i className="fa-solid fa-hand-point-up"></i> Select
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      margin: "auto",
+                    }}
+                  >
+                    <p>
+                      You don't have any lost items to match this found item
+                    </p>
+                    <button
+                      className="btn"
+                      onClick={() => {
+                        checkAuthentication();
+
+                        // Hidden select my posts modal
+                        document.getElementById(
+                          "modal-my-post-to-match",
+                        ).style.visibility = "hidden";
+                        document.getElementById(
+                          "modal-my-post-to-match",
+                        ).style.opacity = "0";
+
+                        // Show modal create post
+                        const modal = document.querySelector(
+                          ".modal-report-stuff",
+                        );
+                        const overlay = document.querySelector(
+                          ".modal-overlay-report-stuff",
+                        );
+                        modal.style.visibility = "visible";
+                        modal.style.opacity = "1";
+                        overlay.style.visibility = "visible";
+                        overlay.style.opacity = "1";
+                        document.body.style.overflow = "hidden";
+                      }}
+                    >
+                      <i className="fa-solid fa-plus"></i> Create a lost post
+                    </button>
+                  </div>
+                )}
+              </div>
+              <button
+                aria-label="Close button"
+                className="btn-yellow close-result-my-post-to-match"
+                style={{
+                  width: "90%",
+                }}
+                href="#"
+                onClick={() => {
+                  const modal = document.querySelector(
+                    ".modal-my-post-to-match",
+                  );
+                  modal.style.visibility = "hidden";
+                  modal.style.opacity = "0";
+                  document.body.style.overflow = "auto";
+                }}
+              >
+                Close
               </button>
             </div>
           </div>
 
-          {post.typePost === "Lost" && user.email === post.user?.email && (
-            <div className="suggestion-lost-item">
-              <div className="suggestion-content">
-                <h1 style={{ textAlign: "center" }}>
-                  Suggestions for your lost item
-                </h1>
-                <div
-                  className="suggestion-card-container"
-                  style={{
-                    gridTemplateColumns: suggestPosts.length === 0 && "unset",
-                  }}
-                >
-                  {suggestPosts.length > 0 ? (
-                    suggestPosts.map((suggestion) => (
-                      <div
-                        className="card suggestion-card"
-                        key={suggestion.postId}
-                      >
-                        {suggestion.image ? (
-                          <img
-                            src={suggestion.urlImage}
-                            alt="picture of stuff"
-                            style={{
-                              width: "100%",
-                              height: "300px",
-                              objectFit: "cover",
-                              backgroundColor: "white",
-                            }}
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="image-placeholder">
-                            <i className="icon-image"></i>
-                            <span>No image</span>
-                          </div>
-                        )}
+          {/* Suggestion */}
+          {post.typePost === "Lost" &&
+            user.email === post.user?.email &&
+            !post.isReceived && (
+              <div className="suggestion-lost-item">
+                <div className="suggestion-content">
+                  <h1 style={{ textAlign: "center" }}>
+                    Suggestions for your lost item
+                  </h1>
+                  <div
+                    className="suggestion-card-container"
+                    style={{
+                      gridTemplateColumns: suggestPosts.length === 0 && "unset",
+                    }}
+                  >
+                    {suggestPosts.length > 0 ? (
+                      suggestPosts.map((suggestion) => (
                         <div
-                          className="card-text suggestion-card-text"
-                          style={{ marginBottom: "40px" }}
+                          className="card suggestion-card"
+                          key={suggestion.postId}
                         >
-                          <div className="info-user-suggestion">
+                          {suggestion.image ? (
                             <img
-                              src={suggestion.user.urlAvatar}
-                              alt="avatar"
-                              width={50}
-                              height={50}
-                              style={{ borderRadius: "50%" }}
+                              src={suggestion.urlImage}
+                              alt="picture of item"
+                              style={{
+                                width: "100%",
+                                height: "300px",
+                                objectFit: "cover",
+                                backgroundColor: "white",
+                              }}
                               loading="lazy"
                             />
-                            <span>{`${suggestion.user.firstName} ${suggestion.user.lastName}`}</span>
-                          </div>
-                          <h3
-                            style={{ fontWeight: "700", marginBottom: "10px" }}
-                          >
-                            <a href={`/detail-post/${suggestion.postId}`} aria-label={`Detail link for ${suggestion.title}`}>
-                              {suggestion.title}
-                            </a>
-                          </h3>
-                          <a href={`/detail-post/${suggestion.postId}`} aria-label={`Detail link for ${suggestion.title}`}>
-                            <ReactMarkdown
-                              children={suggestion.description}
-                              rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                            ></ReactMarkdown>
-                          </a>
-                        </div>
-
-                        <button
-                          aria-label="This is my item button"
-                          className="btn"
-                          style={{ width: "90%", marginLeft: "5%" }}
-                          onClick={() => {
-                            handleMatchPost(post.postId, suggestion.postId);
-                          }}
-                          disabled={isInProcessing}
-                        >
-                          {isInProcessing ? (
-                            <i className="fas fa-spinner fa-spin"></i>
                           ) : (
-                            "This is my item"
+                            <div className="image-placeholder">
+                              <i className="icon-image"></i>
+                              <span>No image</span>
+                            </div>
                           )}
-                        </button>
+                          <div
+                            className="card-text suggestion-card-text"
+                            style={{ marginBottom: "40px" }}
+                          >
+                            <div className="info-user-suggestion">
+                              <img
+                                src={suggestion.user.urlAvatar}
+                                alt="avatar"
+                                width={50}
+                                height={50}
+                                style={{ borderRadius: "50%" }}
+                                loading="lazy"
+                              />
+                              <span>{`${suggestion.user.firstName} ${suggestion.user.lastName}`}</span>
+                            </div>
+                            <h3
+                              style={{
+                                fontWeight: "700",
+                                marginBottom: "10px",
+                              }}
+                            >
+                              <a href={`/detail-post/${suggestion.postId}`}>
+                                {suggestion.title}
+                              </a>
+                            </h3>
+                            <a href={`/detail-post/${suggestion.postId}`}>
+                              <ReactMarkdown
+                                children={suggestion.description}
+                                rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                              ></ReactMarkdown>
+                            </a>
+                          </div>
 
-                        {/* Status */}
-                        <div
-                          className={
-                            suggestion.typePost === "Found"
-                              ? "status-post-found"
-                              : "status-post-lost"
-                          }
-                        >
-                          {suggestion.typePost}
+                          <button
+                            className="btn"
+                            style={{ width: "90%", marginLeft: "5%" }}
+                            onClick={() => {
+                              handleMatchPost(post.postId, suggestion.postId);
+                            }}
+                            disabled={isRequesting}
+                          >
+                            {isRequesting ? (
+                              <i className="fas fa-spinner fa-spin"></i>
+                            ) : (
+                              <>
+                                <i className="fa-solid fa-hand-point-up"></i>{" "}
+                                This is my item
+                              </>
+                            )}
+                          </button>
+
+                          {/* Status */}
+                          <div
+                            className={
+                              suggestion.typePost === "Found"
+                                ? "status-post-found"
+                                : "status-post-lost"
+                            }
+                          >
+                            {suggestion.typePost}
+                          </div>
+
+                          {/* Show score */}
+                          <div className="show-code">{suggestion.score}%</div>
                         </div>
-
-                        {/* Show score */}
-                        <div className="show-code">{suggestion.score}%</div>
+                      ))
+                    ) : (
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          textAlign: "center",
+                          width: "100%",
+                          margin: "auto",
+                        }}
+                      >
+                        <h3>No suggestions found</h3>
                       </div>
-                    ))
-                  ) : (
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        textAlign: "center",
-                        width: "100%",
-                        margin: "auto",
-                      }}
-                    >
-                      <h3>No suggestions found</h3>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
           {/* Popup notice code */}
-          {console.log(isShowPopup)}
           {isShowPopup && (
             <div
               className="modal"
@@ -942,7 +1583,7 @@ export default function DetailPost() {
                         window.print();
 
                         document.getElementById(
-                          "popup-notice-code"
+                          "popup-notice-code",
                         ).style.display = "none";
                       }}
                       style={{ marginLeft: "10px" }}
