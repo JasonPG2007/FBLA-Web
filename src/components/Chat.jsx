@@ -100,17 +100,17 @@ export default function Chat() {
 
   // Handle send message
   const handleSendMessage = async () => {
-    // Add temporary message for good ux
-    setMessagesFromChat((prev) => {
-      return [
-        ...prev,
-        {
-          messageChatId: Math.random(),
-          messageContent: message,
-          userSenderId: user.userId,
-        },
-      ];
-    });
+    // // Add temporary message for good ux
+    // setMessagesFromChat((prev) => {
+    //   return [
+    //     ...prev,
+    //     {
+    //       messageChatId: Math.random(),
+    //       messageContent: message,
+    //       userSenderId: user.userId,
+    //     },
+    //   ];
+    // });
 
     setIsSentTempMessage(true);
     setIsSending(true);
@@ -133,9 +133,6 @@ export default function Chat() {
       messageContent: message,
     };
 
-    // Reset message
-    setMessage("");
-
     try {
       const response = await axiosInstance.post("/MessageChat", payload, {
         headers: {
@@ -146,6 +143,9 @@ export default function Chat() {
           status === 200 || status === 401 || status === 404 || status === 403,
       });
       if (response.status === 200) {
+        // Reset message
+        setMessage("");
+
         setSendStatus("Sent");
         window.dispatchEvent(
           new CustomEvent("app-error", {
@@ -375,18 +375,26 @@ export default function Chat() {
     const token = localStorage.getItem("accessToken");
     try {
       const connection = new HubConnectionBuilder()
-        .withUrl("https://localhost:44306/SystemHub", {
-          // withCredentials: true,
-          accessTokenFactory: () => token,
-        })
+        .withUrl(
+          "https://lost-and-found-cqade7hfbjgvcbdq.centralus-01.azurewebsites.net/SystemHub",
+          {
+            // withCredentials: true,
+            accessTokenFactory: () => token,
+          },
+        )
         .withAutomaticReconnect()
         .build();
 
       // Listen event from backend
       // Get new message
       connection.on("ReceiveNewMessage", (data) => {
-        console.log(JSON.stringify(data.message));
+        // console.log(JSON.stringify(data.message));
         setMessagesFromChat((prev) => {
+          if (
+            prev.some((m) => m.messageChatId === data.message.messageChatId)
+          ) {
+            return prev;
+          }
           return [...prev, data.message];
         });
 
@@ -400,7 +408,7 @@ export default function Chat() {
 
       // Get new chat
       connection.on("ReceiveNewChat", (data) => {
-        console.log(JSON.stringify(data.chat));
+        // console.log(JSON.stringify(data.chat));
         setChats((prev) => {
           if (prev.some((c) => c.chatId === data.chat.chatId)) {
             return prev;
@@ -433,6 +441,13 @@ export default function Chat() {
     getMyProfile();
     connectToSignalR();
   }, []);
+
+  useEffect(() => {
+    if (selectedChat) {
+      // Load a chat clicked
+      handleGetAllMessagesByChatId(selectedChat.chatId);
+    }
+  }, [selectedChat]);
 
   useEffect(() => {
     window.addEventListener("contact-owner", (event) => {
@@ -645,8 +660,6 @@ export default function Chat() {
                       setIsMoveToDetailsChat(true);
                       setUserSendId(chat.userSendId);
 
-                      // Load a chat clicked
-                      handleGetAllMessagesByChatId(chat.chatId);
                       setChat({
                         urlAvatar:
                           user.userId === chat.userAId
