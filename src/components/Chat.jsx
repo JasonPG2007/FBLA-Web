@@ -114,9 +114,9 @@ export default function Chat() {
 
     setIsSentTempMessage(true);
     setIsSending(true);
-    setTemporaryListChat((prev) => {
-      return [...prev, message];
-    });
+    if (temporaryChat) {
+      setTemporaryListChat((prev) => [...prev, message]);
+    }
     setSendStatus("Sending");
 
     const payload = {
