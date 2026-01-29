@@ -1187,7 +1187,7 @@ export default function DetailPost() {
                   }}
                   disabled={isUpdating}
                 >
-                  Save Changes
+                  <i className="fa-solid fa-floppy-disk me-2"></i> Save changes
                 </button>
               )}
             </div>
