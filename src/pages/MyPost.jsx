@@ -1099,7 +1099,7 @@ export default function MyPost() {
                           <h3
                             style={{ fontWeight: "700", marginBottom: "10px" }}
                           >
-                            <a href={`/detail-post/${post.postId}`} aria-label={`Detail link for ${item.title}`}>
+                            <a href={`/detail-post/${post.postId}`} aria-label={`Detail link for ${post.title}`}>
                               {post.title}
                             </a>
                           </h3>
@@ -1127,7 +1127,7 @@ export default function MyPost() {
                             </label>
                           )}
                         </div>
-                        <a href={`/detail-post/${post.postId}`} aria-label={`Detail link for ${item.title}`}>
+                        <a href={`/detail-post/${post.postId}`} aria-label={`Detail link for ${post.title}`}>
                           <ReactMarkdown
                             children={post.description}
                             rehypePlugins={[rehypeRaw, rehypeSanitize]}
