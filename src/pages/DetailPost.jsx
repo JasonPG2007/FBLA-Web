@@ -717,7 +717,7 @@ export default function DetailPost() {
                       firstName: post.user.firstName,
                       lastName: post.user.lastName,
                       userAId: user.userId,
-                      userBId: post.user.userId,
+                      userIdReceive: post.user.userId,
                       postId: post.postId,
                       chatId:
                         Date.now().toString().slice(-5) +
