@@ -1099,7 +1099,7 @@ export default function MyPost() {
                           <h3
                             style={{ fontWeight: "700", marginBottom: "10px" }}
                           >
-                            <a href={`/detail-post/${post.postId}`}>
+                            <a href={`/detail-post/${post.postId}`} aria-label={`Detail link for ${item.title}`}>
                               {post.title}
                             </a>
                           </h3>
@@ -1127,7 +1127,7 @@ export default function MyPost() {
                             </label>
                           )}
                         </div>
-                        <a href={`/detail-post/${post.postId}`}>
+                        <a href={`/detail-post/${post.postId}`} aria-label={`Detail link for ${item.title}`}>
                           <ReactMarkdown
                             children={post.description}
                             rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -1408,6 +1408,7 @@ export default function MyPost() {
 
           <div style={{ marginTop: "40px" }}>
             <button
+              aria-label="Confirm handover button"
               className="btn"
               onClick={() => {
                 handleCreateRequest();
@@ -1416,6 +1417,7 @@ export default function MyPost() {
               Confirm
             </button>
             <button
+              aria-label="Cancel handover button"
               className="btn-yellow"
               onClick={() => {
                 document.getElementById(
@@ -1469,6 +1471,7 @@ export default function MyPost() {
 
           <div style={{ marginTop: "40px" }}>
             <button
+              aria-label="Notify admin pick up button"
               className="btn"
               onClick={() => {
                 handleNotifyAdminPickUp();
@@ -1482,6 +1485,7 @@ export default function MyPost() {
               )}
             </button>
             <button
+              aria-label="Cancel pick up button"
               className="btn-yellow btn-cancel-pick-up"
               onClick={() => {
                 document.getElementById("popup-pick-up").style.display = "none";

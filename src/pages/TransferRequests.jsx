@@ -544,6 +544,7 @@ export default function TransferRequests() {
                         }}
                       >
                         <button
+                          aria-label="Mark as received button"
                           className="btn"
                           style={{
                             backgroundColor: item.isActive ? "red" : "",
@@ -566,6 +567,7 @@ export default function TransferRequests() {
                         </button>
                         {item.status === "Pending" && (
                           <button
+                            aria-label="Cancel hand over button"
                             className="btn-yellow"
                             type="button"
                             onClick={() => {

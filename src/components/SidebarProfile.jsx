@@ -139,11 +139,13 @@ export default function SidebarProfile() {
 
         {/* Personal information  */}
         <a
+
           href="/me"
           style={{
             fontWeight: "400",
             lineHeight: "50px",
           }}
+          aria-label="Personal information link"
           className={`${isActive("/me") ? "active" : ""}`}
         >
           {" "}
@@ -153,11 +155,13 @@ export default function SidebarProfile() {
 
         {/* My post */}
         <a
+
           href="/my-posts"
           style={{
             fontWeight: "400",
             lineHeight: "50px",
           }}
+          aria-label="My post link"
           className={`${isActive("/my-posts") ? "active" : ""}`}
         >
           {" "}
@@ -172,6 +176,7 @@ export default function SidebarProfile() {
             fontWeight: "400",
             lineHeight: "50px",
           }}
+          aria-label="Notifications link"
           className={`${isActive("/notifications") ? "active" : ""}`}
         >
           {" "}
@@ -186,6 +191,7 @@ export default function SidebarProfile() {
             fontWeight: "400",
             lineHeight: "50px",
           }}
+          aria-label="Verification codes link"
           className={`${isActive("/verification-codes") ? "active" : ""}`}
         >
           <i className="fa-solid fa-key"></i> Verification Codes
@@ -201,6 +207,7 @@ export default function SidebarProfile() {
                 fontWeight: "400",
                 lineHeight: "50px",
               }}
+              aria-label="Admin dashboard link"
               onClick={(e) => {
                 e.preventDefault();
                 setOpenDashboard(!openDashboard);
@@ -209,22 +216,21 @@ export default function SidebarProfile() {
             >
               <i className="fa-solid fa-house"></i> Dashboard{" "}
               <i
-                className={`fa-solid fa-chevron-down arrow ${
-                  openDashboard ? "rotate" : ""
-                }`}
+                className={`fa-solid fa-chevron-down arrow ${openDashboard ? "rotate" : ""
+                  }`}
               ></i>
             </a>
 
             {/* Sub Menu */}
             <div
-              className={`submenu ${
-                openDashboard || location.pathname.startsWith("/dashboard")
-                  ? "show"
-                  : ""
-              }`}
+              className={`submenu ${openDashboard || location.pathname.startsWith("/dashboard")
+                ? "show"
+                : ""
+                }`}
             >
               <a
                 href="/dashboard/report"
+                aria-label="Report link"
                 className={isActive("/dashboard/report") ? "active" : ""}
               >
                 Report
@@ -235,6 +241,7 @@ export default function SidebarProfile() {
                 className={
                   isActive("/dashboard/confirm-received") ? "active" : ""
                 }
+                aria-label="Confirm received link"
               >
                 Confirm Received
               </a>
@@ -242,6 +249,7 @@ export default function SidebarProfile() {
               <a
                 href="/dashboard/users"
                 className={isActive("/dashboard/users") ? "active" : ""}
+                aria-label="Users link"
               >
                 Users
               </a>
@@ -250,6 +258,7 @@ export default function SidebarProfile() {
                 className={
                   isActive("/dashboard/transfer-requests") ? "active" : ""
                 }
+                aria-label="Transfer requests link"
               >
                 Transfer Requests
               </a>
@@ -258,6 +267,7 @@ export default function SidebarProfile() {
                 className={
                   isActive("/dashboard/pick-up-requests") ? "active" : ""
                 }
+                aria-label="Pick-Up Requests link"
               >
                 Pick-Up Requests
               </a>
@@ -274,6 +284,7 @@ export default function SidebarProfile() {
             position: "absolute",
             bottom: "20px",
           }}
+          aria-label="Sign out link"
           onClick={(e) => {
             e.preventDefault();
 

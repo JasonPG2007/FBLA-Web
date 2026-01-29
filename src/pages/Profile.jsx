@@ -541,6 +541,7 @@ export default function Profile() {
               </table>
 
               <button
+                aria-label="Save changes button"
                 className="btn-yellow"
                 style={{
                   marginTop: "20px",
@@ -621,6 +622,7 @@ export default function Profile() {
             </div>
             <div>
               <button
+                aria-label="Delete avatar button"
                 className="btn-with-border"
                 style={{
                   borderColor: "#ec7207",

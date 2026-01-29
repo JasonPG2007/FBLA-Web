@@ -23,6 +23,7 @@ export default function NotFound() {
           Sorry, the page you are looking for doesn't exist or has been moved.
         </p>
         <button
+          aria-label="Go back button"
           className="btn"
           onClick={() => {
             window.history.back();

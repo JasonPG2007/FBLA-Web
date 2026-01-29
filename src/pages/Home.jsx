@@ -367,6 +367,7 @@ export default function Home() {
             }}
           >
             <button
+              aria-label="Lost stuffs button"
               style={{
                 fontSize: "20px",
                 border: "none",
@@ -389,6 +390,7 @@ export default function Home() {
               <strong className="pipe">|</strong>
             </p>
             <button
+              aria-label="Receive stuffs button"
               style={{
                 fontSize: "20px",
                 border: "none",
@@ -421,7 +423,7 @@ export default function Home() {
           >
             It's super easy and takes only minutes. Just add your item's info,
             <br />
-            picture, and contact information.
+            and your contact information.
           </p>
         </div>
 
@@ -526,12 +528,10 @@ export default function Home() {
               top: "-30px",
             }}
           >
-            Report a item
+            Report an item
           </p>
           <p>
-            Share the details of your lost or found items by creating a post.
-            Provide essential information about your items. This step helps us
-            match lost and found items more effectively.
+            Share details about your lost or found item by creating a post. Providing accurate information helps us match lost and found items more effectively.
           </p>
         </div>
       </div>
@@ -577,9 +577,7 @@ export default function Home() {
             Promote
           </p>
           <p>
-            Our platform offers options to share your listing on social media,
-            reaching a wider audience. The more you promote your listing, the
-            higher the chances of reuniting with your items.
+            Our platform allows you to share your listing on social media to reach a wider audience. The more you promote your listing, the higher the chance of recovery.
           </p>
         </div>
 
@@ -613,9 +611,7 @@ export default function Home() {
             Reunite
           </p>
           <p>
-            This is the ultimate goal. With a strong user community and
-            effective promotion, the chances of reuniting with your lost items
-            or finding the item’s owner become much higher.
+            This is our ultimate goal. With a strong user community and effective promotion, reuniting lost items with their owners becomes much more likely.
           </p>
         </div>
       </div>
@@ -730,7 +726,7 @@ export default function Home() {
                   }}
                 >
                   <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                    <a href={`/detail-post/${item.postId}`}>{item.title}</a>
+                    <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>{item.title}</a>
                   </h3>
                   {item.isReceived && (
                     <label
@@ -744,7 +740,7 @@ export default function Home() {
                     </label>
                   )}
                 </div>
-                <a href={`/detail-post/${item.postId}`}>
+                <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>
                   <ReactMarkdown
                     children={item.description}
                     rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -776,7 +772,7 @@ export default function Home() {
           marginTop: "-60px",
         }}
       >
-        <a href="/lost-and-found" className="btn">
+        <a href="/lost-and-found" className="btn" aria-label="View all posts link">
           View all <i className="fa-solid fa-arrow-right"></i>
         </a>
       </div>
@@ -862,7 +858,7 @@ export default function Home() {
           </div>
           <div className="pipe">|</div>
           <div className="">
-            <button className="btn-yellow">
+            <button className="btn-yellow" aria-label="Search item button">
               Search item <i className="fa-solid fa-arrow-right"></i>
             </button>
           </div>

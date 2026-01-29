@@ -304,7 +304,7 @@ export default function Header() {
         }}
         className="nav"
       >
-        <a href="/">
+        <a href="/" aria-label="Back2Me homepage link">
           <h1
             className="homepageh1"
             style={{ fontFamily: "Mochiy Pop One, sans-serif" }}
@@ -374,16 +374,16 @@ export default function Header() {
           className="list-service"
           id="list-service"
         >
-          <a href="#policyModal2" style={{ marginRight: "40px" }}>
+          <a href="#policyModal2" style={{ marginRight: "40px" }} aria-label="Terms and guide link">
             Terms & Guide
           </a>
-          <a href="/about" style={{ marginRight: "40px" }}>
+          <a href="/about" style={{ marginRight: "40px" }} aria-label="About us link">
             About us
           </a>
-          <a href="/lost-and-found" style={{ marginRight: "40px" }}>
+          <a href="/lost-and-found" style={{ marginRight: "40px" }} aria-label="Lost & Found link">
             Lost & Found
           </a>
-          <a href="/support" style={{ marginRight: "40px" }}>
+          <a href="/support" style={{ marginRight: "40px" }} aria-label="Support link">
             Support
           </a>
           <div className="profile-menu">
@@ -425,14 +425,14 @@ export default function Header() {
             <div id="dropdown" className="dropdown hidden">
               {user.role ? (
                 <>
-                  <a href="/me">
+                  <a href="/me" aria-label="Profile link">
                     <i className="fa-solid fa-user"></i> Profile
                   </a>
-                  <a href="/my-posts">
+                  <a href="/my-posts" aria-label="My posts link">
                     <i className="fa-solid fa-file-lines"></i> My Post
                   </a>
                   {user.role === "Admin" && (
-                    <a href="/dashboard/report">
+                    <a href="/dashboard/report" aria-label="Admin dashboard link">
                       <i className="fa-solid fa-home"></i> Dashboard
                     </a>
                   )}
@@ -463,6 +463,7 @@ export default function Header() {
 
                       signOut();
                     }}
+                    aria-label="Sign out link"
                   >
                     <i className="fa-solid fa-arrow-right-from-bracket"></i>{" "}
                     Sign Out
@@ -479,6 +480,7 @@ export default function Header() {
                         localStorage.setItem("mute", true);
                       }
                     }}
+                    aria-label="Mute and unmute"
                   >
                     {!localStorage.getItem("mute") ? (
                       <>
@@ -490,7 +492,7 @@ export default function Header() {
                       </>
                     )}
                   </a>
-                  <a href="/authentication?with=sign-in">
+                  <a href="/authentication?with=sign-in" aria-label="Sign in link">
                     <i className="fa-solid fa-arrow-right-to-bracket"></i> Sign
                     In
                   </a>
@@ -551,7 +553,7 @@ export default function Header() {
       {/* Modal Policy */}
       <div id="policyModal2" className="modal">
         <div className="modal-content">
-          <h2>Terms & Recovery Guide</h2>
+          <h2>Terms of Use & Recovery Guide</h2>
 
           <div className="policy-section">
             <h3>Users agree NOT to:</h3>
@@ -563,7 +565,7 @@ export default function Header() {
               </li>
               <li>
                 Upload or share content that is false, offensive, violates
-                privacy, or infringes copyrights.
+                privacy, or infringes copyright.
               </li>
               <li>
                 Provide inaccurate information when creating an account (if
@@ -632,6 +634,7 @@ export default function Header() {
           </div>
 
           <a
+            aria-label="I got it link"
             className="close"
             href="#"
             onClick={() => {
@@ -696,11 +699,11 @@ export default function Header() {
                       <span>{`${item.post.user.firstName} ${item.post.user.lastName}`}</span>
                     </div>
                     <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                      <a href={`/detail-post/${item.post.postId}`}>
+                      <a href={`/detail-post/${item.post.postId}`} aria-label={`Detail post of ${item.post.title}`}>
                         {item.post.title}
                       </a>
                     </h3>
-                    <a href={`/detail-post/${item.post.postId}`}>
+                    <a href={`/detail-post/${item.post.postId}`} aria-label={`Detail post of ${item.post.title}`}>
                       <ReactMarkdown
                         children={item.post.description}
                         rehypePlugins={[rehypeRaw, rehypeSanitize]}

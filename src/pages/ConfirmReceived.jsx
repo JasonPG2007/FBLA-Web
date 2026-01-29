@@ -420,6 +420,7 @@ export default function ConfirmReceived() {
                         <a
                           href={`/detail-post/${item.postId}`}
                           style={{ textDecoration: "underline" }}
+                          aria-label={`Detail link for ${item.title}`}
                         >
                           {item.title}
                         </a>
@@ -431,9 +432,8 @@ export default function ConfirmReceived() {
                       <td>{dayjs(item.createdAt).format("MM/DD/YYYY")}</td>
                       <td>
                         <span
-                          className={`status ${
-                            item.isReceived ? "active" : "inactive"
-                          }`}
+                          className={`status ${item.isReceived ? "active" : "inactive"
+                            }`}
                         >
                           {item.isReceived ? "Received" : "Not Receive"}
                         </span>
