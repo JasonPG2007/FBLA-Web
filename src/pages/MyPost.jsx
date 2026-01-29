@@ -1059,85 +1059,92 @@ export default function MyPost() {
                   key={post.postId}
                   style={{ cursor: "pointer" }}
                 >
-                  <div
-                    onClick={() => {
-                      window.location.href = `/detail-post/${post.postId}`;
-                    }}
-                  >
-                    {/* Image */}
-                    {post.image ? (
-                      <img
-                        src={post.image ? post.urlImage : ""}
-                        alt="picture of item"
-                        loading="lazy"
-                        style={{
-                          width: "100%",
-                          height: "300px",
-                          objectFit: "cover",
-                          backgroundColor: "white",
-                        }}
-                      />
-                    ) : (
-                      <div className="image-placeholder">
-                        <i className="icon-image"></i>
-                        <span>No image</span>
-                      </div>
-                    )}
-
-                    {/* Content */}
-                    <div className="card-text" style={{ marginBottom: "20px" }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                          <a href={`/detail-post/${post.postId}`}>
-                            {post.title}
-                          </a>
-                        </h3>
-                        {post.isReceived && (
-                          <label
-                            style={{
-                              // fontSize: "13px",
-                              fontWeight: 500,
-                              color: "green",
-                            }}
-                          >
-                            (<i className="fa-solid fa-circle-check"></i>{" "}
-                            Received)
-                          </label>
-                        )}
-                        {post.oldUserId && (
-                          <label
-                            style={{
-                              // fontSize: "13px",
-                              fontWeight: 500,
-                              color: "#6b7280",
-                            }}
-                          >
-                            (Transferred)
-                          </label>
-                        )}
-                      </div>
-                      <a href={`/detail-post/${post.postId}`}>
-                        <ReactMarkdown
-                          children={post.description}
-                          rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                        ></ReactMarkdown>
-                      </a>
-                    </div>
-
-                    {/* Status */}
+                  <div>
                     <div
-                      className={
-                        post.typePost === "Lost"
-                          ? "status-post-lost"
-                          : "status-post-found"
-                      }
+                      onClick={() => {
+                        window.location.href = `/detail-post/${post.postId}`;
+                      }}
                     >
-                      {post.typePost}
+                      {/* Image */}
+                      {post.image ? (
+                        <img
+                          src={post.image ? post.urlImage : ""}
+                          alt="picture of item"
+                          loading="lazy"
+                          style={{
+                            width: "100%",
+                            height: "300px",
+                            objectFit: "cover",
+                            backgroundColor: "white",
+                          }}
+                        />
+                      ) : (
+                        <div className="image-placeholder">
+                          <i className="icon-image"></i>
+                          <span>No image</span>
+                        </div>
+                      )}
+
+                      {/* Content */}
+                      <div
+                        className="card-text"
+                        style={{ marginBottom: "20px" }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <h3
+                            style={{ fontWeight: "700", marginBottom: "10px" }}
+                          >
+                            <a href={`/detail-post/${post.postId}`}>
+                              {post.title}
+                            </a>
+                          </h3>
+                          {post.isReceived && (
+                            <label
+                              style={{
+                                // fontSize: "13px",
+                                fontWeight: 500,
+                                color: "green",
+                              }}
+                            >
+                              (<i className="fa-solid fa-circle-check"></i>{" "}
+                              Received)
+                            </label>
+                          )}
+                          {post.oldUserId && (
+                            <label
+                              style={{
+                                // fontSize: "13px",
+                                fontWeight: 500,
+                                color: "#6b7280",
+                              }}
+                            >
+                              (Transferred)
+                            </label>
+                          )}
+                        </div>
+                        <a href={`/detail-post/${post.postId}`}>
+                          <ReactMarkdown
+                            children={post.description}
+                            rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                          ></ReactMarkdown>
+                        </a>
+                      </div>
+
+                      {/* Status */}
+                      <div
+                        className={
+                          post.typePost === "Lost"
+                            ? "status-post-lost"
+                            : "status-post-found"
+                        }
+                      >
+                        {post.typePost}
+                      </div>
                     </div>
 
                     {/* Buttons */}
