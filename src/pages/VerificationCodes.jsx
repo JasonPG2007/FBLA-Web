@@ -399,6 +399,7 @@ export default function VerificationCodes() {
                         <a
                           href={`/detail-post/${item.postId}`}
                           style={{ textDecoration: "underline" }}
+                          aria-label={`Detail link for ${item.titlePost}`}
                         >
                           {item.titlePost}
                         </a>
@@ -407,15 +408,15 @@ export default function VerificationCodes() {
                       <td>{dayjs(item.createdAt).format("MM/DD/YYYY")}</td>
                       <td>
                         <span
-                          className={`status ${
-                            item.isReceived ? "active" : "inactive"
-                          }`}
+                          className={`status ${item.isReceived ? "active" : "inactive"
+                            }`}
                         >
                           {item.isReceived ? "Received" : "Not Receive"}
                         </span>
                       </td>
                       <td>
                         <button
+                          aria-label="Mark as received button"
                           className="btn"
                           type="button"
                           onClick={() => {

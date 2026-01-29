@@ -11,7 +11,7 @@ export default function Search() {
         <title>Search | Back2Me </title>
       </Helmet>
 
-      <form onSubmit={() => {}} className="search-form">
+      <form onSubmit={() => { }} className="search-form">
         <div className="filter">
           <div className="top-filter">
             <div className="status-filter">
@@ -103,7 +103,7 @@ export default function Search() {
                 <i className="fa-solid fa-caret-down caret-type"></i>
               )}
             </div>
-            <button className="btn-use-filter">Use Filter</button>
+            <button aria-label="Use Filter" className="btn-use-filter">Use Filter</button>
           </div>
         </div>
       </form>
@@ -141,6 +141,7 @@ export default function Search() {
               href="/detail-post/1"
               className="btn-yellow"
               style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
+              aria-label="View details link"
             >
               View Details <i className="fa-solid fa-eye"></i>
             </a>
@@ -152,6 +153,7 @@ export default function Search() {
               target="_blank"
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
+              aria-label="Found stuff link"
             >
               Found <i className="fa-solid fa-magnifying-glass"></i>
             </a>
@@ -187,6 +189,7 @@ export default function Search() {
               href="/detail-post/1"
               className="btn-yellow"
               style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
+              aria-label="View details link"
             >
               View Details <i className="fa-solid fa-eye"></i>
             </a>
@@ -198,6 +201,7 @@ export default function Search() {
               target="_blank"
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
+              aria-label="Found stuff link"
             >
               Found <i className="fa-solid fa-magnifying-glass"></i>
             </a>
@@ -233,6 +237,7 @@ export default function Search() {
               href="/detail-post/1"
               className="btn-yellow"
               style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
+              aria-label="View details link"
             >
               View Details <i className="fa-solid fa-eye"></i>
             </a>
@@ -244,6 +249,7 @@ export default function Search() {
               target="_blank"
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
+              aria-label="Found stuff link"
             >
               Found <i className="fa-solid fa-magnifying-glass"></i>
             </a>
@@ -279,6 +285,7 @@ export default function Search() {
               href="/detail-post/1"
               className="btn-yellow"
               style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
+              aria-label="View details link"
             >
               View Details <i className="fa-solid fa-eye"></i>
             </a>
@@ -290,6 +297,7 @@ export default function Search() {
               target="_blank"
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
+              aria-label="Found stuff link"
             >
               Found <i className="fa-solid fa-magnifying-glass"></i>
             </a>
@@ -325,6 +333,7 @@ export default function Search() {
               href="/detail-post/1"
               className="btn-yellow"
               style={{ marginTop: "20px", textAlign: "center", width: "100%" }}
+              aria-label="View details link"
             >
               View Details <i className="fa-solid fa-eye"></i>
             </a>
@@ -336,6 +345,7 @@ export default function Search() {
               target="_blank"
               rel="noopener noreferrer"
               style={{ marginTop: "20px", width: "100%" }}
+              aria-label="Found stuff link"
             >
               Found <i className="fa-solid fa-magnifying-glass"></i>
             </a>

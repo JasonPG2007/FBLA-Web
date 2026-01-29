@@ -125,7 +125,7 @@ export default function Home() {
               LOST
             </strong>
             <br />
-            Stuffs or reunite{" "}
+            items or reunite{" "}
             <strong
               style={{
                 fontSize: "55px",
@@ -134,7 +134,7 @@ export default function Home() {
             >
               FOUND
             </strong>{" "}
-            Stuffs with
+            items with
             <br />
             their owners
           </p>
@@ -154,6 +154,7 @@ export default function Home() {
             }}
           >
             <button
+              aria-label="Lost stuffs button"
               style={{
                 fontSize: "20px",
                 border: "none",
@@ -165,7 +166,7 @@ export default function Home() {
               }}
             >
               <strong>
-                <span style={{ fontSize: "25px", color: "#072138" }}>30</span> <br /> Lost Stuffs
+                <span style={{ fontSize: "25px", color: "#072138" }}>30</span> <br /> Lost Items
               </strong>
             </button>
             <p style={{ fontSize: "20px" }}>
@@ -173,6 +174,7 @@ export default function Home() {
               <strong className="pipe">|</strong>
             </p>
             <button
+              aria-label="Receive stuffs button"
               style={{
                 fontSize: "20px",
                 border: "none",
@@ -182,8 +184,7 @@ export default function Home() {
             >
               {" "}
               <strong>
-                <span style={{ fontSize: "25px" }}>60</span> <br /> Receive
-                Stuffs
+                <span style={{ fontSize: "25px" }}>60</span> <br /> Found Items
               </strong>
             </button>
           </div>
@@ -198,9 +199,9 @@ export default function Home() {
               marginLeft: "2%",
             }}
           >
-            It's super easy and takes only minutes. Just add your stuff's info,
+            It’s quick and easy—just provide your items’ details, a photo,
             <br />
-            picture, and contact information.
+            and your contact information.
           </p>
         </div>
 
@@ -272,9 +273,7 @@ export default function Home() {
             Register
           </p>
           <p>
-            This step allows you to have a personalized space for managing your
-            stuff. You can edit and update your profile, contact other users,
-            and access useful tools.
+            Create an account to access a personalized space for managing your items. You can update your profile, contact other users, and use helpful tools.
           </p>
         </div>
 
@@ -305,12 +304,10 @@ export default function Home() {
               top: "-30px",
             }}
           >
-            Report a stuff
+            Report an item
           </p>
           <p>
-            Share the details of your lost or found items by creating a post.
-            Provide essential information about your items. This step helps us
-            match lost and found items more effectively.
+            Share details about your lost or found item by creating a post. Providing accurate information helps us match lost and found items more effectively.
           </p>
         </div>
       </div>
@@ -356,9 +353,7 @@ export default function Home() {
             Promote
           </p>
           <p>
-            Our platform offers options to share your listing on social media,
-            reaching a wider audience. The more you promote your listing, the
-            higher the chances of reuniting with your items.
+            Our platform allows you to share your listing on social media to reach a wider audience. The more you promote your listing, the higher the chance of recovery.
           </p>
         </div>
 
@@ -392,9 +387,7 @@ export default function Home() {
             Reunite
           </p>
           <p>
-            This is the ultimate goal. With a strong user community and
-            effective promotion, the chances of reuniting with your lost items
-            or finding the item’s owner become much higher.
+            This is our ultimate goal. With a strong user community and effective promotion, reuniting lost items with their owners becomes much more likely.
           </p>
         </div>
       </div>
@@ -485,9 +478,9 @@ export default function Home() {
                   <span>{`${item.user.firstName} ${item.user.lastName}`}</span>
                 </div>
                 <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  <a href={`/detail-post/${item.postId}`}>{item.title}</a>
+                  <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>{item.title}</a>
                 </h3>
-                <a href={`/detail-post/${item.postId}`}>
+                <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>
                   <ReactMarkdown
                     children={item.description}
                     rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -511,7 +504,7 @@ export default function Home() {
       </div>
 
       <div style={{ textAlign: "center", marginBottom: "100px" }}>
-        <a href="/lost-and-found" className="btn">
+        <a href="/lost-and-found" className="btn" aria-label="View all posts link">
           View all <i className="fa-solid fa-arrow-right"></i>
         </a>
       </div>
@@ -571,7 +564,9 @@ export default function Home() {
           </div>
           <div className="pipe">|</div>
           <div className="btn-quick-search">
-            <button>
+            <button
+              aria-label="Find a stuff button"
+            >
               Find a stuff <i className="fa-solid fa-arrow-right"></i>
             </button>
           </div>

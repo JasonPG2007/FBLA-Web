@@ -366,15 +366,15 @@ export default function DetailPost() {
             padding: "10px 1px",
           }}
         >
-          <a href="/">
+          <a href="/" aria-label="Home link">
             <p>Home</p>
           </a>
           <i className="fa-solid fa-angle-right icon-light"></i>
-          <a href="/search">
+          <a href="/search" aria-label="Search link">
             <p>Search</p>
           </a>
           <i className="fa-solid fa-angle-right icon-light"></i>
-          <a href="">
+          <a href="" aria-label="Post link">
             <p>Post</p>
           </a>
         </div>
@@ -419,6 +419,7 @@ export default function DetailPost() {
             </h1>
             {user.email !== post.user?.email ? (
               <button
+                aria-label="Contact owner button"
                 style={{
                   marginLeft: "auto",
                   height: "max-content",
@@ -429,6 +430,7 @@ export default function DetailPost() {
               </button>
             ) : (
               <button
+                aria-label="Edit post button"
                 style={{
                   marginLeft: "auto",
                   height: "max-content",
@@ -771,6 +773,7 @@ export default function DetailPost() {
               </div>
 
               <button
+                aria-label="I found it button"
                 className="btn-yellow"
                 style={{ marginTop: "20px", width: "100%" }}
               >
@@ -833,11 +836,11 @@ export default function DetailPost() {
                           <h3
                             style={{ fontWeight: "700", marginBottom: "10px" }}
                           >
-                            <a href={`/detail-post/${suggestion.postId}`}>
+                            <a href={`/detail-post/${suggestion.postId}`} aria-label={`Detail link for ${suggestion.title}`}>
                               {suggestion.title}
                             </a>
                           </h3>
-                          <a href={`/detail-post/${suggestion.postId}`}>
+                          <a href={`/detail-post/${suggestion.postId}`} aria-label={`Detail link for ${suggestion.title}`}>
                             <ReactMarkdown
                               children={suggestion.description}
                               rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -846,6 +849,7 @@ export default function DetailPost() {
                         </div>
 
                         <button
+                          aria-label="This is my item button"
                           className="btn"
                           style={{ width: "90%", marginLeft: "5%" }}
                           onClick={() => {
@@ -922,6 +926,7 @@ export default function DetailPost() {
 
                 <div style={{ marginTop: "40px" }}>
                   <button
+                    aria-label="Okay button"
                     className="btn"
                     onClick={() => {
                       setIsShowPopup(false);
@@ -931,6 +936,7 @@ export default function DetailPost() {
                   </button>
                   {user.role === "Admin" && (
                     <button
+                      aria-label="Print this code button"
                       className="btn-yellow"
                       onClick={() => {
                         window.print();
@@ -962,6 +968,7 @@ export default function DetailPost() {
             Sorry, this post may have been removed or the link is incorrect.
           </p>
           <button
+            aria-label="Go back button"
             className="btn"
             onClick={() => {
               window.history.back();

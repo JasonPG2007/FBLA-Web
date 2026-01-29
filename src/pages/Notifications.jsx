@@ -62,10 +62,10 @@ export default function Notifications() {
               />
               <div className="card-text">
                 <h3 style={{ fontWeight: "500", marginBottom: "10px" }}>
-                  <a href="/detail-post">Ipad 11th Gen</a>
+                  <a href="/detail-post" aria-label="Detail link for Ipad 11th Gen">Ipad 11th Gen</a>
                 </h3>
                 <p>
-                  <a href="/detail-post">
+                  <a href="/detail-post" aria-label="Detail link for Ipad 11th Gen description">
                     Lost my Ipad 11th Gen last week near Central Park. If found,
                     please contact me!
                   </a>

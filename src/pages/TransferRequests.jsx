@@ -530,13 +530,12 @@ export default function TransferRequests() {
                       <td>{dayjs(item.createdAt).format("MM/DD/YYYY")}</td>
                       <td>
                         <span
-                          className={`status ${
-                            item.status === "Pending"
-                              ? "warning"
-                              : item.status === "Cancelled"
+                          className={`status ${item.status === "Pending"
+                            ? "warning"
+                            : item.status === "Cancelled"
                               ? "inactive"
                               : "active"
-                          }`}
+                            }`}
                         >
                           {item.status}
                         </span>
@@ -550,6 +549,7 @@ export default function TransferRequests() {
                         }}
                       >
                         <button
+                          aria-label="Mark as received button"
                           className="btn"
                           style={{
                             backgroundColor: item.isActive ? "red" : "",
@@ -572,6 +572,7 @@ export default function TransferRequests() {
                         </button>
                         {item.status === "Pending" && (
                           <button
+                            aria-label="Cancel hand over button"
                             className="btn-yellow"
                             type="button"
                             onClick={() => {

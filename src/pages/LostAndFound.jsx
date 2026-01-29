@@ -172,9 +172,9 @@ export default function LostAndFound() {
                   <span>{`${item.user.firstName} ${item.user.lastName}`}</span>
                 </div>
                 <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                  <a href={`/detail-post/${item.postId}`}>{item.title}</a>
+                  <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>{item.title}</a>
                 </h3>
-                <a href={`/detail-post/${item.postId}`}>
+                <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>
                   <ReactMarkdown
                     children={item.description}
                     rehypePlugins={[rehypeRaw, rehypeSanitize]}
