@@ -557,7 +557,10 @@ export default function Profile() {
                 {isInProcessing ? (
                   <i className="fas fa-spinner fa-spin"></i>
                 ) : (
-                  "Save changes"
+                  <>
+                    <i className="fa-solid fa-floppy-disk me-2"></i> Save
+                    changes
+                  </>
                 )}
               </button>
             </form>

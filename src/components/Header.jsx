@@ -786,7 +786,7 @@ export default function Header() {
               document.body.style.overflow = "auto";
             }}
           >
-            Close
+            <i className="fa-solid fa-xmark"></i> Close
           </button>
         </div>
       </div>
