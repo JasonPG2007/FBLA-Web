@@ -1283,7 +1283,7 @@ export default function DetailPost() {
                           <h3
                             style={{ fontWeight: "700", marginBottom: "10px" }}
                           >
-                            <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${suggestion.title}`}>
+                            <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>
                               {item.title}
                             </a>
                           </h3>
@@ -1311,7 +1311,7 @@ export default function DetailPost() {
                             </label>
                           )}
                         </div>
-                        <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${suggestion.title}`}>
+                        <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>
                           <ReactMarkdown
                             children={item.description}
                             rehypePlugins={[rehypeRaw, rehypeSanitize]}
