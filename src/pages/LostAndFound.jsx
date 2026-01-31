@@ -226,7 +226,7 @@ export default function LostAndFound() {
                   }}
                 >
                   <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                    <a href={`/detail-post/${item.postId}`}>{item.title}</a>
+                    <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>{item.title}</a>
                   </h3>
                   {item.isReceived && (
                     <label
@@ -240,7 +240,7 @@ export default function LostAndFound() {
                     </label>
                   )}
                 </div>
-                <a href={`/detail-post/${item.postId}`}>
+                <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>
                   <ReactMarkdown
                     children={item.description}
                     rehypePlugins={[rehypeRaw, rehypeSanitize]}

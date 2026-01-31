@@ -423,6 +423,7 @@ export default function VerificationCodes() {
                         <a
                           href={`/detail-post/${item.postId}`}
                           style={{ textDecoration: "underline" }}
+                          aria-label={`Detail link for ${item.titlePost}`}
                         >
                           {item.titlePost}
                         </a>

@@ -1327,6 +1327,7 @@ export default function Authentication() {
                           document.getElementById("policyModal").style.display =
                             "flex";
                         }}
+                        aria-label="Terms and Recovery Guide link"
                       >
                         {" "}
                         "Terms & Recovery Guide"
@@ -1338,6 +1339,7 @@ export default function Authentication() {
 
                 {/* Submit Button */}
                 <button
+                  aria-label="Sign up button"
                   className="btn-authentication"
                   disabled={!validateSignUp()}
                   onClick={() => {
@@ -1477,6 +1479,7 @@ export default function Authentication() {
                   </span>
                 </div>
                 <button
+                  aria-label="Sign in button"
                   className="btn-authentication"
                   disabled={!validateSignIn() || isInProcessing}
                   onClick={() => {
@@ -1985,6 +1988,7 @@ export default function Authentication() {
               validateSignUp();
               setIsAgreeTerm(true);
             }}
+            aria-label="Close terms and recovery guide modal link"
           >
             I got it
           </a>
@@ -2030,31 +2034,32 @@ export default function Authentication() {
         {/* Accept btn and cancel btn */}
         <div className="btn-continue-container">
           <button
+            aria-label={isClickSignIn ? "Submit sign in images button" : "Submit sign up images button"}
             className="btn"
             style={{
               backgroundColor:
                 selectedIndex.filter((s) => s.isActive).length === 2 &&
-                !isInProcessing
+                  !isInProcessing
                   ? "#ec7207"
                   : "#d3d3d3",
               color:
                 selectedIndex.filter((s) => s.isActive).length === 2 &&
-                !isInProcessing
+                  !isInProcessing
                   ? "#fff"
                   : "#8c8c8c",
               cursor:
                 selectedIndex.filter((s) => s.isActive).length === 2 &&
-                !isInProcessing
+                  !isInProcessing
                   ? "pointer"
                   : "not-allowed",
               pointerEvents:
                 selectedIndex.filter((s) => s.isActive).length === 2 &&
-                !isInProcessing
+                  !isInProcessing
                   ? "auto"
                   : "none",
               opacity:
                 selectedIndex.filter((s) => s.isActive).length === 2 &&
-                !isInProcessing
+                  !isInProcessing
                   ? 1
                   : 0.6,
             }}
@@ -2085,6 +2090,7 @@ export default function Authentication() {
             )}
           </button>
           <button
+            aria-label="Cancel pick image button"
             className="btn-with-border"
             style={{ backgroundColor: "#fff", border: "none" }}
             onClick={() => {

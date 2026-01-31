@@ -530,6 +530,7 @@ export default function PickUpRequest() {
                       </td>
                       <td>
                         <button
+                          aria-label="Accept button"
                           className="btn"
                           style={{
                             backgroundColor: item.isActive ? "red" : "",
@@ -558,6 +559,7 @@ export default function PickUpRequest() {
                         </button>
                         {item.status === "Pending" && (
                           <button
+                            aria-label="Change time button"
                             className="btn-yellow"
                             type="button"
                             onClick={() => {
@@ -634,6 +636,7 @@ export default function PickUpRequest() {
 
           <div style={{ marginTop: "40px" }}>
             <button
+              aria-label="Change pick up time button"
               className="btn"
               onClick={() => {
                 handleChangeTime(objectToShowPopup.requestId);
@@ -647,6 +650,7 @@ export default function PickUpRequest() {
               )}
             </button>
             <button
+              aria-label="Cancel change pick up time button"
               className="btn-yellow btn-cancel-pick-up"
               onClick={() => {
                 document.getElementById(
