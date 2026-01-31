@@ -462,6 +462,7 @@ export default function Authentication() {
   // Handle confirm reset images
   const handleSubmitConfirmResetImages = async () => {
     setIsRequestingResetPassword(true);
+    setIsInProcessing(true);
 
     // Two image is picked
     const pickedIndexes = selectedIndex
