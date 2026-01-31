@@ -10,13 +10,13 @@ export default function VerifyEmail() {
   let [statusVerify, setStatusVerify] = useState(null);
   const [searchParams] = useSearchParams();
 
-  // Handle resend verification email
-  const handleResendVerify = async () => {
+  // Handle verify email
+  const handleVerifyEmail = async () => {
     setIsVerifying(true);
 
     try {
       const response = await axiosInstance.get(
-        `/Users/verify-email?token=${searchParams.get("token")}`,
+        `/Users/verify-email?token=${searchParams.get("token")}&isForgotPassword=false`,
         {
           // withCredentials: true,
           validateStatus: (status) =>
@@ -25,12 +25,12 @@ export default function VerifyEmail() {
       );
 
       if (response.status === 200) {
-        setStatusVerify(response.data);
+        setStatusVerify(response.data.message);
 
         window.dispatchEvent(
           new CustomEvent("app-error", {
             detail: {
-              message: response.data,
+              message: response.data.message,
               status: "success",
             },
           }),
@@ -88,7 +88,7 @@ export default function VerifyEmail() {
   };
 
   useEffect(() => {
-    handleResendVerify();
+    handleVerifyEmail();
   }, []);
 
   return (

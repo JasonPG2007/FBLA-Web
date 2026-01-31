@@ -220,7 +220,11 @@ export default function DetailPost() {
       });
 
       if (response.status === 200) {
-        setPosts(response.data.filter((p) => p.typePost === "Lost"));
+        setPosts(
+          response.data.filter(
+            (p) => p.typePost === "Lost" && p.isReceived === false,
+          ),
+        );
       }
     } catch (error) {
       if (error.response) {
@@ -1158,25 +1162,28 @@ export default function DetailPost() {
                 </table>
               </div>
 
-              {post.typePost === "Found" && user.email !== post.user?.email && (
-                <button
-                  className="btn-yellow"
-                  style={{ marginTop: "20px", width: "100%" }}
-                  onClick={() => {
-                    document.getElementById(
-                      "modal-my-post-to-match",
-                    ).style.visibility = "visible";
-                    document.getElementById(
-                      "modal-my-post-to-match",
-                    ).style.opacity = "1";
+              {post.typePost === "Found" &&
+                user.email !== post.user?.email &&
+                !post.isReceived && (
+                  <button
+                    className="btn-yellow"
+                    style={{ marginTop: "20px", width: "100%" }}
+                    onClick={() => {
+                      document.getElementById(
+                        "modal-my-post-to-match",
+                      ).style.visibility = "visible";
+                      document.getElementById(
+                        "modal-my-post-to-match",
+                      ).style.opacity = "1";
 
-                    // Load my post to pick to match post is showing
-                    handleFetchPosts();
-                  }}
-                >
-                  <i className="fa-solid fa-hand-point-up"></i> This is my item
-                </button>
-              )}
+                      // Load my post to pick to match post is showing
+                      handleFetchPosts();
+                    }}
+                  >
+                    <i className="fa-solid fa-hand-point-up"></i> This is my
+                    item
+                  </button>
+                )}
 
               {isEdit && (
                 <button
@@ -1241,90 +1248,85 @@ export default function DetailPost() {
                     <div
                       className="card card-my-post"
                       key={item.postId}
-                      onClick={() => {
-                        window.location.href = `/detail-post/${item.postId}`;
-                      }}
                       style={{ cursor: "pointer" }}
                     >
-                      {/* Image */}
-                      {item.image ? (
-                        <img
-                          src={item.image ? item.urlImage : ""}
-                          alt="picture of item"
-                          loading="lazy"
-                          style={{
-                            width: "100%",
-                            height: "300px",
-                            objectFit: "cover",
-                            backgroundColor: "white",
-                          }}
-                        />
-                      ) : (
-                        <div className="image-placeholder">
-                          <i className="icon-image"></i>
-                          <span>No image</span>
-                        </div>
-                      )}
-
-                      {/* Content */}
                       <div
-                        className="card-text"
-                        style={{ marginBottom: "20px" }}
+                        onClick={() => {
+                          window.location.href = `/detail-post/${item.postId}`;
+                        }}
                       >
+                        {/* Image */}
+                        {item.image ? (
+                          <img
+                            src={item.image ? item.urlImage : ""}
+                            alt="picture of item"
+                            loading="lazy"
+                            style={{
+                              width: "100%",
+                              height: "300px",
+                              objectFit: "cover",
+                              backgroundColor: "white",
+                            }}
+                          />
+                        ) : (
+                          <div className="image-placeholder">
+                            <i className="icon-image"></i>
+                            <span>No image</span>
+                          </div>
+                        )}
+
+                        {/* Content */}
                         <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                          }}
+                          className="card-text"
+                          style={{ marginBottom: "20px" }}
                         >
-                          <h3
-                            style={{ fontWeight: "700", marginBottom: "10px" }}
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
                           >
-                            <a href={`/detail-post/${item.postId}`}>
-                              {item.title}
-                            </a>
-                          </h3>
-                          {item.isReceived && (
-                            <label
+                            <h3
                               style={{
-                                // fontSize: "13px",
-                                fontWeight: 500,
-                                color: "green",
+                                fontWeight: "700",
+                                marginBottom: "10px",
                               }}
                             >
-                              (<i className="fa-solid fa-circle-check"></i>{" "}
-                              Received)
-                            </label>
-                          )}
-                          {item.oldUserId && (
-                            <label
-                              style={{
-                                // fontSize: "13px",
-                                fontWeight: 500,
-                                color: "#6b7280",
-                              }}
-                            >
-                              (Transferred)
-                            </label>
-                          )}
+                              <a href={`/detail-post/${item.postId}`}>
+                                {item.title}
+                              </a>
+                            </h3>
+                            {item.isReceived && (
+                              <label
+                                style={{
+                                  // fontSize: "13px",
+                                  fontWeight: 500,
+                                  color: "green",
+                                }}
+                              >
+                                (<i className="fa-solid fa-circle-check"></i>{" "}
+                                Received)
+                              </label>
+                            )}
+                          </div>
+                          <a href={`/detail-post/${item.postId}`}>
+                            <ReactMarkdown
+                              children={item.description}
+                              rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                            ></ReactMarkdown>
+                          </a>
                         </div>
-                        <a href={`/detail-post/${item.postId}`}>
-                          <ReactMarkdown
-                            children={item.description}
-                            rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                          ></ReactMarkdown>
-                        </a>
-                      </div>
 
-                      {/* Status */}
-                      <div
-                        className={
-                          item.typePost === "Lost"
-                            ? "status-post-lost"
-                            : "status-post-found"
-                        }
-                      >
-                        {item.typePost}
+                        {/* Status */}
+                        <div
+                          className={
+                            item.typePost === "Lost"
+                              ? "status-post-lost"
+                              : "status-post-found"
+                          }
+                        >
+                          {item.typePost}
+                        </div>
                       </div>
 
                       <button

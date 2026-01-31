@@ -600,7 +600,7 @@ export default function PickUpRequest() {
       <div className="modal" id="popup-change-pick-up-time">
         <div className="modal-content">
           <h2 style={{ backgroundColor: "transparent" }}>
-            Change pickup time for{" "}
+            Change pick-up time for{" "}
             <span style={{ color: "#ec7207" }}>
               {objectToShowPopup.pickUpDate}
             </span>
@@ -615,9 +615,9 @@ export default function PickUpRequest() {
                 marginTop: "4px",
               }}
             >
-              You are changing the pickup time for <strong>this request</strong>
-              . The user will be notified of the new time once you confirm the
-              change.
+              You are changing the pick-up time for{" "}
+              <strong>this request</strong>. The user will be notified of the
+              new time once you confirm the change.
             </p>
 
             <h3 style={{ backgroundColor: "transparent", marginTop: "10px" }}>

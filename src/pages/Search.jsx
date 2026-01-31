@@ -1,5 +1,5 @@
 import Lottie from "lottie-react";
-import { Suspense, use, useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";

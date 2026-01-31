@@ -45,7 +45,7 @@ export default function Router() {
             <Route path="/support" element={<Support />} />
             <Route path="/me" element={<Profile />} />
             <Route path="/profile/*" element={<Profile />} />
-            <Route path="/authentication" element={<Authentication />} />
+            <Route path="/authentication/*" element={<Authentication />} />
             <Route path="/lost-and-found" element={<LostAndFound />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/my-posts" element={<MyPost />} />

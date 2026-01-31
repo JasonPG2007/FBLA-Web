@@ -388,7 +388,7 @@ export default function Chat() {
       // Listen event from backend
       // Get new message
       connection.on("ReceiveNewMessage", (data) => {
-        // console.log(JSON.stringify(data.message));
+        console.log(JSON.stringify(data.message));
         setMessagesFromChat((prev) => {
           if (
             prev.some((m) => m.messageChatId === data.message.messageChatId)
@@ -403,7 +403,7 @@ export default function Chat() {
         audioNewMessageReceive.volume = 0.3;
         audioNewMessageReceive
           .play()
-          .catch((error) => console.log("Unable to play audio."));
+          .catch(() => console.log("Unable to play audio."));
       });
 
       // Get new chat
@@ -421,7 +421,7 @@ export default function Chat() {
         audioNewMessageReceive.volume = 0.3;
         audioNewMessageReceive
           .play()
-          .catch((error) => console.log("Unable to play audio."));
+          .catch(() => console.log("Unable to play audio."));
       });
 
       // Start realtime

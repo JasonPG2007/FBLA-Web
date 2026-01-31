@@ -29,11 +29,19 @@ export default function Authentication() {
 
   const [selectedIndex, setSelectedIndex] = useState(initialState);
   let [isAgreeTerm, setIsAgreeTerm] = useState(false);
+  let [isRequestingResetPassword, setIsRequestingResetPassword] =
+    useState(false);
   let [isClickShowPasswordSignUp, setIsClickShowPasswordSignUp] =
     useState(false);
   let [isClickShowPasswordSignIn, setIsClickShowPasswordSignIn] =
     useState(false);
   let [isClickShowNewPassword, setIsClickShowNewPassword] = useState(false);
+  let [isChangeImages, setIsChangeImages] = useState(false);
+  let [isChangedPassword, setIsChangedPassword] = useState(false);
+  let [isCheckingEmail, setIsCheckingEmail] = useState(false);
+  let [isEmailVerified, setIsEmailVerified] = useState(false);
+  let [isVerificationCodeCorrect, setIsVerificationCodeCorrect] =
+    useState(false);
   let [isClickShowConfirmNewPassword, setIsClickShowConfirmNewPassword] =
     useState(false);
   let [isMatchPassword, setIsMatchPassword] = useState(false);
@@ -44,6 +52,8 @@ export default function Authentication() {
     status: "",
   });
   const [searchParams] = new useSearchParams();
+  let [newPassword, setNewPassword] = useState("");
+  let [confirmNewPassword, setConfirmNewPassword] = useState("");
   let [firstName, setFirstName] = useState("");
   let [lastName, setLastName] = useState("");
   let [email, setEmail] = useState("");
@@ -268,6 +278,291 @@ export default function Authentication() {
     }
   };
 
+  // Handle check email for reset password
+  const handleSubmitCheckEmailResetPassword = async (email) => {
+    setIsCheckingEmail(true);
+    setIsInProcessing(true);
+    try {
+      const responseSignInUser = await axiosInstance.get(
+        `/Users/check-email-reset-password/${email}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          // withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 403,
+        },
+      );
+
+      // Success, then pick image
+      if (responseSignInUser.status == 200) {
+        // handleChangeToSelectImage(e);
+        setMsgSignIn({
+          msg: responseSignInUser.data.message,
+          status: responseSignInUser.status,
+        });
+      }
+
+      if (responseSignInUser.status == 404) {
+        // handleChangeToSelectImage(e);
+        setMsgSignIn({
+          msg: "This email does not exist",
+          status: responseSignInUser.status,
+        });
+      }
+
+      if (responseSignInUser.status === 401) {
+        handleCloseSelectImage();
+        setMsgSignIn({
+          msg: responseSignInUser.data,
+          status: responseSignInUser.status,
+        });
+      }
+
+      if (responseSignInUser.status === 403) {
+        setMsgSignIn({
+          msg: "Your account is currently disabled. Please contact admin for assistance",
+          status: responseSignInUser.status,
+        });
+      }
+    } catch (error) {
+      handleCloseSelectImage();
+
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data?.message || "Server error";
+
+        setMsgSignIn({
+          msg: message,
+          status: status,
+        });
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          setMsgSignIn({
+            msg: "Network error. Please check your internet connection",
+            status: 0,
+          });
+        } else {
+          // Server offline
+          setMsgSignIn({
+            msg: "Server is currently unavailable. Please try again later.",
+            status: 503,
+          });
+        }
+      } else {
+        // Other errors
+        setMsgSignIn({
+          msg: "Something went wrong. Please try again",
+          status: 500,
+        });
+      }
+    } finally {
+      setIsInProcessing(false);
+      setIsCheckingEmail(false);
+    }
+  };
+
+  // Handle confirm reset password
+  const handleSubmitConfirmResetPassword = async (email) => {
+    setIsRequestingResetPassword(true);
+
+    try {
+      const responseSignInUser = await axiosInstance.put(
+        `/Users/confirm-reset-password/${email}/${newPassword}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          // withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 403,
+        },
+      );
+
+      // Success, then pick image
+      if (responseSignInUser.status == 200) {
+        setIsChangedPassword(true);
+        setMsgSignIn({
+          msg: responseSignInUser.data.message,
+          status: responseSignInUser.status,
+        });
+
+        document.getElementById("popup-change-image").style.display = "flex";
+      }
+
+      if (responseSignInUser.status == 404) {
+        // handleChangeToSelectImage(e);
+        setMsgSignIn({
+          msg: "This email does not exist",
+          status: responseSignInUser.status,
+        });
+      }
+
+      if (responseSignInUser.status === 401) {
+        handleCloseSelectImage();
+        setMsgSignIn({
+          msg: responseSignInUser.data,
+          status: responseSignInUser.status,
+        });
+      }
+
+      if (responseSignInUser.status === 403) {
+        setMsgSignIn({
+          msg: "Your account is currently disabled. Please contact admin for assistance",
+          status: responseSignInUser.status,
+        });
+      }
+    } catch (error) {
+      handleCloseSelectImage();
+
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data?.message || "Server error";
+
+        setMsgSignIn({
+          msg: message,
+          status: status,
+        });
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          setMsgSignIn({
+            msg: "Network error. Please check your internet connection",
+            status: 0,
+          });
+        } else {
+          // Server offline
+          setMsgSignIn({
+            msg: "Server is currently unavailable. Please try again later.",
+            status: 503,
+          });
+        }
+      } else {
+        // Other errors
+        setMsgSignIn({
+          msg: "Something went wrong. Please try again",
+          status: 500,
+        });
+      }
+    } finally {
+      setIsInProcessing(false);
+      setIsCheckingEmail(false);
+      setIsRequestingResetPassword(false);
+    }
+  };
+
+  // Handle confirm reset images
+  const handleSubmitConfirmResetImages = async () => {
+    setIsRequestingResetPassword(true);
+
+    // Two image is picked
+    const pickedIndexes = selectedIndex
+      .map((item, i) => (item.isActive ? i : null))
+      .filter((i) => i !== null);
+    const imagePicked1 = pickedIndexes[0];
+    const imagePicked2 = pickedIndexes[1];
+    console.log(
+      `/Users/confirm-reset-images/${email}/${imagePicked1}/${imagePicked2}`,
+    );
+    try {
+      const responseSignInUser = await axiosInstance.put(
+        `/Users/confirm-reset-images/${email}/${imagePicked1}/${imagePicked2}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          // withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 403,
+        },
+      );
+
+      // Success, then pick image
+      if (responseSignInUser.status == 200) {
+        setIsChangedPassword(true);
+        setMsgSignIn({
+          msg: responseSignInUser.data.message,
+          status: responseSignInUser.status,
+        });
+
+        // Hide modal select images
+        document.getElementById("pick-image-container").style.visibility =
+          "hidden";
+        document.getElementById("pick-image-container").style.opacity = "0";
+      }
+
+      if (responseSignInUser.status == 404) {
+        // handleChangeToSelectImage(e);
+        setMsgSignIn({
+          msg: "This email does not exist",
+          status: responseSignInUser.status,
+        });
+      }
+
+      if (responseSignInUser.status === 401) {
+        handleCloseSelectImage();
+        setMsgSignIn({
+          msg: responseSignInUser.data,
+          status: responseSignInUser.status,
+        });
+      }
+
+      if (responseSignInUser.status === 403) {
+        setMsgSignIn({
+          msg: "Your account is currently disabled. Please contact admin for assistance",
+          status: responseSignInUser.status,
+        });
+      }
+    } catch (error) {
+      handleCloseSelectImage();
+
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data?.message || "Server error";
+
+        setMsgSignIn({
+          msg: message,
+          status: status,
+        });
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          setMsgSignIn({
+            msg: "Network error. Please check your internet connection",
+            status: 0,
+          });
+        } else {
+          // Server offline
+          setMsgSignIn({
+            msg: "Server is currently unavailable. Please try again later.",
+            status: 503,
+          });
+        }
+      } else {
+        // Other errors
+        setMsgSignIn({
+          msg: "Something went wrong. Please try again",
+          status: 500,
+        });
+      }
+    } finally {
+      setIsInProcessing(false);
+      setIsCheckingEmail(false);
+      setIsRequestingResetPassword(false);
+    }
+  };
+
   const handleSubmitImageChose = async (e) => {
     e.preventDefault();
 
@@ -372,15 +667,6 @@ export default function Authentication() {
     }
   };
 
-  // Handle form submission for Forgot Password
-  function handleSubmitForgotPassword(e) {
-    e.preventDefault();
-
-    setIsSentVerificationCodeEmail(true);
-
-    alert("Clicked");
-  }
-
   // Select image function
   const handleSelectImage = (index) => {
     const activeCount = selectedIndex.filter((x) => x.isActive).length;
@@ -433,10 +719,99 @@ export default function Authentication() {
     }
   }
 
+  // Handle verify email
+  const handleVerifyEmail = async () => {
+    setIsCheckingEmail(true);
+
+    try {
+      const response = await axiosInstance.get(
+        `/Users/verify-email?token=${searchParams.get("token")}&isForgotPassword=true`,
+        {
+          // withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 400,
+        },
+      );
+
+      if (response.status === 200) {
+        setIsEmailVerified(true);
+        setEmail(response.data.email);
+
+        // window.dispatchEvent(
+        //   new CustomEvent("app-error", {
+        //     detail: {
+        //       message: response.data,
+        //       status: "success",
+        //     },
+        //   }),
+        // );
+      }
+
+      if (response.status == 400) {
+        // handleChangeToSelectImage(e);
+        setMsgSignIn({
+          msg: response.data.message,
+          status: response.status,
+        });
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsCheckingEmail(false);
+    }
+  };
+
   // Check if passwords match
-  function checkPasswordMatch(reTypePassword) {
+  function checkPasswordMatch(password, reTypePassword) {
     // Add logic to check if passwords match
-    if (passwordSignUp !== reTypePassword) {
+    if (password !== reTypePassword) {
       setIsMatchPassword(false);
     } else {
       setIsMatchPassword(true);
@@ -456,6 +831,12 @@ export default function Authentication() {
     isAgreeTerm,
     isValidStudentId,
   ]);
+
+  useEffect(() => {
+    if (searchParams.get("token")) {
+      handleVerifyEmail();
+    }
+  }, []);
 
   // Check student id if valid
   useEffect(() => {
@@ -483,7 +864,85 @@ export default function Authentication() {
         .getElementById("form-sign-up-in-container")
         .classList.remove("move-cancel-forgot");
     }
+
+    const resetPasswordParam = window.location.pathname.startsWith(
+      "/authentication/reset-password",
+    );
+    if (resetPasswordParam) {
+      document
+        .getElementById("form-sign-up-in-container")
+        .classList.remove("move-sign-up");
+      document
+        .getElementById("form-sign-up-in-container")
+        .classList.remove("move-sign-in");
+      document
+        .getElementById("form-sign-up-in-container")
+        .classList.add("move-forgot-password");
+      document
+        .getElementById("form-sign-up-in-container")
+        .classList.remove("move-cancel-forgot");
+    }
   }, []);
+
+  // Check password if valid
+  useEffect(() => {
+    const hasSpecial = /[@$!%*?&]/.test(newPassword);
+    const hasNumber = /\d/.test(newPassword);
+    const hasUppercase = /[A-Z]/.test(newPassword);
+    const hasLowercase = /[a-z]/.test(newPassword);
+    const hasMinLength = newPassword.length >= 12;
+
+    // Check special
+    if (hasSpecial) {
+      setIsExistSpecialChar(true);
+    } else {
+      setIsExistSpecialChar(false);
+    }
+
+    // Check number
+    if (hasNumber) {
+      setIsExistNumber(true);
+    } else {
+      setIsExistNumber(false);
+    }
+
+    // Check uppercase
+    if (hasUppercase) {
+      setIsExistUppercase(true);
+    } else {
+      setIsExistUppercase(false);
+    }
+
+    // Check lowercase
+    if (hasLowercase) {
+      setIsExistLowercase(true);
+    } else {
+      setIsExistLowercase(false);
+    }
+
+    // Check valid length
+    if (hasMinLength) {
+      setIsValidLength(true);
+    } else {
+      setIsValidLength(false);
+    }
+
+    // Set valid password
+    if (
+      hasNumber &&
+      hasUppercase &&
+      hasLowercase &&
+      hasMinLength &&
+      hasSpecial
+    ) {
+      setIsValidPassword(true);
+    } else {
+      setIsValidPassword(false);
+    }
+
+    // Check Match confirm password
+    checkPasswordMatch(newPassword, confirmNewPassword);
+  }, [newPassword]);
 
   // Check password if valid
   useEffect(() => {
@@ -542,7 +1001,7 @@ export default function Authentication() {
     }
 
     // Check Match confirm password
-    checkPasswordMatch(confirmPasswordSignUp);
+    checkPasswordMatch(passwordSignUp, confirmPasswordSignUp);
   }, [passwordSignUp]);
 
   return (
@@ -802,7 +1261,7 @@ export default function Authentication() {
                     required
                     onChange={(e) => {
                       setConfirmPasswordSignUp(e.target.value); // Used to set real password value
-                      checkPasswordMatch(e.target.value);
+                      checkPasswordMatch(passwordSignUp, e.target.value);
                     }}
                   />
                   {isClickShowConfirmPassword ? (
@@ -865,19 +1324,12 @@ export default function Authentication() {
                 {/* Submit Button */}
                 <button
                   className="btn-authentication"
-                  style={{
-                    backgroundColor: validateSignUp() ? "#ec7207" : "#d3d3d3",
-                    color: validateSignUp() ? "#fff" : "#8c8c8c",
-                    cursor: validateSignUp() ? "pointer" : "not-allowed",
-                    pointerEvents: validateSignUp() ? "auto" : "none",
-                    opacity: validateSignUp() ? 1 : 0.6,
-                  }}
                   disabled={!validateSignUp()}
                   onClick={() => {
                     setIsClickSignIn(false);
                   }}
                 >
-                  Sign Up
+                  <i className="fa-solid fa-user-plus"></i> Sign Up
                 </button>
                 <p style={{ color: "#5d6d7c", fontSize: "14px" }}>
                   Already have an account?{" "}
@@ -1011,22 +1463,7 @@ export default function Authentication() {
                 </div>
                 <button
                   className="btn-authentication"
-                  style={{
-                    backgroundColor:
-                      validateSignIn() && !isInProcessing
-                        ? "#ec7207"
-                        : "#d3d3d3",
-                    color:
-                      validateSignIn() && !isInProcessing ? "#fff" : "#8c8c8c",
-                    cursor:
-                      validateSignIn() && !isInProcessing
-                        ? "pointer"
-                        : "not-allowed",
-                    pointerEvents:
-                      validateSignIn() && !isInProcessing ? "auto" : "none",
-                    opacity: validateSignIn() && !isInProcessing ? 1 : 0.6,
-                  }}
-                  disabled={!validateSignIn() && !isInProcessing}
+                  disabled={!validateSignIn() || isInProcessing}
                   onClick={() => {
                     setIsClickSignIn(true);
                   }}
@@ -1034,7 +1471,10 @@ export default function Authentication() {
                   {isInProcessing ? (
                     <i className="fas fa-spinner fa-spin"></i>
                   ) : (
-                    "Sign In"
+                    <>
+                      <i className="fa-solid fa-arrow-right-to-bracket"></i>{" "}
+                      Sign In
+                    </>
                   )}
                 </button>
                 <br />
@@ -1074,7 +1514,9 @@ export default function Authentication() {
 
             {/* Forgot password */}
             <form
-              onSubmit={handleSubmitForgotPassword}
+              onSubmit={(e) => {
+                e.preventDefault();
+              }}
               style={{ width: "100%", paddingLeft: "23px" }}
             >
               <div className="sign-in">
@@ -1097,163 +1539,255 @@ export default function Authentication() {
                     placeholder="Ex: demo@ex.io"
                     className="form-control-input"
                     required
+                    disabled={isEmailVerified}
+                    value={email}
                     onChange={(e) => {
                       setEmail(e.target.value);
                     }}
                   />
                   <label htmlFor="email-forgot-password">Email*</label>
                 </div>
-                <div className="form-control-authentication">
-                  <input
-                    type="text"
-                    name=""
-                    id="verification-code"
-                    placeholder="Ex: 369521"
-                    className="form-control-input"
-                    required
-                    style={{
-                      backgroundColor: isSentVerificationCodeEmail
-                        ? "#fff"
-                        : "#f0f0f0",
-                      opacity: isSentVerificationCodeEmail ? 1 : 0.6,
-                      cursor: isSentVerificationCodeEmail
-                        ? "auto"
-                        : "not-allowed",
-                    }}
-                    disabled={!isSentVerificationCodeEmail}
-                    onChange={(e) => {
-                      setStudentId(e.target.value);
-                    }}
-                    onInput={(e) => {
-                      e.target.value = e.target.value
-                        .replace(/[^0-9]/g, "") // Remove non-numeric characters
-                        .slice(0, 6); // Allow only numbers, max length 9
-                    }}
-                  />
-                  <label
-                    htmlFor="verification-code"
-                    style={{
-                      backgroundColor: isSentVerificationCodeEmail
-                        ? "#fff"
-                        : "#f6f6f6",
-                      opacity: isSentVerificationCodeEmail ? 1 : 0.9,
-                    }}
-                  >
-                    Verification Code*
-                  </label>
-                </div>
-                <div className="form-control-authentication">
-                  <input
-                    type={isClickShowNewPassword ? "text" : "password"}
-                    style={{
-                      backgroundColor: isSentVerificationCodeEmail
-                        ? "#fff"
-                        : "#f0f0f0",
-                      opacity: isSentVerificationCodeEmail ? 1 : 0.6,
-                      cursor: isSentVerificationCodeEmail
-                        ? "auto"
-                        : "not-allowed",
-                    }}
-                    name=""
-                    id="password-forgot-password"
-                    className="form-control-input"
-                    placeholder="Ex: Here is password"
-                    required
-                    disabled={!isSentVerificationCodeEmail}
-                    onChange={(e) => {
-                      setPasswordSignIn(e.target.value);
-                    }}
-                  />
-                  {isClickShowNewPassword ? (
-                    <i
-                      className="fa-solid fa-eye-slash"
-                      style={{
-                        pointerEvents: isSentVerificationCodeEmail
-                          ? "auto"
-                          : "none",
-                      }}
-                      onClick={() => {
-                        setIsClickShowNewPassword(!isClickShowNewPassword);
-                      }}
-                    ></i>
-                  ) : (
-                    <i
-                      className="fa-solid fa-eye"
-                      style={{
-                        pointerEvents: isSentVerificationCodeEmail
-                          ? "auto"
-                          : "none",
-                      }}
-                      onClick={() => {
-                        setIsClickShowNewPassword(!isClickShowNewPassword);
-                      }}
-                    ></i>
-                  )}
-                  <label
-                    htmlFor="password-forgot-password"
-                    style={{
-                      backgroundColor: isSentVerificationCodeEmail
-                        ? "#fff"
-                        : "#F6F6F6",
-                      opacity: isSentVerificationCodeEmail ? 1 : 0.9,
-                    }}
-                  >
-                    New Password*
-                  </label>
-                </div>
-                <div className="form-control-authentication">
-                  <input
-                    type={isClickShowConfirmNewPassword ? "text" : "password"}
-                    style={{
-                      backgroundColor: isSentVerificationCodeEmail
-                        ? "#fff"
-                        : "#f0f0f0",
-                      opacity: isSentVerificationCodeEmail ? 1 : 0.6,
-                      cursor: isSentVerificationCodeEmail
-                        ? "auto"
-                        : "not-allowed",
-                    }}
-                    name=""
-                    id="confirm-password-forgot-password"
-                    className="form-control-input"
-                    placeholder="Ex: Here is password"
-                    required
-                    disabled={!isSentVerificationCodeEmail}
-                    onChange={(e) => {
-                      setPasswordSignIn(e.target.value);
-                    }}
-                  />
-                  {isClickShowConfirmNewPassword ? (
-                    <i
-                      className="fa-solid fa-eye-slash"
-                      onClick={() => {
-                        setIsClickShowConfirmNewPassword(
-                          !isClickShowConfirmNewPassword,
-                        );
-                      }}
-                    ></i>
-                  ) : (
-                    <i
-                      className="fa-solid fa-eye"
-                      onClick={() => {
-                        setIsClickShowConfirmNewPassword(
-                          !isClickShowConfirmNewPassword,
-                        );
-                      }}
-                    ></i>
-                  )}
-                  <label
-                    htmlFor="confirm-password-forgot-password"
-                    style={{
-                      backgroundColor: isSentVerificationCodeEmail
-                        ? "#fff"
-                        : "#F6F6F6",
-                      opacity: isSentVerificationCodeEmail ? 1 : 0.9,
-                    }}
-                  >
-                    Confirm New Password*
-                  </label>
-                </div>
+                {isEmailVerified && (
+                  <>
+                    <div className="form-control-authentication">
+                      <input
+                        type={isClickShowNewPassword ? "text" : "password"}
+                        name=""
+                        style={{
+                          backgroundColor:
+                            isRequestingResetPassword || isChangedPassword
+                              ? "#f0f0f0"
+                              : "#fff",
+                          opacity:
+                            isRequestingResetPassword || isChangedPassword
+                              ? 0.6
+                              : 1,
+                          cursor:
+                            isRequestingResetPassword || isChangedPassword
+                              ? "not-allowed"
+                              : "auto",
+                        }}
+                        id="password-forgot-password"
+                        className="form-control-input"
+                        placeholder="Ex: Password"
+                        disabled={
+                          isRequestingResetPassword || isChangedPassword
+                        }
+                        required
+                        onChange={(e) => {
+                          setNewPassword(e.target.value);
+                        }}
+                      />
+                      {isClickShowNewPassword ? (
+                        <i
+                          className="fa-solid fa-eye-slash"
+                          style={{
+                            pointerEvents: isChangedPassword ? "none" : "auto",
+                          }}
+                          onClick={() => {
+                            setIsClickShowNewPassword(!isClickShowNewPassword);
+                          }}
+                        ></i>
+                      ) : (
+                        <i
+                          className="fa-solid fa-eye"
+                          style={{
+                            pointerEvents: isChangedPassword ? "none" : "auto",
+                          }}
+                          onClick={() => {
+                            setIsClickShowNewPassword(!isClickShowNewPassword);
+                          }}
+                        ></i>
+                      )}
+                      <label
+                        htmlFor="password-forgot-password"
+                        style={{
+                          backgroundColor:
+                            isRequestingResetPassword || isChangedPassword
+                              ? "#F6F6F6"
+                              : "#fff",
+                          opacity:
+                            isRequestingResetPassword || isChangedPassword
+                              ? 1
+                              : 0.9,
+                        }}
+                      >
+                        New Password*
+                      </label>
+                    </div>
+
+                    {/* Password Requirement */}
+                    {!isExistSpecialChar && (
+                      <div
+                        className="form-control-authentication label-required-password"
+                        style={{
+                          marginTop: "-15px",
+                          justifyContent: "left",
+                          color: isExistSpecialChar ? "green" : "red",
+                          fontSize: "14px",
+                        }}
+                      >
+                        <p>
+                          <i className="fa-solid fa-x"></i> Has special
+                          characters (@$!%*?&)
+                        </p>
+                      </div>
+                    )}
+
+                    {!isExistNumber && (
+                      <div
+                        className="form-control-authentication label-required-password"
+                        style={{
+                          marginTop: "-15px",
+                          justifyContent: "left",
+                          color: isExistNumber ? "green" : "red",
+                          fontSize: "14px",
+                        }}
+                      >
+                        <p>
+                          <i className="fa-solid fa-x"></i> Has number
+                        </p>
+                      </div>
+                    )}
+
+                    {!isExistUppercase && (
+                      <div
+                        className="form-control-authentication label-required-password"
+                        style={{
+                          marginTop: "-15px",
+                          justifyContent: "left",
+                          color: isExistUppercase ? "green" : "red",
+                          fontSize: "14px",
+                        }}
+                      >
+                        <p>
+                          <i className="fa-solid fa-x"></i> Has uppercase
+                          characters
+                        </p>
+                      </div>
+                    )}
+
+                    {!isExistLowercase && (
+                      <div
+                        className="form-control-authentication label-required-password"
+                        style={{
+                          marginTop: "-15px",
+                          justifyContent: "left",
+                          color: isExistLowercase ? "green" : "red",
+                          fontSize: "14px",
+                        }}
+                      >
+                        <p>
+                          <i className="fa-solid fa-x"></i> Has lowercase
+                          characters
+                        </p>
+                      </div>
+                    )}
+
+                    {!isValidLength && (
+                      <div
+                        className="form-control-authentication label-required-password"
+                        style={{
+                          marginTop: "-15px",
+                          justifyContent: "left",
+                          color: isValidLength ? "green" : "red",
+                          fontSize: "14px",
+                        }}
+                      >
+                        <p>
+                          <i className="fa-solid fa-x"></i> Minimum length of 12
+                          characters
+                        </p>
+                      </div>
+                    )}
+                    <div className="form-control-authentication">
+                      <input
+                        type={
+                          isClickShowConfirmNewPassword ? "text" : "password"
+                        }
+                        style={{
+                          backgroundColor:
+                            isRequestingResetPassword || isChangedPassword
+                              ? "#f0f0f0"
+                              : "#fff",
+                          opacity:
+                            isRequestingResetPassword || isChangedPassword
+                              ? 0.6
+                              : 1,
+                          cursor:
+                            isRequestingResetPassword || isChangedPassword
+                              ? "not-allowed"
+                              : "auto",
+                        }}
+                        name=""
+                        id="confirm-password-forgot-password"
+                        className="form-control-input"
+                        placeholder="Ex: New password"
+                        required
+                        disabled={
+                          isRequestingResetPassword || isChangedPassword
+                        }
+                        onChange={(e) => {
+                          setConfirmNewPassword(e.target.value);
+                          checkPasswordMatch(newPassword, e.target.value);
+                        }}
+                      />
+                      {isClickShowConfirmNewPassword ? (
+                        <i
+                          className="fa-solid fa-eye-slash"
+                          style={{
+                            pointerEvents: isChangedPassword ? "none" : "auto",
+                          }}
+                          onClick={() => {
+                            setIsClickShowConfirmNewPassword(
+                              !isClickShowConfirmNewPassword,
+                            );
+                          }}
+                        ></i>
+                      ) : (
+                        <i
+                          className="fa-solid fa-eye"
+                          style={{
+                            pointerEvents: isChangedPassword ? "none" : "auto",
+                          }}
+                          onClick={() => {
+                            setIsClickShowConfirmNewPassword(
+                              !isClickShowConfirmNewPassword,
+                            );
+                          }}
+                        ></i>
+                      )}
+                      <label
+                        htmlFor="confirm-password-forgot-password"
+                        style={{
+                          backgroundColor:
+                            isRequestingResetPassword || isChangedPassword
+                              ? "#f6f6f6"
+                              : "#fff",
+                          opacity:
+                            isRequestingResetPassword || isChangedPassword
+                              ? 0.9
+                              : 1,
+                        }}
+                      >
+                        Confirm New Password*
+                      </label>
+                    </div>
+                    {confirmNewPassword.trim() !== "" && !isMatchPassword && (
+                      <div
+                        className="form-control-authentication"
+                        style={{
+                          marginTop: "-15px",
+                          justifyContent: "left",
+                          color: "red",
+                          fontSize: "14px",
+                        }}
+                      >
+                        <p>Confirm password doesn't match</p>
+                      </div>
+                    )}
+                  </>
+                )}
                 <div
                   style={{
                     display: "flex",
@@ -1261,33 +1795,45 @@ export default function Authentication() {
                     justifyContent: "center",
                   }}
                 >
-                  <button
-                    className="btn-authentication"
-                    style={{
-                      backgroundColor:
-                        email.trim() !== "" ? "#ec7207" : "#d3d3d3",
-                      color: email.trim() !== "" ? "#fff" : "#8c8c8c",
-                      cursor: email.trim() !== "" ? "pointer" : "not-allowed",
-                      pointerEvents: email.trim() !== "" ? "auto" : "none",
-                      opacity: email.trim() !== "" ? 1 : 0.6,
-                    }}
-                    disabled={email.trim() !== "" ? false : true}
-                  >
-                    {!isSentVerificationCodeEmail ? "Send Code" : "Resend Code"}
-                  </button>
-                  {isSentVerificationCodeEmail && (
+                  {!isEmailVerified && (
                     <button
                       className="btn-authentication"
-                      style={{
-                        backgroundColor: "transparent",
-                        border: "1px solid #ec7207",
-                        color: "#072138",
-                        cursor: email.trim() !== "" ? "pointer" : "not-allowed",
-                        pointerEvents: email.trim() !== "" ? "auto" : "none",
+                      disabled={isCheckingEmail || email.trim() === ""}
+                      onClick={() => {
+                        handleSubmitCheckEmailResetPassword(email);
                       }}
-                      disabled={email.trim() !== "" ? false : true}
                     >
-                      Change Password
+                      {isCheckingEmail ? (
+                        <i className="fas fa-spinner fa-spin"></i>
+                      ) : (
+                        <>
+                          Continue <i className="fa-solid fa-arrow-right"></i>
+                        </>
+                      )}
+                    </button>
+                  )}
+                  {isEmailVerified && (
+                    <button
+                      className="btn-yellow"
+                      disabled={
+                        newPassword.trim() === "" ||
+                        confirmNewPassword.trim() === "" ||
+                        !isMatchPassword ||
+                        !isValidPassword ||
+                        isRequestingResetPassword ||
+                        isChangedPassword
+                      }
+                      onClick={() => {
+                        handleSubmitConfirmResetPassword(email);
+                      }}
+                    >
+                      {isRequestingResetPassword ? (
+                        <i className="fas fa-spinner fa-spin"></i>
+                      ) : (
+                        <>
+                          <i className="fa-solid fa-rotate"></i> Change Password
+                        </>
+                      )}
                     </button>
                   )}
                 </div>
@@ -1434,7 +1980,8 @@ export default function Authentication() {
       <div className="pick-image-container" id="pick-image-container">
         <div className="content-images">
           <p style={{ fontSize: "30px", fontWeight: "600" }}>
-            {isClickSignIn ? "Select" : "Register"} two pictures of you:
+            {isClickSignIn ? "Select" : isChangeImages ? "Select" : "Register"}{" "}
+            two {isChangeImages && "new"} pictures of you:
           </p>
           <p
             style={{
@@ -1502,14 +2049,22 @@ export default function Authentication() {
                 : true) && !isInProcessing
             }
             onClick={
-              isClickSignIn ? handleSubmitImageChose : handleSubmitSignUp
+              isClickSignIn
+                ? handleSubmitImageChose
+                : isChangeImages
+                  ? handleSubmitConfirmResetImages
+                  : handleSubmitSignUp
             }
           >
             {isInProcessing ? (
               <i className="fas fa-spinner fa-spin"></i>
             ) : (
               <>
-                {isClickSignIn ? "Sign In Account" : "Sign Up Account"}{" "}
+                {isClickSignIn
+                  ? "Sign In Account"
+                  : isChangeImages
+                    ? "Change images"
+                    : "Sign Up Account"}{" "}
                 <i className="fa-solid fa-arrow-right"></i>
               </>
             )}
@@ -1526,6 +2081,59 @@ export default function Authentication() {
           >
             Cancel <i className="fa-solid fa-x"></i>
           </button>
+        </div>
+      </div>
+
+      {/* Modal ask if user wants to change images sign in */}
+      <div className="modal" id="popup-change-image">
+        <div className="modal-content">
+          <h2 style={{ backgroundColor: "transparent" }}>Password updated</h2>
+
+          <div className="policy-section">
+            <p
+              style={{
+                fontSize: "16px",
+                color: "#555",
+                fontStyle: "italic",
+                marginTop: "4px",
+              }}
+            >
+              Your password has been updated successfully. Would you like to
+              update the two images used for your second-step login as well?
+            </p>
+          </div>
+
+          <div style={{ marginTop: "40px", display: "flex", gap: "10px" }}>
+            <button
+              className="btn"
+              onClick={() => {
+                document.getElementById("popup-change-image").style.display =
+                  "none";
+              }}
+              aria-label="Not now button"
+            >
+              Not now
+            </button>
+            <button
+              className="btn-yellow"
+              onClick={() => {
+                document.getElementById("popup-change-image").style.display =
+                  "none";
+
+                // Show modal select images
+                document.getElementById(
+                  "pick-image-container",
+                ).style.visibility = "visible";
+                document.getElementById("pick-image-container").style.opacity =
+                  "1";
+
+                setIsChangeImages(true);
+              }}
+              aria-label="Update images button"
+            >
+              Update images
+            </button>
+          </div>
         </div>
       </div>
     </>

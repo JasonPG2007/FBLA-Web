@@ -7,7 +7,6 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import dayjs from "dayjs";
 import axiosInstance from "../api/axiosInstance";
 
 export default function Notifications() {
@@ -16,8 +15,6 @@ export default function Notifications() {
   const [notificationsMatchImage, setNotificationsMatchImage] = useState([]);
   const [notificationsMatchDescription, setNotificationsMatchDescription] =
     useState([]);
-  const [user, setUser] = useState({ role: "User" });
-  const [matchedPosts, setMatchedPosts] = useState({});
 
   // Functions
   // Get notifications with similar images
