@@ -108,19 +108,13 @@ export default function About() {
         </h1>
         <div className="content">
           <p>
-            Back 2 Me is a community-driven platform dedicated to helping people
-            reunite with their lost belongings. By making it easy to post lost
-            and found items, connect with others, and share listings across
-            social media, we increase the chances of returning items to their
-            rightful owners. Together, we turn lost moments into found
-            connections.
+            Back2Me is a community-driven platform dedicated to helping people reunite with their lost belongings.
+            By making it easy to post lost and found items, connect with others, and share listings across social media, we increase the chances of returning items to their rightful owners.
+            Together, we turn lost moments into found connections.
           </p>
           <p>
-            Through the support of our growing community, Back 2 Me creates a
-            safe and reliable space where users can share information,
-            communicate easily, and help one another. Every post, share, and
-            connection brings us one step closer to reuniting lost items with
-            their owners and strengthening the bond within our community.
+            Through the support of our growing community, Back2Me creates a safe and reliable space where users can share information, communicate easily, and support one another.
+            Every post, share, and connection brings us one step closer to reuniting lost items with their owners and strengthening community bonds.
           </p>
         </div>
         <div className="content-bottom">
@@ -157,11 +151,9 @@ export default function About() {
           <label>Lost & Found Listings</label>
           <div className="offer-content">
             <p>
-              Section allows users to easily post and browse lost or found
-              items. By providing clear descriptions, locations, and images, our
-              platform helps connect people quickly and accurately. Each listing
-              brings us closer to reuniting lost belongings with their rightful
-              owners.
+              This section allows users to easily post and browse lost or found items.
+              By providing clear descriptions, locations, and images, our platform helps connect people quickly and accurately.
+              Each listing brings us closer to reuniting lost belongings with their rightful owners.
             </p>
           </div>
         </div>
@@ -169,10 +161,8 @@ export default function About() {
           <label>Smart Filters</label>
           <div className="offer-content">
             <p>
-              This filter helps users quickly find relevant lost or found items
-              by narrowing results based on category, location, date, and
-              keywords. This feature saves time and improves accuracy, making it
-              easier to match items and reconnect them with their owners.
+              This feature helps users quickly find relevant lost or found items by narrowing results based on category, location, date, and keywords.
+              Smart Filters save time and improve accuracy, making it easier to match items and reconnect them with their owners.
             </p>
           </div>
         </div>
@@ -180,10 +170,9 @@ export default function About() {
           <label>Interactive Map</label>
           <div className="offer-content">
             <p>
-              This maps allows users to view lost and found items based on
-              location. By displaying listings on a real-time map, users can
-              easily track where items were lost or found and connect with
-              others nearby to improve the chances of recovery.
+              This map allows users to view lost and found items based on location.
+              By displaying listings on a real-time map, users can easily see where items were lost or found
+              and connect with others nearby to improve the chances of recovery.
             </p>
           </div>
         </div>
@@ -240,7 +229,7 @@ export default function About() {
           </div>
           <div className="pipe">|</div>
           <div className="btn-quick-search">
-            <button>
+            <button aria-label="Search item button">
               Search item <i className="fa-solid fa-arrow-right"></i>
             </button>
           </div>

@@ -613,15 +613,15 @@ export default function DetailPost() {
           }}
           className="breadcrumb-menu"
         >
-          <a href="/">
+          <a href="/" aria-label="Home link">
             <p>Home</p>
           </a>
           <i className="fa-solid fa-angle-right icon-light"></i>
-          <a href="/search">
+          <a href="/search" aria-label="Search link">
             <p>Search</p>
           </a>
           <i className="fa-solid fa-angle-right icon-light"></i>
-          <a href="">
+          <a href="" aria-label="Post link">
             <p>Post</p>
           </a>
         </div>
@@ -680,6 +680,7 @@ export default function DetailPost() {
                 post.title
               )}
             </h1>
+
             {!isGettingPost &&
               !isGettingSuggestion &&
               (user.email !== post.user?.email ? (
@@ -688,6 +689,7 @@ export default function DetailPost() {
                     marginLeft: "auto",
                     height: "max-content",
                   }}
+                  aria-label="Contact owner button"
                   className="btn-yellow btn-contact-owner"
                   onClick={() => {
                     // const chatPopup = document.getElementById("chatPopup");
@@ -749,6 +751,7 @@ export default function DetailPost() {
                   onClick={() => {
                     setIsEdit(!isEdit);
                   }}
+                  aria-label="Edit post button"
                 >
                   {isEdit ? (
                     <>
@@ -1292,7 +1295,7 @@ export default function DetailPost() {
                                 marginBottom: "10px",
                               }}
                             >
-                              <a href={`/detail-post/${item.postId}`}>
+                              <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>
                                 {item.title}
                               </a>
                             </h3>
@@ -1309,7 +1312,7 @@ export default function DetailPost() {
                               </label>
                             )}
                           </div>
-                          <a href={`/detail-post/${item.postId}`}>
+                          <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>
                             <ReactMarkdown
                               children={item.description}
                               rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -1336,6 +1339,7 @@ export default function DetailPost() {
                         onClick={() => {
                           handleMatchPost(item.postId, post.postId);
                         }}
+                        aria-label="Select this is my item button"
                         disabled={isRequesting}
                       >
                         {isRequesting ? (
@@ -1565,6 +1569,7 @@ export default function DetailPost() {
 
                 <div style={{ marginTop: "40px" }}>
                   <button
+                    aria-label="Okay button"
                     className="btn"
                     onClick={() => {
                       setIsShowPopup(false);
@@ -1574,6 +1579,7 @@ export default function DetailPost() {
                   </button>
                   {user.role === "Admin" && (
                     <button
+                      aria-label="Print this code button"
                       className="btn-yellow"
                       onClick={() => {
                         window.print();
@@ -1605,6 +1611,7 @@ export default function DetailPost() {
             Sorry, this post may have been removed or the link is incorrect.
           </p>
           <button
+            aria-label="Go back button"
             className="btn"
             onClick={() => {
               window.history.back();

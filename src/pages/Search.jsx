@@ -348,6 +348,7 @@ export default function Search() {
               className="btn-yellow btn-use-filter"
               style={{ marginLeft: "auto" }}
               disabled={isInProcessing}
+              aria-label="Use Filter button"
             >
               {isInProcessing ? (
                 <i className="fas fa-spinner fa-spin"></i>

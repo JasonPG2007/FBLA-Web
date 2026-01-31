@@ -579,15 +579,15 @@ export default function Users() {
                       <td>{dayjs(item.createdAt).format("MM/DD/YYYY")}</td>
                       <td>
                         <span
-                          className={`status ${
-                            item.isActive ? "active" : "inactive"
-                          }`}
+                          className={`status ${item.isActive ? "active" : "inactive"
+                            }`}
                         >
                           {item.isActive ? "Active" : "Suspended"}
                         </span>
                       </td>
                       <td>
                         <button
+                          aria-label={item.isActive ? "Suspend account button" : "Unsuspend account button"}
                           className="btn"
                           style={{
                             backgroundColor: item.isActive ? "red" : "green",
