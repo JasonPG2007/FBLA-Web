@@ -2034,32 +2034,36 @@ export default function Authentication() {
         {/* Accept btn and cancel btn */}
         <div className="btn-continue-container">
           <button
-            aria-label={isClickSignIn ? "Submit sign in images button" : "Submit sign up images button"}
+            aria-label={
+              isClickSignIn
+                ? "Submit sign in images button"
+                : "Submit sign up images button"
+            }
             className="btn"
             style={{
               backgroundColor:
                 selectedIndex.filter((s) => s.isActive).length === 2 &&
-                  !isInProcessing
+                !isInProcessing
                   ? "#ec7207"
                   : "#d3d3d3",
               color:
                 selectedIndex.filter((s) => s.isActive).length === 2 &&
-                  !isInProcessing
+                !isInProcessing
                   ? "#fff"
                   : "#8c8c8c",
               cursor:
                 selectedIndex.filter((s) => s.isActive).length === 2 &&
-                  !isInProcessing
+                !isInProcessing
                   ? "pointer"
                   : "not-allowed",
               pointerEvents:
                 selectedIndex.filter((s) => s.isActive).length === 2 &&
-                  !isInProcessing
+                !isInProcessing
                   ? "auto"
                   : "none",
               opacity:
                 selectedIndex.filter((s) => s.isActive).length === 2 &&
-                  !isInProcessing
+                !isInProcessing
                   ? 1
                   : 0.6,
             }}
@@ -2130,6 +2134,20 @@ export default function Authentication() {
               onClick={() => {
                 document.getElementById("popup-change-image").style.display =
                   "none";
+
+                // Move to sign in
+                document
+                  .getElementById("form-sign-up-in-container")
+                  .classList.add("move-sign-up");
+                document
+                  .getElementById("form-sign-up-in-container")
+                  .classList.remove("move-sign-in");
+                document
+                  .getElementById("form-sign-up-in-container")
+                  .classList.remove("move-forgot-password");
+                document
+                  .getElementById("form-sign-up-in-container")
+                  .classList.remove("move-cancel-forgot");
               }}
               aria-label="Not now button"
             >
