@@ -501,6 +501,20 @@ export default function Authentication() {
         document.getElementById("pick-image-container").style.visibility =
           "hidden";
         document.getElementById("pick-image-container").style.opacity = "0";
+
+        // Move to sign in
+        document
+          .getElementById("form-sign-up-in-container")
+          .classList.add("move-sign-up");
+        document
+          .getElementById("form-sign-up-in-container")
+          .classList.remove("move-sign-in");
+        document
+          .getElementById("form-sign-up-in-container")
+          .classList.remove("move-forgot-password");
+        document
+          .getElementById("form-sign-up-in-container")
+          .classList.remove("move-cancel-forgot");
       }
 
       if (responseSignInUser.status == 404) {
