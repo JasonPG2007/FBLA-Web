@@ -171,29 +171,29 @@ a {
   transition: all 0.2s ease-in-out;
 }
 
-.btn:hover {
+.btn:not(:disabled):hover {
   background-color: #d96506;
 }
 
-.btn:active {
+.btn:not(:disabled):active {
   background-color: #c85f05;
   transform: scale(0.97);
 }
 
-.btn-yellow:hover {
+.btn-yellow:not(:disabled):hover {
   background-color: #f0be3f;
 }
 
-.btn-yellow:active {
+.btn-yellow:not(:disabled):active {
   background-color: #e0ad2e;
   transform: scale(0.97);
 }
 
-.btn-with-border:hover {
+.btn-with-border:not(:disabled):hover {
   background-color: #f2bf3a;
 }
 
-.btn-with-border:hover {
+.btn-with-border:not(:disabled):hover {
   background-color: #e3ae25;
   transform: scale(0.97);
 }
@@ -787,8 +787,13 @@ footer .right button {
   transition: all 0.3s ease-in-out;
 }
 
-.btn-authentication:hover {
-  transform: scale(1.05);
+.btn-authentication:not(:disabled):hover {
+  background-color: #d96506;
+}
+
+.btn-authentication:not(:disabled):active {
+  background-color: #c85f05;
+  transform: scale(0.97);
 }
 
 .form-sign-up-in-container {

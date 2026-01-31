@@ -857,8 +857,8 @@ export default function Home() {
             </div>
           </div>
           <div className="pipe">|</div>
-          <div className="">
-            <button className="btn-yellow" aria-label="Search item button">
+          <div className="btn-yellow">
+            <button className="">
               Search item <i className="fa-solid fa-arrow-right"></i>
             </button>
           </div>

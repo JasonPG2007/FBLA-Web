@@ -540,7 +540,7 @@ export default function ConfirmReceived() {
       {/* Form to print */}
       <div className="form-container-print">
         <h1>RECEIPT CONFIRMATION</h1>
-        <p className="subtitle">Confirmation of Lost Item Pickup</p>
+        <p className="subtitle">Confirmation of Lost Item Pick-up</p>
 
         <div className="section">
           <h2>User Information</h2>

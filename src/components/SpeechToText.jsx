@@ -5,8 +5,6 @@ export default function SpeechToText() {
   // Variables
   const [finalText, setFinalText] = useState("");
   const [textToResponse, setTextToResponse] = useState("");
-  const [listening, setListening] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
   const recognitionRef = useRef(null);
 
   // APIs
@@ -30,6 +28,11 @@ export default function SpeechToText() {
       {
         indent: "CREATE_POST",
         containsWord: ["create", "create post", "create lost"],
+        score: 0,
+      },
+      {
+        indent: "REDIRECT_LOST_FOUND",
+        containsWord: ["all posts", "posts", "lost and found"],
         score: 0,
       },
       {
@@ -84,6 +87,12 @@ export default function SpeechToText() {
         window.location.href = "/support";
         setTextToResponse("Redirected Support page. Press Enter to continue");
         break;
+      case "REDIRECT_LOST_FOUND":
+        window.location.href = "/lost-and-found";
+        setTextToResponse(
+          "Redirected Lost and Found page. Press Enter to continue",
+        );
+        break;
       case "REDIRECT_ABOUT_US":
         window.location.href = "/about";
         setTextToResponse("Redirected About page. Press Enter to continue");
@@ -137,9 +146,9 @@ export default function SpeechToText() {
     setTextToResponse("");
   };
 
-  const stopSpeak = () => {
-    window.speechSynthesis.cancel();
-  };
+  // const stopSpeak = () => {
+  //   window.speechSynthesis.cancel();
+  // };
 
   useEffect(() => {
     if (sessionStorage.getItem("requiredSignIn")) {
@@ -163,16 +172,11 @@ export default function SpeechToText() {
       recognition.interimResults = true; // Allow to show preview text before the final text
 
       recognition.onresult = (event) => {
-        if (isSpeaking) return;
-
         let finalText = "";
-        let interimText = "";
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
             finalText += transcript + " "; // Final result
-          } else {
-            interimText += transcript; // temporary text
           }
         }
 
@@ -185,7 +189,6 @@ export default function SpeechToText() {
       };
 
       recognition.onend = () => {
-        setListening(false);
         setTextToResponse("Voice control is off. Press Enter to enable");
       };
 
@@ -219,13 +222,11 @@ export default function SpeechToText() {
 
   const startListening = () => {
     recognitionRef.current.start();
-    setListening(true);
   };
 
-  const stopListening = () => {
-    recognitionRef.current.stop();
-    setListening(false);
-  };
+  // const stopListening = () => {
+  //   recognitionRef.current.stop();
+  // };
 
   return <></>;
 }
