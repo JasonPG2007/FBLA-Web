@@ -1112,6 +1112,7 @@ export default function DetailPost() {
                     fontSize: "20px",
                     fontWeight: "100",
                     marginLeft: "10px",
+                    marginTop: "20px",
                   }}
                 >
                   Contacts

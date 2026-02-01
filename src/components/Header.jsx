@@ -533,6 +533,9 @@ export default function Header() {
             href="#policyModal2"
             style={{ marginRight: "40px" }}
             aria-label="Terms and guide link"
+            onClick={() => {
+              document.body.style.overflow = "hidden";
+            }}
           >
             Terms & Guide
           </a>
@@ -811,11 +814,11 @@ export default function Header() {
           </div>
 
           <a
-            aria-label="I got it link"
+            aria-label="I got it button"
             className="close"
             href="#"
             onClick={() => {
-              // setIsAgreeTerm(true);
+              document.body.style.overflow = "auto";
             }}
           >
             I got it

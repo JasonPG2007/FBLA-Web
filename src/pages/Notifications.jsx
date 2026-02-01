@@ -324,6 +324,7 @@ export default function Notifications() {
             ) : (
               <>
                 <div
+                  className="no-post-my-post"
                   style={{
                     marginLeft: "100%",
                     width: "100%",
@@ -483,6 +484,7 @@ export default function Notifications() {
             ) : (
               <>
                 <div
+                  className="no-post-my-post"
                   style={{
                     marginLeft: "100%",
                     width: "100%",
