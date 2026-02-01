@@ -997,6 +997,14 @@
     width: 94%;
   }
 
+  .modal-content-my-post-to-match {
+    width: 95%;
+  }
+
+  .close-result-my-post-to-match {
+    width: 90% !important;
+  }
+
   /* Modal report */
   .form-lost-found-container {
     height: 65vh;
