@@ -374,16 +374,32 @@ export default function Header() {
           className="list-service"
           id="list-service"
         >
-          <a href="#policyModal2" style={{ marginRight: "40px" }} aria-label="Terms and guide link">
+          <a
+            href="#policyModal2"
+            style={{ marginRight: "40px" }}
+            aria-label="Terms and guide link"
+          >
             Terms & Guide
           </a>
-          <a href="/about" style={{ marginRight: "40px" }} aria-label="About us link">
+          <a
+            href="/about"
+            style={{ marginRight: "40px" }}
+            aria-label="About us link"
+          >
             About us
           </a>
-          <a href="/lost-and-found" style={{ marginRight: "40px" }} aria-label="Lost & Found link">
+          <a
+            href="/lost-and-found"
+            style={{ marginRight: "40px" }}
+            aria-label="Lost & Found link"
+          >
             Lost & Found
           </a>
-          <a href="/support" style={{ marginRight: "40px" }} aria-label="Support link">
+          <a
+            href="/support"
+            style={{ marginRight: "40px" }}
+            aria-label="Support link"
+          >
             Support
           </a>
           <div className="profile-menu">
@@ -432,7 +448,10 @@ export default function Header() {
                     <i className="fa-solid fa-file-lines"></i> My Post
                   </a>
                   {user.role === "Admin" && (
-                    <a href="/dashboard/report" aria-label="Admin dashboard link">
+                    <a
+                      href="/dashboard/report"
+                      aria-label="Admin dashboard link"
+                    >
                       <i className="fa-solid fa-home"></i> Dashboard
                     </a>
                   )}
@@ -492,7 +511,10 @@ export default function Header() {
                       </>
                     )}
                   </a>
-                  <a href="/authentication?with=sign-in" aria-label="Sign in link">
+                  <a
+                    href="/authentication?with=sign-in"
+                    aria-label="Sign in link"
+                  >
                     <i className="fa-solid fa-arrow-right-to-bracket"></i> Sign
                     In
                   </a>
@@ -659,56 +681,65 @@ export default function Header() {
               resultByAI.map((item) => (
                 <div
                   className="card card-search-by-image"
-                  onClick={() => {
-                    window.location.href = `/detail-post/${item.post.postId}`;
-                  }}
-                  style={{ cursor: "pointer" }}
                   key={item.post.postId}
                 >
-                  {item.post.image ? (
-                    <img
-                      src={item.post.urlImage}
-                      alt="picture of item"
-                      style={{
-                        width: "100%",
-                        height: "300px",
-                        objectFit: "cover",
-                        backgroundColor: "white",
-                      }}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="image-placeholder">
-                      <i className="icon-image"></i>
-                      <span>No image</span>
-                    </div>
-                  )}
                   <div
-                    className="card-text suggestion-card-text"
-                    style={{ marginBottom: "30px" }}
+                    onClick={() => {
+                      window.location.href = `/detail-post/${item.post.postId}`;
+                    }}
+                    style={{ cursor: "pointer" }}
                   >
-                    <div className="info-user-suggestion">
+                    {item.post.image ? (
                       <img
-                        src={item.post.user.urlAvatar}
-                        alt="avatar"
-                        width={50}
-                        height={50}
-                        style={{ borderRadius: "50%" }}
+                        src={item.post.urlImage}
+                        alt="picture of item"
+                        style={{
+                          width: "100%",
+                          height: "300px",
+                          objectFit: "cover",
+                          backgroundColor: "white",
+                        }}
                         loading="lazy"
                       />
-                      <span>{`${item.post.user.firstName} ${item.post.user.lastName}`}</span>
-                    </div>
-                    <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                      <a href={`/detail-post/${item.post.postId}`} aria-label={`Detail post of ${item.post.title}`}>
-                        {item.post.title}
+                    ) : (
+                      <div className="image-placeholder">
+                        <i className="icon-image"></i>
+                        <span>No image</span>
+                      </div>
+                    )}
+                    <div
+                      className="card-text suggestion-card-text"
+                      style={{ marginBottom: "30px" }}
+                    >
+                      <div className="info-user-suggestion">
+                        <img
+                          src={item.post.user.urlAvatar}
+                          alt="avatar"
+                          width={50}
+                          height={50}
+                          style={{ borderRadius: "50%" }}
+                          loading="lazy"
+                        />
+                        <span>{`${item.post.user.firstName} ${item.post.user.lastName}`}</span>
+                      </div>
+                      <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                        <a
+                          href={`/detail-post/${item.post.postId}`}
+                          aria-label={`Detail post of ${item.post.title}`}
+                        >
+                          {item.post.title}
+                        </a>
+                      </h3>
+                      <a
+                        href={`/detail-post/${item.post.postId}`}
+                        aria-label={`Detail post of ${item.post.title}`}
+                      >
+                        <ReactMarkdown
+                          children={item.post.description}
+                          rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                        ></ReactMarkdown>
                       </a>
-                    </h3>
-                    <a href={`/detail-post/${item.post.postId}`} aria-label={`Detail post of ${item.post.title}`}>
-                      <ReactMarkdown
-                        children={item.post.description}
-                        rehypePlugins={[rehypeRaw, rehypeSanitize]}
-                      ></ReactMarkdown>
-                    </a>
+                    </div>
                   </div>
 
                   <button

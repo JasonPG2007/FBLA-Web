@@ -1527,8 +1527,8 @@ th {
 }
 
 .search-by-image:hover {
-  background-color: #fff;
-  transform: scale(1.05);
+  background-color: #fff !important;
+  transform: scale(1.05) !important;
 }
 
 .search-by-image div {
@@ -1554,6 +1554,11 @@ th {
   max-height: 36px;
   overflow: hidden;
   position: relative;
+}
+
+.search-by-image-again:hover {
+  background-color: #fff !important;
+  transform: scale(1.05) !important;
 }
 
 .search-by-image-again label {
