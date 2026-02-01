@@ -1213,6 +1213,10 @@
     width: 100% !important;
   }
 
+  .btn-contact-owner {
+    width: max-content !important;
+  }
+
   .change-delete-avatar img {
     height: 320px;
     width: 320px;
