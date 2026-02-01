@@ -12,8 +12,12 @@ import { HubConnectionBuilder } from "@microsoft/signalr";
 export default function Header() {
   // Variables
   let [user, setUser] = useState("");
+  let [selectedFoundPost, setSelectedFoundPost] = useState("");
   const [resultByAI, setResultByAI] = useState([]);
+  let [posts, setPosts] = useState([]);
   let [isInProcessing, setIsInProcessing] = useState(false);
+  let [isRequesting, setIsRequesting] = useState(false);
+  let [isLoadingMyPost, setIsLoadingMyPost] = useState(false);
   let [showMenu, setShowMenu] = useState(false);
   let [msgErrorAI, setMsgErrorAI] = useState("");
 
@@ -21,6 +25,159 @@ export default function Header() {
   const API_URL_Auth = `/CheckAuth/check-auth`;
 
   // Functions
+  // Handle match post
+  const handleMatchPost = async (lostPostId, foundPostId) => {
+    setIsRequesting(true);
+
+    const codeIntoDb = getRandomString(6);
+    setCode(codeIntoDb);
+
+    const payload = {
+      matchId: 0,
+      lostPostId: lostPostId,
+      foundPostId: foundPostId,
+      code: codeIntoDb,
+    };
+
+    try {
+      const response = await axiosInstance.post("/Match", payload, {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
+
+      if (response.status === 200) {
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Match request sent successfully",
+              status: "success",
+            },
+          }),
+        );
+
+        setIsShowPopup(true); // Show popup notice code
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsRequesting(false);
+    }
+  };
+
+  // Get my posts
+  const handleFetchPosts = async () => {
+    setIsLoadingMyPost(true);
+
+    try {
+      const response = await axiosInstance.get("/Post/my-posts", {
+        // withCredentials: true,
+        validateStatus: (status) =>
+          status === 200 || status === 401 || status === 404,
+      });
+
+      if (response.status === 200) {
+        setPosts(
+          response.data.filter(
+            (p) => p.typePost === "Lost" && p.isReceived === false,
+          ),
+        );
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsLoadingMyPost(false);
+    }
+  };
+
   // Realtime
   const connectToSignalR = async () => {
     const token = localStorage.getItem("accessToken");
@@ -135,8 +292,6 @@ export default function Header() {
       if (res.status === 200) {
         // Call search API
         searchImageSimilarity(res.data);
-
-        console.log(res.data);
 
         // Reset input file
         e.target.value = null;
@@ -746,6 +901,18 @@ export default function Header() {
                     aria-label="This is my item button"
                     className="btn"
                     style={{ width: "100%" }}
+                    onClick={() => {
+                      setSelectedFoundPost(item.postId);
+                      document.getElementById(
+                        "modal-my-post-to-match",
+                      ).style.visibility = "visible";
+                      document.getElementById(
+                        "modal-my-post-to-match",
+                      ).style.opacity = "1";
+
+                      // Load my post to pick to match post is showing
+                      handleFetchPosts();
+                    }}
                   >
                     <i className="fa-solid fa-hand-point-up"></i> This is my
                     item
@@ -817,6 +984,222 @@ export default function Header() {
               const modal = document.querySelector(".modal-result-by-ai");
               modal.style.visibility = "hidden";
               modal.style.opacity = "0";
+              document.body.style.overflow = "auto";
+            }}
+          >
+            <i className="fa-solid fa-xmark"></i> Close
+          </button>
+        </div>
+      </div>
+
+      {/* Modal popup choose my post to math with currently post is showing */}
+      <div className="modal-my-post-to-match" id="modal-my-post-to-match">
+        <div className="modal-content-my-post-to-match">
+          <h2>Select your post?</h2>
+          <p style={{ textAlign: "center" }}>
+            Choose the post that matches this found item
+          </p>
+          <div
+            className={
+              !isLoadingMyPost ? "results-container-my-post-to-match" : ""
+            }
+            style={{
+              gridTemplateColumns: posts.length == 0 ? "unset" : "",
+            }}
+          >
+            {isLoadingMyPost ? (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "auto auto auto",
+                  width: "100%",
+                  gap: "10px",
+                }}
+              >
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div className="" key={index}>
+                    <Skeleton
+                      height={290}
+                      style={{ marginBottom: "10px", borderRadius: "20px" }}
+                    />
+                    <div className="">
+                      <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
+                        <Skeleton height={35} width={309} />
+                      </h3>
+                      <p>
+                        <Skeleton count={3} />
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : posts.length > 0 ? (
+              posts.map((item) => (
+                <div
+                  className="card card-my-post"
+                  key={item.postId}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div
+                    onClick={() => {
+                      window.location.href = `/detail-post/${item.postId}`;
+                    }}
+                  >
+                    {/* Image */}
+                    {item.image ? (
+                      <img
+                        src={item.image ? item.urlImage : ""}
+                        alt="picture of item"
+                        loading="lazy"
+                        style={{
+                          width: "100%",
+                          height: "300px",
+                          objectFit: "cover",
+                          backgroundColor: "white",
+                        }}
+                      />
+                    ) : (
+                      <div className="image-placeholder">
+                        <i className="icon-image"></i>
+                        <span>No image</span>
+                      </div>
+                    )}
+
+                    {/* Content */}
+                    <div className="card-text" style={{ marginBottom: "20px" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <h3
+                          style={{
+                            fontWeight: "700",
+                            marginBottom: "10px",
+                          }}
+                        >
+                          <a
+                            href={`/detail-post/${item.postId}`}
+                            aria-label={`Detail link for ${item.title}`}
+                          >
+                            {item.title}
+                          </a>
+                        </h3>
+                        {item.isReceived && (
+                          <label
+                            style={{
+                              // fontSize: "13px",
+                              fontWeight: 500,
+                              color: "green",
+                            }}
+                          >
+                            (<i className="fa-solid fa-circle-check"></i>{" "}
+                            Received)
+                          </label>
+                        )}
+                      </div>
+                      <a
+                        href={`/detail-post/${item.postId}`}
+                        aria-label={`Detail link for ${item.title}`}
+                      >
+                        <ReactMarkdown
+                          children={item.description}
+                          rehypePlugins={[rehypeRaw, rehypeSanitize]}
+                        ></ReactMarkdown>
+                      </a>
+                    </div>
+
+                    {/* Status */}
+                    <div
+                      className={
+                        item.typePost === "Lost"
+                          ? "status-post-lost"
+                          : "status-post-found"
+                      }
+                    >
+                      {item.typePost}
+                    </div>
+                  </div>
+
+                  <button
+                    aria-label="Select this post that matched with this found item"
+                    className="btn"
+                    style={{ width: "100%" }}
+                    onClick={() => {
+                      handleMatchPost(item.postId, selectedFoundPost);
+                    }}
+                    disabled={isRequesting}
+                  >
+                    {isRequesting ? (
+                      <i className="fas fa-spinner fa-spin"></i>
+                    ) : (
+                      <>
+                        <i className="fa-solid fa-hand-point-up"></i> Select
+                      </>
+                    )}
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  margin: "auto",
+                }}
+              >
+                <p>You don't have any lost items to match this found item</p>
+                <button
+                  className="btn"
+                  onClick={() => {
+                    checkAuthentication();
+
+                    // Hidden select my posts modal
+                    document.getElementById(
+                      "modal-my-post-to-match",
+                    ).style.visibility = "hidden";
+                    document.getElementById(
+                      "modal-my-post-to-match",
+                    ).style.opacity = "0";
+
+                    // Show modal create post
+                    const modal = document.querySelector(".modal-report-stuff");
+                    const overlay = document.querySelector(
+                      ".modal-overlay-report-stuff",
+                    );
+                    modal.style.visibility = "visible";
+                    modal.style.opacity = "1";
+                    overlay.style.visibility = "visible";
+                    overlay.style.opacity = "1";
+                    document.body.style.overflow = "hidden";
+                  }}
+                >
+                  <i className="fa-solid fa-plus"></i> Create a lost post
+                </button>
+              </div>
+            )}
+          </div>
+          <button
+            aria-label="Close button"
+            className="btn-yellow close-result-my-post-to-match"
+            style={{
+              width: "90%",
+            }}
+            href="#"
+            onClick={() => {
+              const modal = document.querySelector(".modal-my-post-to-match");
+              modal.style.visibility = "hidden";
+              modal.style.opacity = "0";
+              document.body.style.overflow = "auto";
+
+              const modalResultByAi = document.querySelector(
+                ".modal-result-by-ai",
+              );
+              modalResultByAi.style.visibility = "hidden";
+              modalResultByAi.style.opacity = "0";
               document.body.style.overflow = "auto";
             }}
           >
