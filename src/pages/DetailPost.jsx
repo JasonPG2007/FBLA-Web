@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import Skeleton from "react-loading-skeleton";
 import ReactMarkdown from "react-markdown";
@@ -30,16 +30,19 @@ export default function DetailPost() {
   let [post, setPost] = useState("");
   let [user, setUser] = useState("");
   let [code, setCode] = useState("");
-  let [statusPost, setStatusPost] = useState("");
   let [categoryId, setCategoryId] = useState("");
   let [description, setDescription] = useState("");
   let [title, setTitle] = useState("");
+  let [selectedFile, setSelectedFileChange] = useState(null);
+  const inputRef = useRef(null);
+  let [imagePreview, setImagePreview] = useState(null);
   const postId = location.pathname.split("/").pop();
 
   // APIs
   const API_URL_Auth = `/CheckAuth/check-auth`;
 
   // Functions
+  // Get categories post
   const getCategoryPosts = async () => {
     setIsGettingCategories(true);
 
@@ -112,38 +115,214 @@ export default function DetailPost() {
     });
   };
 
-  // Update post
-  const handleUpdatePost = async (e) => {
+  const validateFormUpdatePost = () => {
+    if (!title || title.trim() === "") {
+      window.dispatchEvent(
+        new CustomEvent("app-error", {
+          detail: {
+            message: "Please enter a title",
+            status: "warning",
+          },
+        }),
+      );
+      return false;
+    }
+
+    if (!categoryId || String(categoryId).trim() === "") {
+      window.dispatchEvent(
+        new CustomEvent("app-error", {
+          detail: {
+            message: "Please select a category",
+            status: "warning",
+          },
+        }),
+      );
+      return false;
+    }
+
+    if (!description || description.trim() === "") {
+      window.dispatchEvent(
+        new CustomEvent("app-error", {
+          detail: {
+            message: "Please enter a description",
+            status: "warning",
+          },
+        }),
+      );
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleChangeImage = (file) => {
+    if (!file) return;
+
+    if (file) {
+      const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      const maxSize = 5 * 1014 * 1014; // 5MB
+
+      // Check type of file
+      if (!allowedTypes.includes(file.type)) {
+        alert("Only accept JPG, PNG or WebP files");
+        return;
+      }
+
+      if (file.size > maxSize) {
+        alert("The image exceeds 5MB. Please select a smaller image");
+        return;
+      }
+
+      // To upload to server
+      setSelectedFileChange(file);
+
+      // To preview image
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    handleChangeImage(file);
+    e.target.value = "";
+  };
+
+  const handleDropImage = (e) => {
     e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    handleChangeImage(file);
+  };
 
-    setIsUpdating(true);
-
-    const payload = {
-      userId: user.userId,
-      title: title,
-      description: description,
-      typePost: statusPost,
-      categoryPostId: categoryId,
-    };
+  // Handle get vector from image
+  const handleGetVectorFromImage = async (imageFile) => {
+    const formData = new FormData();
+    formData.append("image", imageFile);
 
     try {
-      const response = await axiosInstance.put("/Post", payload, {
-        // withCredentials: true,
-        validateStatus: (status) =>
-          status === 200 || status === 401 || status === 404 || status === 403,
-      });
+      const res = await axiosInstance.post(
+        "https://ai-image-ma5f.onrender.com/embed",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        },
+      );
 
-      if (response.status === 200) {
+      if (res.status === 200) {
+        const overlay = document.getElementById("overlay-search-image");
+        overlay.style.visibility = "hidden";
+        overlay.style.opacity = "0";
+        document.body.style.overflow = "auto";
+
+        return res.data; // Return vector
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
         window.dispatchEvent(
           new CustomEvent("app-error", {
             detail: {
-              message: response.data,
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Posting item with image is temporarily unavailable.",
+                status: "warning",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+
+      throw error;
+    }
+  };
+
+  // Update post
+  const handleUpdatePost = async () => {
+    setIsUpdating(true);
+
+    if (!validateFormUpdatePost()) {
+      setIsUpdating(false);
+      return;
+    }
+
+    const formData = new FormData();
+    if (selectedFile) {
+      selectedFile && formData.append("imageUpload", selectedFile); // Image
+      selectedFile &&
+        formData.append(
+          "vector",
+          JSON.stringify(await handleGetVectorFromImage(selectedFile)),
+        ); // Vector of image
+    }
+    formData.append("postId", post.postId);
+    formData.append("userId", user.userId);
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("typePost", "Found"); // Not use
+    formData.append("code", "a"); // Not use
+    formData.append("categoryPostId", categoryId);
+
+    try {
+      const response = await axiosInstance.put(
+        `/Post/${post.postId}`,
+        formData,
+        {
+          // withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 ||
+            status === 401 ||
+            status === 404 ||
+            status === 403,
+        },
+      );
+
+      if (response.status === 200) {
+        setIsEdit(false);
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: response.data.message,
               status: "success",
             },
           }),
         );
-
-        document.getElementById("popup-instruction").style.display = "flex"; // Show popup notice code
       }
 
       if (response.status === 403) {
@@ -203,7 +382,6 @@ export default function DetailPost() {
         );
       }
     } finally {
-      setIsEdit(false);
       setIsUpdating(false);
     }
   };
@@ -578,8 +756,13 @@ export default function DetailPost() {
   }, []);
 
   useEffect(() => {
+    if (categoryPosts.length > 0 && post?.categoryPostId) {
+      setCategoryId(post.categoryPostId);
+    }
+  }, [categoryPosts, post]);
+
+  useEffect(() => {
     if (isEdit) {
-      setStatusPost(post.typePost);
       setDescription(post.description);
       setTitle(post.title);
       setCategoryId(post.categoryId);
@@ -643,7 +826,7 @@ export default function DetailPost() {
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "start",
               alignItems: "center",
             }}
           >
@@ -683,11 +866,14 @@ export default function DetailPost() {
 
             {!isGettingPost &&
               !isGettingSuggestion &&
+              user &&
               (user.email !== post.user?.email ? (
                 <button
                   style={{
                     marginLeft: "auto",
                     height: "max-content",
+                    opacity: post.isReceived ? "0" : "",
+                    visibility: post.isReceived ? "hidden" : "",
                   }}
                   aria-label="Contact owner button"
                   className="btn-yellow btn-contact-owner"
@@ -746,12 +932,18 @@ export default function DetailPost() {
                   style={{
                     marginLeft: "auto",
                     height: "max-content",
+                    opacity: post.isReceived ? "0" : "",
+                    visibility: post.isReceived ? "hidden" : "",
                   }}
                   className="btn-yellow btn-edit-discard-post"
                   onClick={() => {
                     setIsEdit(!isEdit);
+
+                    // Get categories
+                    getCategoryPosts();
                   }}
-                  aria-label="Edit post button"
+                  disabled={isUpdating}
+                  aria-label="Edit/Discard changes post button"
                 >
                   {isEdit ? (
                     <>
@@ -783,7 +975,11 @@ export default function DetailPost() {
               }}
               className="image-post-details"
             >
-              <div className="post-image-container">
+              <div
+                className="post-image-container"
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleDropImage}
+              >
                 <div>
                   {isInProcessing ? (
                     <Skeleton
@@ -794,19 +990,37 @@ export default function DetailPost() {
                       }}
                     />
                   ) : post.image ? (
-                    <img
-                      src={post.image ? post.urlImage : ""}
-                      alt="picture of item"
-                      loading="lazy"
-                      style={{
-                        width: "100%",
-                        height: "400px",
-                        objectFit: "cover",
-                        backgroundColor: "white",
-                        borderRadius: "20px",
-                      }}
-                      id="big-img"
-                    ></img>
+                    imagePreview ? (
+                      <img
+                        src={imagePreview}
+                        style={{
+                          width: "100%",
+                          height: "400px",
+                          objectFit: "cover",
+                          backgroundColor: "white",
+                          borderRadius: "20px",
+                        }}
+                        alt="Preview lost item"
+                        width="290"
+                        loading="lazy"
+                        height="297"
+                        className="preview-img"
+                      />
+                    ) : (
+                      <img
+                        src={post.image ? post.urlImage : ""}
+                        alt="picture of item"
+                        loading="lazy"
+                        style={{
+                          width: "100%",
+                          height: "400px",
+                          objectFit: "cover",
+                          backgroundColor: "white",
+                          borderRadius: "20px",
+                        }}
+                        id="big-img"
+                      ></img>
+                    )
                   ) : (
                     <div className="image-placeholder">
                       <i className="icon-image"></i>
@@ -824,6 +1038,39 @@ export default function DetailPost() {
                 >
                   ID: {post.postId}
                 </h3>
+
+                {isEdit && (
+                  <div className="btn-change-img">
+                    <button
+                      htmlFor="upload-img"
+                      className="btn"
+                      onClick={() => inputRef.current.click()}
+                    >
+                      Change image
+                    </button>
+                    <input
+                      type="file"
+                      id="upload-img"
+                      style={{ display: "none" }}
+                      ref={inputRef}
+                      onChange={(e) => {
+                        handleImageChange(e);
+                      }}
+                    />
+                    <button
+                      aria-label="Cancel image button"
+                      className="btn-yellow"
+                      style={{ backgroundColor: "#fff" }}
+                      type="button"
+                      onClick={() => {
+                        setImagePreview("");
+                        setSelectedFileChange(null);
+                      }}
+                    >
+                      Remove image
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Post image mini */}
@@ -978,9 +1225,6 @@ export default function DetailPost() {
                             name=""
                             id="type"
                             className="form-control-input input-update-post"
-                            onClick={() => {
-                              isLoadedCategories || getCategoryPosts(); // Load categories only once
-                            }}
                             value={categoryId}
                             onChange={(e) => {
                               setCategoryId(e.target.value);
@@ -1038,25 +1282,7 @@ export default function DetailPost() {
                           style={{ marginBottom: "20px" }}
                         />
                       ) : post.typePost ? (
-                        isEdit ? (
-                          <select
-                            name=""
-                            id=""
-                            className="form-control-input input-update-post"
-                            style={{
-                              marginBottom: "20px",
-                              marginTop: "-40px",
-                            }}
-                            value={statusPost}
-                            onChange={(e) => setStatusPost(e.target.value)}
-                          >
-                            <option value="">Choose Type</option>
-                            <option value="Lost">Lost</option>
-                            <option value="Found">Found</option>
-                          </select>
-                        ) : (
-                          post.typePost
-                        )
+                        post.typePost
                       ) : (
                         "Not available"
                       )}
@@ -1198,7 +1424,14 @@ export default function DetailPost() {
                   }}
                   disabled={isUpdating}
                 >
-                  <i className="fa-solid fa-floppy-disk me-2"></i> Save changes
+                  {isUpdating ? (
+                    <i className="fas fa-spinner fa-spin"></i>
+                  ) : (
+                    <>
+                      <i className="fa-solid fa-floppy-disk me-2"></i> Save
+                      changes
+                    </>
+                  )}
                 </button>
               )}
             </div>
