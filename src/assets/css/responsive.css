@@ -1178,6 +1178,15 @@
     display: none !important;
   }
 
+  /* Detail post */
+  .image-post-details {
+    grid-template-columns: unset !important;
+  }
+
+  .detail-post-container {
+    grid-template-columns: unset !important;
+  }
+
   .table-tr {
     height: 40px !important;
     display: flex !important;
@@ -1211,6 +1220,10 @@
   .btn-yellow {
     /* width: 186% !important; */
     width: 100% !important;
+  }
+
+  .btn-contact-owner {
+    width: max-content !important;
   }
 
   .change-delete-avatar img {
