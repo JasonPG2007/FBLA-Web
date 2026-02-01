@@ -1178,6 +1178,15 @@
     display: none !important;
   }
 
+  /* Detail post */
+  .image-post-details {
+    grid-template-columns: unset !important;
+  }
+
+  .detail-post-container {
+    grid-template-columns: unset !important;
+  }
+
   .table-tr {
     height: 40px !important;
     display: flex !important;
