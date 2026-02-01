@@ -488,45 +488,57 @@ export default function Profile() {
                     </th>
                     <td style={{ verticalAlign: "top" }} className="table-td">
                       {!isInProcessing ? (
-                        <>
-                          <input
-                            placeholder="Ex: demo@ex.io"
-                            type="email"
-                            className="form-control-input-label-top"
-                            value={`${user.email}`}
-                            style={{ cursor: "not-allowed" }}
-                            disabled
-                          />
-                          {!user.isVerifiedEmail ? (
-                            <>
-                              <span className="badge-not-verified">
-                                <i className="fa-solid fa-triangle-exclamation"></i>{" "}
-                                Not Verified
-                              </span>
-
-                              <button
-                                className="btn btn-verify"
-                                onClick={() => {
-                                  handleResendVerify();
-                                }}
-                                type="button"
-                                disabled={isSending}
-                                aria-label="Send verification email button"
-                              >
-                                {isSending ? (
-                                  <i className="fas fa-spinner fa-spin"></i>
-                                ) : (
-                                  "Verify Now"
-                                )}
-                              </button>
-                            </>
-                          ) : (
-                            <span className="badge-verified">
-                              <i className="fa-solid fa-circle-check"></i>{" "}
-                              Verified
+                        <input
+                          placeholder="Ex: demo@ex.io"
+                          type="email"
+                          className="form-control-input-label-top"
+                          value={`${user.email}`}
+                          style={{ cursor: "not-allowed" }}
+                          disabled
+                        />
+                      ) : (
+                        <Skeleton
+                          className="skeleton-input"
+                          height={45}
+                          width={530}
+                          style={{ marginBottom: "5px", borderRadius: "20px" }}
+                        />
+                      )}
+                    </td>
+                  </tr>
+                  <tr className="table-tr">
+                    <th></th>
+                    <td style={{ verticalAlign: "top" }} className="table-td">
+                      {!isInProcessing ? (
+                        !user.isVerifiedEmail ? (
+                          <>
+                            <span className="badge-not-verified">
+                              <i className="fa-solid fa-triangle-exclamation"></i>{" "}
+                              Not Verified
                             </span>
-                          )}
-                        </>
+
+                            <button
+                              className="btn btn-verify"
+                              onClick={() => {
+                                handleResendVerify();
+                              }}
+                              type="button"
+                              disabled={isSending}
+                              aria-label="Send verification email button"
+                            >
+                              {isSending ? (
+                                <i className="fas fa-spinner fa-spin"></i>
+                              ) : (
+                                "Verify Now"
+                              )}
+                            </button>
+                          </>
+                        ) : (
+                          <span className="badge-verified">
+                            <i className="fa-solid fa-circle-check"></i>{" "}
+                            Verified
+                          </span>
+                        )
                       ) : (
                         <Skeleton
                           className="skeleton-input"
@@ -544,7 +556,6 @@ export default function Profile() {
                 aria-label="Save changes button"
                 className="btn-yellow"
                 style={{
-                  marginTop: "20px",
                   width: "100%",
                   backgroundColor:
                     isModify && !isInProcessing ? "#ec7207" : "#d3d3d3",

@@ -531,7 +531,9 @@ export default function Home() {
             Report an item
           </p>
           <p>
-            Share details about your lost or found item by creating a post. Providing accurate information helps us match lost and found items more effectively.
+            Share details about your lost or found item by creating a post.
+            Providing accurate information helps us match lost and found items
+            more effectively.
           </p>
         </div>
       </div>
@@ -577,7 +579,9 @@ export default function Home() {
             Promote
           </p>
           <p>
-            Our platform allows you to share your listing on social media to reach a wider audience. The more you promote your listing, the higher the chance of recovery.
+            Our platform allows you to share your listing on social media to
+            reach a wider audience. The more you promote your listing, the
+            higher the chance of recovery.
           </p>
         </div>
 
@@ -611,7 +615,9 @@ export default function Home() {
             Reunite
           </p>
           <p>
-            This is our ultimate goal. With a strong user community and effective promotion, reuniting lost items with their owners becomes much more likely.
+            This is our ultimate goal. With a strong user community and
+            effective promotion, reuniting lost items with their owners becomes
+            much more likely.
           </p>
         </div>
       </div>
@@ -726,7 +732,12 @@ export default function Home() {
                   }}
                 >
                   <h3 style={{ fontWeight: "700", marginBottom: "10px" }}>
-                    <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>{item.title}</a>
+                    <a
+                      href={`/detail-post/${item.postId}`}
+                      aria-label={`Detail link for ${item.title}`}
+                    >
+                      {item.title}
+                    </a>
                   </h3>
                   {item.isReceived && (
                     <label
@@ -740,7 +751,10 @@ export default function Home() {
                     </label>
                   )}
                 </div>
-                <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>
+                <a
+                  href={`/detail-post/${item.postId}`}
+                  aria-label={`Detail link for ${item.title}`}
+                >
                   <ReactMarkdown
                     children={item.description}
                     rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -772,7 +786,11 @@ export default function Home() {
           marginTop: "-60px",
         }}
       >
-        <a href="/lost-and-found" className="btn" aria-label="View all posts link">
+        <a
+          href="/lost-and-found"
+          className="btn"
+          aria-label="View all posts link"
+        >
           View all <i className="fa-solid fa-arrow-right"></i>
         </a>
       </div>
@@ -857,7 +875,7 @@ export default function Home() {
             </div>
           </div>
           <div className="pipe">|</div>
-          <div className="btn-yellow">
+          <div className="btn-quick-search">
             <button className="">
               Search item <i className="fa-solid fa-arrow-right"></i>
             </button>

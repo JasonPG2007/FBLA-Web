@@ -968,6 +968,7 @@ export default function MyPost() {
 
         {/* Post similar to you */}
         <div
+          className="my-post-content"
           style={{
             display: "flex",
             flexDirection: "column",
@@ -1029,7 +1030,7 @@ export default function MyPost() {
           </div>
 
           {/* Cards */}
-          <div className="newest-post-container">
+          <div className="newest-post-container my-post-container">
             {isInProcessing ? (
               <div
                 style={{ display: "flex", gap: "20px" }}
@@ -1099,7 +1100,10 @@ export default function MyPost() {
                           <h3
                             style={{ fontWeight: "700", marginBottom: "10px" }}
                           >
-                            <a href={`/detail-post/${post.postId}`} aria-label={`Detail link for ${post.title}`}>
+                            <a
+                              href={`/detail-post/${post.postId}`}
+                              aria-label={`Detail link for ${post.title}`}
+                            >
                               {post.title}
                             </a>
                           </h3>
@@ -1127,7 +1131,10 @@ export default function MyPost() {
                             </label>
                           )}
                         </div>
-                        <a href={`/detail-post/${post.postId}`} aria-label={`Detail link for ${post.title}`}>
+                        <a
+                          href={`/detail-post/${post.postId}`}
+                          aria-label={`Detail link for ${post.title}`}
+                        >
                           <ReactMarkdown
                             children={post.description}
                             rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -1360,6 +1367,7 @@ export default function MyPost() {
             ) : (
               <>
                 <div
+                  className="no-post-my-post"
                   style={{
                     marginLeft: "100%",
                     width: "100%",

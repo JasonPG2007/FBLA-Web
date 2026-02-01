@@ -1326,6 +1326,7 @@ export default function Authentication() {
 
                           document.getElementById("policyModal").style.display =
                             "flex";
+                          document.body.style.overflow = "hidden";
                         }}
                         aria-label="Terms and Recovery Guide link"
                       >
@@ -1985,6 +1986,8 @@ export default function Authentication() {
               e.preventDefault();
 
               document.getElementById("policyModal").style.display = "none";
+              document.body.style.overflow = "auto";
+
               validateSignUp();
               setIsAgreeTerm(true);
             }}
