@@ -476,6 +476,7 @@ export default function ModalReportStuff() {
     }
   };
 
+  // Handle get vector from image
   const handleGetVectorFromImage = async (imageFile) => {
     const formData = new FormData();
     formData.append("image", imageFile);

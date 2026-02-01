@@ -193,7 +193,7 @@ a {
   background-color: #f2bf3a;
 }
 
-.btn-with-border:not(:disabled):hover {
+.btn-with-border:not(:disabled):active {
   background-color: #e3ae25;
   transform: scale(0.97);
 }
