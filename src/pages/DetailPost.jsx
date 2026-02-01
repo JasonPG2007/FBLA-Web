@@ -1295,7 +1295,10 @@ export default function DetailPost() {
                                 marginBottom: "10px",
                               }}
                             >
-                              <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>
+                              <a
+                                href={`/detail-post/${item.postId}`}
+                                aria-label={`Detail link for ${item.title}`}
+                              >
                                 {item.title}
                               </a>
                             </h3>
@@ -1312,7 +1315,10 @@ export default function DetailPost() {
                               </label>
                             )}
                           </div>
-                          <a href={`/detail-post/${item.postId}`} aria-label={`Detail link for ${item.title}`}>
+                          <a
+                            href={`/detail-post/${item.postId}`}
+                            aria-label={`Detail link for ${item.title}`}
+                          >
                             <ReactMarkdown
                               children={item.description}
                               rehypePlugins={[rehypeRaw, rehypeSanitize]}
@@ -1339,7 +1345,6 @@ export default function DetailPost() {
                         onClick={() => {
                           handleMatchPost(item.postId, post.postId);
                         }}
-                        aria-label="Select this is my item button"
                         disabled={isRequesting}
                       >
                         {isRequesting ? (
@@ -1413,7 +1418,7 @@ export default function DetailPost() {
                   document.body.style.overflow = "auto";
                 }}
               >
-                Close
+                <i className="fa-solid fa-xmark"></i> Close
               </button>
             </div>
           </div>
