@@ -491,7 +491,7 @@ export default function Authentication() {
 
       // Success, then pick image
       if (responseSignInUser.status == 200) {
-        setIsChangedPassword(true);
+        setIsChangeImages(true);
         setMsgSignIn({
           msg: responseSignInUser.data.message,
           status: responseSignInUser.status,
