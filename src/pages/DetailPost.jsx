@@ -396,11 +396,10 @@ export default function DetailPost() {
       });
 
       if (response.status === 200) {
-        setPosts(
-          response.data.filter(
-            (p) => p.typePost === "Lost" && p.isReceived === false,
-          ),
+        console.log(
+          JSON.stringify(response.data.filter((p) => p.typePost === "Lost")),
         );
+        setPosts(response.data.filter((p) => p.typePost === "Lost"));
       }
     } catch (error) {
       if (error.response) {

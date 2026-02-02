@@ -91,18 +91,21 @@ export default function TransferRequests() {
     }
   };
 
-  // Get category posts
-  const searchEmail = async (query) => {
+  // SearchFirstNameRequest
+  const searchFirstNameRequest = async (query) => {
     if (query.trim() == "") return null;
 
     setIsInProcessing(true);
 
     try {
-      const response = await axiosInstance.get(`/TransferRequests`, {
-        // withCredentials: true,
-        validateStatus: (status) =>
-          status === 200 || status === 401 || status === 404,
-      });
+      const response = await axiosInstance.get(
+        `/TransferRequests/search-request?query=${query}`,
+        {
+          // withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        },
+      );
 
       if (response.status === 200) {
         setRequests(response.data);
@@ -158,7 +161,7 @@ export default function TransferRequests() {
     }
   };
 
-  const debouncedFetch = debounce(searchEmail, 500);
+  const debouncedFetch = debounce(searchFirstNameRequest, 500);
 
   // Handle mark received
   const handleMarkReceived = async (requestId, postId) => {
@@ -482,7 +485,7 @@ export default function TransferRequests() {
           <div className="search-codes-container">
             <input
               type="text"
-              placeholder="Search request..."
+              placeholder="Search by first name..."
               className="form-control-input search-codes"
               onChange={(e) => {
                 setQuery(e.target.value);
