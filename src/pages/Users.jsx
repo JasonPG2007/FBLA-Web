@@ -552,23 +552,31 @@ export default function Users() {
                     <tr key={item.userId}>
                       <td>{index + 1}</td>
                       <td>
-                        {item.avatar ? (
-                          <img
-                            src={item.urlAvatar}
-                            alt="user avatar"
-                            style={{ borderRadius: "50%", objectFit: "cover" }}
-                            width={50}
-                            height={50}
-                          />
-                        ) : (
-                          <img
-                            src="/Image/user_icon.png"
-                            alt="user avatar"
-                            style={{ borderRadius: "50%", objectFit: "cover" }}
-                            width={50}
-                            height={50}
-                          />
-                        )}
+                        <a href={`/dashboard/user/${item.userId}`}>
+                          {item.avatar ? (
+                            <img
+                              src={item.urlAvatar}
+                              alt="user avatar"
+                              style={{
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                              }}
+                              width={50}
+                              height={50}
+                            />
+                          ) : (
+                            <img
+                              src="/Image/user_icon.png"
+                              alt="user avatar"
+                              style={{
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                              }}
+                              width={50}
+                              height={50}
+                            />
+                          )}
+                        </a>
                       </td>
                       <td>
                         {item.firstName} {item.lastName}
@@ -579,15 +587,20 @@ export default function Users() {
                       <td>{dayjs(item.createdAt).format("MM/DD/YYYY")}</td>
                       <td>
                         <span
-                          className={`status ${item.isActive ? "active" : "inactive"
-                            }`}
+                          className={`status ${
+                            item.isActive ? "active" : "inactive"
+                          }`}
                         >
                           {item.isActive ? "Active" : "Suspended"}
                         </span>
                       </td>
                       <td>
                         <button
-                          aria-label={item.isActive ? "Suspend account button" : "Unsuspend account button"}
+                          aria-label={
+                            item.isActive
+                              ? "Suspend account button"
+                              : "Unsuspend account button"
+                          }
                           className="btn"
                           style={{
                             backgroundColor: item.isActive ? "red" : "green",

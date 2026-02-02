@@ -245,7 +245,12 @@ export default function SidebarProfile() {
 
                 <a
                   href="/dashboard/users"
-                  className={isActive("/dashboard/users") ? "active" : ""}
+                  className={
+                    isActive("/dashboard/users") ||
+                    location.pathname.startsWith("/dashboard/user/")
+                      ? "active"
+                      : ""
+                  }
                   aria-label="Users link"
                 >
                   Users

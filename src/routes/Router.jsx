@@ -19,6 +19,7 @@ import TransferRequests from "../pages/TransferRequests";
 import VerificationCodes from "../pages/VerificationCodes";
 import PickUpRequest from "../pages/PickUpRequest";
 import VerifyEmail from "../pages/VerifyEmail";
+import UserDetail from "../pages/UserDetail";
 
 export default function Router() {
   return (
@@ -57,6 +58,7 @@ export default function Router() {
               element={<ConfirmReceived />}
             />
             <Route path="/dashboard/users" element={<Users />} />
+            <Route path="/dashboard/user/*" element={<UserDetail />} />
             <Route
               path="/dashboard/transfer-requests"
               element={<TransferRequests />}

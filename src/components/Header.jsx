@@ -11,11 +11,13 @@ import { HubConnectionBuilder } from "@microsoft/signalr";
 
 export default function Header() {
   // Variables
+  let [code, setCode] = useState("");
   let [user, setUser] = useState("");
   let [selectedFoundPost, setSelectedFoundPost] = useState("");
   const [resultByAI, setResultByAI] = useState([]);
   let [posts, setPosts] = useState([]);
   let [isInProcessing, setIsInProcessing] = useState(false);
+  const [isShowPopup, setIsShowPopup] = useState(false);
   let [isRequesting, setIsRequesting] = useState(false);
   let [isLoadingMyPost, setIsLoadingMyPost] = useState(false);
   let [showMenu, setShowMenu] = useState(false);
@@ -25,6 +27,20 @@ export default function Header() {
   const API_URL_Auth = `/CheckAuth/check-auth`;
 
   // Functions
+  // Get random string include letters and numbers
+  const getRandomString = (length) => {
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+      // Math random to get a random index
+      const randomIndex = Math.floor(Math.random() * chars.length);
+      result += chars[randomIndex];
+    }
+
+    return result;
+  };
+
   // Handle match post
   const handleMatchPost = async (lostPostId, foundPostId) => {
     setIsRequesting(true);
@@ -987,7 +1003,6 @@ export default function Header() {
               const modal = document.querySelector(".modal-result-by-ai");
               modal.style.visibility = "hidden";
               modal.style.opacity = "0";
-              document.body.style.overflow = "auto";
             }}
           >
             <i className="fa-solid fa-xmark"></i> Close
@@ -1012,10 +1027,12 @@ export default function Header() {
           >
             {isLoadingMyPost ? (
               <div
+                className="skeleton-load-select-post"
                 style={{
                   display: "grid",
                   gridTemplateColumns: "auto auto auto",
                   width: "100%",
+                  overflow: "hidden",
                   gap: "10px",
                 }}
               >
@@ -1197,19 +1214,68 @@ export default function Header() {
               modal.style.visibility = "hidden";
               modal.style.opacity = "0";
               document.body.style.overflow = "auto";
-
-              const modalResultByAi = document.querySelector(
-                ".modal-result-by-ai",
-              );
-              modalResultByAi.style.visibility = "hidden";
-              modalResultByAi.style.opacity = "0";
-              document.body.style.overflow = "auto";
             }}
           >
             <i className="fa-solid fa-xmark"></i> Close
           </button>
         </div>
       </div>
+
+      {/* Popup notice code */}
+      {isShowPopup && (
+        <div
+          className="modal"
+          id="popup-notice-verification-code"
+          style={{ display: "flex" }}
+        >
+          <div className="modal-content">
+            <h2 style={{ backgroundColor: "transparent" }}>Your Code:</h2>
+
+            <div className="policy-section">
+              <h3>{code || "Not available"}</h3>
+              <p
+                style={{
+                  fontSize: "16px",
+                  color: "#555",
+                  fontStyle: "italic",
+                  marginTop: "4px",
+                }}
+              >
+                This code is used to verify ownership when retrieving your lost
+                item. Share it only with the person who has your item. Keep it
+                private.
+              </p>
+            </div>
+
+            <div style={{ marginTop: "40px" }}>
+              <button
+                aria-label="Okay button"
+                className="btn"
+                onClick={() => {
+                  setIsShowPopup(false);
+                }}
+              >
+                Okay
+              </button>
+              {user.role === "Admin" && (
+                <button
+                  aria-label="Print this code button"
+                  className="btn-yellow"
+                  onClick={() => {
+                    window.print();
+
+                    document.getElementById("popup-notice-code").style.display =
+                      "none";
+                  }}
+                  style={{ marginLeft: "10px" }}
+                >
+                  Print this code
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
