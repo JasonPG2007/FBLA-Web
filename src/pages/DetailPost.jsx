@@ -23,7 +23,6 @@ export default function DetailPost() {
   let [isUpdating, setIsUpdating] = useState(false);
   let [isGettingCategories, setIsGettingCategories] = useState(false);
   const [isShowPopup, setIsShowPopup] = useState(false);
-  const [isLoadedCategories, setIsLoadedCategories] = useState(false);
   let [suggestPosts, setSuggestPosts] = useState([]);
   let [posts, setPosts] = useState([]);
   let [categoryPosts, setCategoryPosts] = useState([]);
@@ -104,7 +103,6 @@ export default function DetailPost() {
       }
     } finally {
       setIsGettingCategories(false);
-      setIsLoadedCategories(true);
     }
   };
 
@@ -989,38 +987,36 @@ export default function DetailPost() {
                         borderRadius: "12px",
                       }}
                     />
+                  ) : imagePreview ? (
+                    <img
+                      src={imagePreview}
+                      style={{
+                        width: "100%",
+                        height: "400px",
+                        objectFit: "cover",
+                        backgroundColor: "white",
+                        borderRadius: "20px",
+                      }}
+                      alt="Preview lost item"
+                      width="290"
+                      loading="lazy"
+                      height="297"
+                      className="preview-img"
+                    />
                   ) : post.image ? (
-                    imagePreview ? (
-                      <img
-                        src={imagePreview}
-                        style={{
-                          width: "100%",
-                          height: "400px",
-                          objectFit: "cover",
-                          backgroundColor: "white",
-                          borderRadius: "20px",
-                        }}
-                        alt="Preview lost item"
-                        width="290"
-                        loading="lazy"
-                        height="297"
-                        className="preview-img"
-                      />
-                    ) : (
-                      <img
-                        src={post.image ? post.urlImage : ""}
-                        alt="picture of item"
-                        loading="lazy"
-                        style={{
-                          width: "100%",
-                          height: "400px",
-                          objectFit: "cover",
-                          backgroundColor: "white",
-                          borderRadius: "20px",
-                        }}
-                        id="big-img"
-                      ></img>
-                    )
+                    <img
+                      src={post.image ? post.urlImage : ""}
+                      alt="picture of item"
+                      loading="lazy"
+                      style={{
+                        width: "100%",
+                        height: "400px",
+                        objectFit: "cover",
+                        backgroundColor: "white",
+                        borderRadius: "20px",
+                      }}
+                      id="big-img"
+                    ></img>
                   ) : (
                     <div className="image-placeholder">
                       <i className="icon-image"></i>

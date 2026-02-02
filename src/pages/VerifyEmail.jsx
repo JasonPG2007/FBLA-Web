@@ -1,13 +1,17 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance";
+import Lottie from "lottie-react";
+import Sucesso from "../assets/animations/Sucesso.json";
 
 export default function VerifyEmail() {
   // Variables
   let [isVerifying, setIsVerifying] = useState("");
-  let [statusVerify, setStatusVerify] = useState(null);
+  let [statusVerify, setStatusVerify] = useState({
+    status: false,
+    message: "",
+  });
   const [searchParams] = useSearchParams();
 
   // Handle verify email
@@ -25,7 +29,10 @@ export default function VerifyEmail() {
       );
 
       if (response.status === 200) {
-        setStatusVerify(response.data.message);
+        setStatusVerify({
+          status: response.status,
+          message: response.data.message,
+        });
 
         window.dispatchEvent(
           new CustomEvent("app-error", {
@@ -99,7 +106,32 @@ export default function VerifyEmail() {
       </Helmet>
 
       <h1 style={{ textAlign: "center", marginTop: "70px" }}>
-        {isVerifying ? "Verifying email..." : statusVerify}
+        {isVerifying ? (
+          "Verifying email..."
+        ) : (
+          <div className="not-found">
+            {statusVerify.status === 200 && (
+              <Suspense fallback={<p>Loading animation...</p>}>
+                <Lottie
+                  animationData={Sucesso}
+                  style={{ width: "300px", margin: "auto" }}
+                />
+              </Suspense>
+            )}
+            <h1 style={{ fontSize: "40px" }}>
+              {statusVerify.status !== 200 ? "Failed" : statusVerify.message}
+            </h1>
+            <button
+              aria-label="Go back button"
+              className="btn"
+              onClick={() => {
+                window.location.href = "/me";
+              }}
+            >
+              Go to Profile <i className="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        )}
       </h1>
     </>
   );

@@ -2243,6 +2243,7 @@ th {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 20px;
+  margin-bottom: 60px;
   height: 82%;
   overflow-x: hidden;
   padding: 20px 10px;

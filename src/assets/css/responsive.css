@@ -281,6 +281,10 @@
     height: 200px !important;
   }
 
+  .card-search-by-image {
+    height: 410px;
+  }
+
   .image-placeholder {
     height: 200px;
   }
@@ -346,6 +350,11 @@
 
   .sidebarProfile a:nth-last-child(1) {
     left: 22px !important;
+  }
+
+  .skeleton-load-select-post {
+    grid-template-columns: auto !important;
+    height: 82% !important;
   }
 
   .my-post-content {
