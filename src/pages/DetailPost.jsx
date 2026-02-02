@@ -1447,6 +1447,7 @@ export default function DetailPost() {
                   gridTemplateColumns: posts.length == 0 ? "unset" : "",
                 }}
               >
+                {/* {console.log()} */}
                 {isLoadingMyPost ? (
                   <div
                     style={{
