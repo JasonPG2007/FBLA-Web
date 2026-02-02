@@ -396,10 +396,9 @@ export default function DetailPost() {
       });
 
       if (response.status === 200) {
-        console.log(
-          JSON.stringify(response.data.filter((p) => p.typePost === "Lost")),
+        setPosts(
+          response.data.filter((p) => p.typePost === "Lost" && !p.isReceived),
         );
-        setPosts(response.data.filter((p) => p.typePost === "Lost"));
       }
     } catch (error) {
       if (error.response) {
@@ -1395,10 +1394,10 @@ export default function DetailPost() {
                     style={{ marginTop: "20px", width: "100%" }}
                     onClick={() => {
                       document.getElementById(
-                        "modal-my-post-to-match",
+                        "modal-my-post-to-match-detail",
                       ).style.visibility = "visible";
                       document.getElementById(
-                        "modal-my-post-to-match",
+                        "modal-my-post-to-match-detail",
                       ).style.opacity = "1";
 
                       // Load my post to pick to match post is showing
@@ -1433,7 +1432,10 @@ export default function DetailPost() {
           </div>
 
           {/* Modal popup choose my post to math with currently post is showing */}
-          <div className="modal-my-post-to-match" id="modal-my-post-to-match">
+          <div
+            className="modal-my-post-to-match"
+            id="modal-my-post-to-match-detail"
+          >
             <div className="modal-content-my-post-to-match">
               <h2>Select your post?</h2>
               <p style={{ textAlign: "center" }}>
@@ -1447,7 +1449,6 @@ export default function DetailPost() {
                   gridTemplateColumns: posts.length == 0 ? "unset" : "",
                 }}
               >
-                {/* {console.log()} */}
                 {isLoadingMyPost ? (
                   <div
                     style={{
@@ -1607,10 +1608,10 @@ export default function DetailPost() {
 
                         // Hidden select my posts modal
                         document.getElementById(
-                          "modal-my-post-to-match",
+                          "modal-my-post-to-match-detail",
                         ).style.visibility = "hidden";
                         document.getElementById(
-                          "modal-my-post-to-match",
+                          "modal-my-post-to-match-detail",
                         ).style.opacity = "0";
 
                         // Show modal create post
@@ -1641,7 +1642,7 @@ export default function DetailPost() {
                 href="#"
                 onClick={() => {
                   const modal = document.querySelector(
-                    ".modal-my-post-to-match",
+                    "#modal-my-post-to-match-detail",
                   );
                   modal.style.visibility = "hidden";
                   modal.style.opacity = "0";

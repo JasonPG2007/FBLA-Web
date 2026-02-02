@@ -138,9 +138,7 @@ export default function Header() {
 
       if (response.status === 200) {
         setPosts(
-          response.data.filter(
-            (p) => p.typePost === "Lost" && p.isReceived === false,
-          ),
+          response.data.filter((p) => p.typePost === "Lost" && !p.isReceived),
         );
       }
     } catch (error) {
@@ -923,10 +921,10 @@ export default function Header() {
                     onClick={() => {
                       setSelectedFoundPost(item.postId);
                       document.getElementById(
-                        "modal-my-post-to-match",
+                        "modal-my-post-to-match-header",
                       ).style.visibility = "visible";
                       document.getElementById(
-                        "modal-my-post-to-match",
+                        "modal-my-post-to-match-header",
                       ).style.opacity = "1";
 
                       // Load my post to pick to match post is showing
@@ -1011,7 +1009,10 @@ export default function Header() {
       </div>
 
       {/* Modal popup choose my post to math with currently post is showing */}
-      <div className="modal-my-post-to-match" id="modal-my-post-to-match">
+      <div
+        className="modal-my-post-to-match"
+        id="modal-my-post-to-match-header"
+      >
         <div className="modal-content-my-post-to-match">
           <h2>Select your post?</h2>
           <p style={{ textAlign: "center" }}>
@@ -1179,10 +1180,18 @@ export default function Header() {
 
                     // Hidden select my posts modal
                     document.getElementById(
-                      "modal-my-post-to-match",
+                      "modal-my-post-to-match-header",
                     ).style.visibility = "hidden";
                     document.getElementById(
-                      "modal-my-post-to-match",
+                      "modal-my-post-to-match-header",
+                    ).style.opacity = "0";
+
+                    // Hidden results by ai modal
+                    document.getElementById(
+                      "modal-result-by-ai",
+                    ).style.visibility = "hidden";
+                    document.getElementById(
+                      "modal-result-by-ai",
                     ).style.opacity = "0";
 
                     // Show modal create post
@@ -1210,7 +1219,9 @@ export default function Header() {
             }}
             href="#"
             onClick={() => {
-              const modal = document.querySelector(".modal-my-post-to-match");
+              const modal = document.querySelector(
+                "#modal-my-post-to-match-header",
+              );
               modal.style.visibility = "hidden";
               modal.style.opacity = "0";
               document.body.style.overflow = "auto";
