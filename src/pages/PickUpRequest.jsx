@@ -25,6 +25,76 @@ export default function PickUpRequest() {
   // APIs
 
   // Functions
+  // search Request
+  const searchRequest = async (query) => {
+    if (query.trim() == "") return null;
+
+    setIsInProcessing(true);
+
+    try {
+      const response = await axiosInstance.get(
+        `/PickUpRequest/search-request?query=${query}`,
+        {
+          // withCredentials: true,
+          validateStatus: (status) =>
+            status === 200 || status === 401 || status === 404,
+        },
+      );
+
+      if (response.status === 200) {
+        setRequests(response.data);
+      }
+    } catch (error) {
+      if (error.response) {
+        const message = error.response.data?.message || "Server error";
+
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: message,
+              status: "error",
+            },
+          }),
+        );
+      } else if (error.request) {
+        // If offline
+        if (!navigator.onLine) {
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message: "Network error. Please check your internet connection",
+                status: "error",
+              },
+            }),
+          );
+        } else {
+          // Server offline
+          window.dispatchEvent(
+            new CustomEvent("app-error", {
+              detail: {
+                message:
+                  "Server is currently unavailable. Please try again later.",
+                status: "error",
+              },
+            }),
+          );
+        }
+      } else {
+        // Other errors
+        window.dispatchEvent(
+          new CustomEvent("app-error", {
+            detail: {
+              message: "Something went wrong. Please try again",
+              status: "error",
+            },
+          }),
+        );
+      }
+    } finally {
+      setIsInProcessing(false);
+    }
+  };
+
   // Get my profile
   const getMyProfile = async () => {
     setIsInProcessing(true);
@@ -173,74 +243,7 @@ export default function PickUpRequest() {
     }
   };
 
-  // Get category posts
-  const searchEmail = async (query) => {
-    if (query.trim() == "") return null;
-
-    setIsInProcessing(true);
-
-    try {
-      const response = await axiosInstance.get(`/TransferRequests`, {
-        // withCredentials: true,
-        validateStatus: (status) =>
-          status === 200 || status === 401 || status === 404,
-      });
-
-      if (response.status === 200) {
-        setRequests(response.data);
-      }
-    } catch (error) {
-      if (error.response) {
-        const message = error.response.data?.message || "Server error";
-
-        window.dispatchEvent(
-          new CustomEvent("app-error", {
-            detail: {
-              message: message,
-              status: "error",
-            },
-          }),
-        );
-      } else if (error.request) {
-        // If offline
-        if (!navigator.onLine) {
-          window.dispatchEvent(
-            new CustomEvent("app-error", {
-              detail: {
-                message: "Network error. Please check your internet connection",
-                status: "error",
-              },
-            }),
-          );
-        } else {
-          // Server offline
-          window.dispatchEvent(
-            new CustomEvent("app-error", {
-              detail: {
-                message:
-                  "Server is currently unavailable. Please try again later.",
-                status: "error",
-              },
-            }),
-          );
-        }
-      } else {
-        // Other errors
-        window.dispatchEvent(
-          new CustomEvent("app-error", {
-            detail: {
-              message: "Something went wrong. Please try again",
-              status: "error",
-            },
-          }),
-        );
-      }
-    } finally {
-      setIsInProcessing(false);
-    }
-  };
-
-  const debouncedFetch = debounce(searchEmail, 500);
+  const debouncedFetch = debounce(searchRequest, 500);
 
   // Handle change time
   const handleChangeTime = async (requestId) => {
@@ -474,7 +477,7 @@ export default function PickUpRequest() {
           <div className="search-codes-container">
             <input
               type="text"
-              placeholder="Search request..."
+              placeholder="Search by description..."
               className="form-control-input search-codes"
               onChange={(e) => {
                 setQuery(e.target.value);
