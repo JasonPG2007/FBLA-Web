@@ -36,6 +36,36 @@ export default function SpeechToText() {
         score: 0,
       },
       {
+        indent: "OPEN_TERMS_GUIDE",
+        containsWord: [
+          "Terms",
+          "Term",
+          "guide",
+          "Terms and guide",
+          "Term and guide",
+          "term guide",
+          "terms guide",
+          "guide terms",
+          "guide term",
+        ],
+        score: 0,
+      },
+      {
+        indent: "CLOSE_TERMS_GUIDE",
+        containsWord: [
+          "Close terms",
+          "Close term",
+          "Close Terms and guide",
+          "Close Term and guide",
+          "Close term guide",
+          "Close terms guide",
+          "Close guide terms",
+          "Close guide term",
+          "Close",
+        ],
+        score: 0,
+      },
+      {
         indent: "REDIRECT_SUPPORT",
         containsWord: ["support", "change to support"],
         score: 0,
@@ -48,6 +78,16 @@ export default function SpeechToText() {
           "about",
           "about website",
         ],
+        score: 0,
+      },
+      {
+        indent: "REDIRECT_SIGN_IN",
+        containsWord: ["sign in"],
+        score: 0,
+      },
+      {
+        indent: "REDIRECT_SIGN_UP",
+        containsWord: ["sign up"],
         score: 0,
       },
       {
@@ -93,9 +133,25 @@ export default function SpeechToText() {
           "Redirected Lost and Found page. Press Enter to continue",
         );
         break;
+      case "OPEN_TERMS_GUIDE":
+        window.location.href = "#policyModal2";
+        setTextToResponse("Opened Terms and Guide. Press Enter to continue");
+        break;
+      case "CLOSE_TERMS_GUIDE":
+        window.location.href = "";
+        setTextToResponse("Closed Terms and Guide. Press Enter to continue");
+        break;
       case "REDIRECT_ABOUT_US":
         window.location.href = "/about";
         setTextToResponse("Redirected About page. Press Enter to continue");
+        break;
+      case "REDIRECT_SIGN_IN":
+        window.location.href = "/authentication?with=sign-in";
+        setTextToResponse("Redirected Sign In page. Press Enter to continue");
+        break;
+      case "REDIRECT_SIGN_UP":
+        window.location.href = "/authentication";
+        setTextToResponse("Redirected Sign Up page. Press Enter to continue");
         break;
       case "LOST_AND_FOUND":
         window.location.href = "/lost-and-found";
