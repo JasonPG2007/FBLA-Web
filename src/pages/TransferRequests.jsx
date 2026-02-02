@@ -91,8 +91,8 @@ export default function TransferRequests() {
     }
   };
 
-  // SearchFirstNameRequest
-  const searchFirstNameRequest = async (query) => {
+  // search First Name and last name Request
+  const searchFirstNameLastNameRequest = async (query) => {
     if (query.trim() == "") return null;
 
     setIsInProcessing(true);
@@ -161,7 +161,7 @@ export default function TransferRequests() {
     }
   };
 
-  const debouncedFetch = debounce(searchFirstNameRequest, 500);
+  const debouncedFetch = debounce(searchFirstNameLastNameRequest, 500);
 
   // Handle mark received
   const handleMarkReceived = async (requestId, postId) => {
