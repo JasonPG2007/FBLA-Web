@@ -412,7 +412,9 @@ export default function ModalReportStuff() {
         );
 
         closeModalReport();
-        document.getElementById("popup-instruction").style.display = "flex"; // Show popup notice code
+        if (user.role !== "Admin") {
+          document.getElementById("popup-instruction").style.display = "flex"; // Show popup notice code
+        }
       }
 
       if (response.status === 403) {
@@ -426,6 +428,7 @@ export default function ModalReportStuff() {
         );
       }
     } catch (error) {
+      console.error(error);
       if (error.response) {
         const message = error.response.data?.message || "Server error";
 
