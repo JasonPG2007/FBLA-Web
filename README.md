@@ -30,7 +30,7 @@ This project addresses these issues by providing a centralized and efficient sys
 - 🔐 Authentication & Authorization (JWT for secure login)
 - 👤 User management system (Student & Admin roles)
 - 📦 Core feature 1: Report Lost/Found items with detailed descriptions and images
-- 🔎 Core feature 2: Advanced Search & Filtering by category and date
+- 🔎 Core feature 2: Advanced multimodal retrieval system using CLIP embeddings and cosine similarity, enabling semantic image-based search for lost-and-found items and hybrid filtering engine combining vector similarity search with structured metadata filters (category, date, location) for high-precision results
 - 🖼️ File/Image upload support
 - 📊 Dashboard for admin/user management
 - ⚡ Responsive UI / optimized UX
