@@ -5,6 +5,8 @@
 ---
 
 ## 🎯 Overview
+<img src="https://www-chs.stjohns.k12.fl.us/fbla/wp-content/uploads/sites/22/2025/08/FBLA_Logo_FullName_Horizontal_color-HiRes-scaled.jpg"/>
+<img src="https://back2me.vercel.app/Image/avatar_web.png"/>
 
 {{PROJECT_NAME}} is a {{full-stack / frontend / backend}} application designed to solve {{problem statement}}.
 
