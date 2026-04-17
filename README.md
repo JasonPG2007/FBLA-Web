@@ -68,9 +68,11 @@ Frontend (React)
 ↓
 REST API (.NET Core)
 ↓
-Service Layer
+Repository / Service Layer
 ↓
-Repository / Data Layer
+Data Access
+↓
+Object Business
 ↓
 Database (SQL Server)
 ```
