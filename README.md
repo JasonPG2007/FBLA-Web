@@ -63,7 +63,7 @@ This project addresses these issues by providing a centralized and efficient sys
 
 ## 🏗️ System Architecture
 
-
+```
 Frontend (React)
 ↓
 REST API (.NET Core)
