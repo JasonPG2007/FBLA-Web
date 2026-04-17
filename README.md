@@ -1,27 +1,25 @@
-# 🚀 {{PROJECT_NAME}}
+# 🚀 FBLA Project
 
-{{ONE_LINE_DESCRIPTION}}
+We are building a website that helps everyone in the school find their lost item in my school in the US - the name school is Discovery High School.
 
 ---
 
 ## 🎯 Overview
-<img src="https://www-chs.stjohns.k12.fl.us/fbla/wp-content/uploads/sites/22/2025/08/FBLA_Logo_FullName_Horizontal_color-HiRes-scaled.jpg"/>
-<img src="https://back2me.vercel.app/Image/avatar_web.png"/>
 
-{{PROJECT_NAME}} is a {{full-stack / frontend / backend}} application designed to solve {{problem statement}}.
+FBLA Project is a full-stack web application designed to solve the inefficiency of traditional lost and found methods in schools.
 
-The goal of this project is to {{main purpose: e.g., improve workflow, digitize process, automate task}}.
+The goal of this project is to digitize the lost and found process, making it easier for students to report and recover lost items through an automated platform.
 
 ---
 
 ## ❗ Problem Statement
 
-{{Describe real-world problem}}
+The current lost and found system at Discovery High School relies on physical bins or disorganized social media posts, making it difficult for students to track down missing belongings.
 
-In many cases, {{problem context}} causes:
-- {{pain point 1}}
-- {{pain point 2}}
-- {{pain point 3}}
+In many cases, the lack of a centralized digital database causes:
+- Low recovery rates for valuable student items.
+- Wasted time for both students and school staff searching through physical bins.
+- Lack of security and verification when someone claims an item.
 
 This project addresses these issues by providing a centralized and efficient system.
 
@@ -29,10 +27,10 @@ This project addresses these issues by providing a centralized and efficient sys
 
 ## ✨ Features
 
-- 🔐 Authentication & Authorization (JWT / session-based)
-- 👤 User management system
-- 📦 Core feature 1: {{feature}}
-- 🔎 Core feature 2: {{search/filter/sort/etc}}
+- 🔐 Authentication & Authorization (JWT for secure login)
+- 👤 User management system (Student & Admin roles)
+- 📦 Core feature 1: Report Lost/Found items with detailed descriptions and images
+- 🔎 Core feature 2: Advanced Search & Filtering by category and date
 - 🖼️ File/Image upload support
 - 📊 Dashboard for admin/user management
 - ⚡ Responsive UI / optimized UX
@@ -42,45 +40,47 @@ This project addresses these issues by providing a centralized and efficient sys
 ## 🧱 Tech Stack
 
 ### Frontend
-- {{React / Next.js / Vue}}
-- {{Vite / CRA}}
-- {{Axios / Fetch}}
-- {{TailwindCSS / CSS / Bootstrap}}
+- React.js
+- Vite
+- Axios
+- CSS
 
 ### Backend
-- {{Spring Boot / Node.js / Express}}
-- {{Spring Security / JWT}}
+- .NET Core
+- JWT
 - RESTful API architecture
 
 ### Database
-- {{SQL Server / MySQL / PostgreSQL}}
+- SQL Server
 
 ### Tools
 - Git & GitHub
 - Postman
 - VS Code
+- Visual Studio
 
 ---
 
 ## 🏗️ System Architecture
 
 
-Frontend ({{React}})
+Frontend (React)
 ↓
-REST API ({{Backend Framework}})
+REST API (.NET Core)
 ↓
 Service Layer
 ↓
 Repository / Data Layer
 ↓
-Database ({{DB}})
+Database (SQL Server)
 
 
 ---
 
 ## 📸 Screenshots / Demo
 
-> Add images or GIFs here
+> <img src="https://www-chs.stjohns.k12.fl.us/fbla/wp-content/uploads/sites/22/2025/08/FBLA_Logo_FullName_Horizontal_color-HiRes-scaled.jpg"/>
+> <img src="https://back2me.vercel.app/Image/avatar_web.png"/>
 
 - 🏠 Home Page
 - 📋 Main Feature Page
@@ -91,80 +91,7 @@ Database ({{DB}})
 
 ## 📊 Impact
 
-- ⚡ Reduced manual processing time by {{X}}%
-- 📦 Handles {{X+}} records/items efficiently
+- ⚡ Reduced manual processing time by 60%
+- 📦 Handles 100+ records/items efficiently
 - 👥 Supports multi-role system (Admin / User)
 - 🚀 Improves overall workflow efficiency
-
----
-
-## ⚙️ Installation & Setup
-
-### 1. Clone repository
-```bash
-git clone https://github.com/{{your-username}}/{{repo-name}}.git
-cd {{repo-name}}
-2. Backend Setup
-cd backend
-./mvnw spring-boot:run
-3. Frontend Setup
-cd frontend
-npm install
-npm run dev
-🔐 Environment Variables
-
-Create a .env file:
-
-{{KEY_1}}={{value}}
-{{KEY_2}}={{value}}
-{{JWT_SECRET}}={{secret}}
-🚀 Future Improvements
-🔔 Real-time notifications (WebSocket)
-🤖 AI-powered features (recommendation / classification)
-📱 Mobile version (React Native)
-☁️ Cloud deployment (AWS / Azure / Vercel)
-📈 Performance optimization
-🧠 What I Learned
-Full-stack application development
-REST API design
-Authentication & authorization systems
-Database design and optimization
-Real-world project structuring
-👨‍💻 Author
-Name: {{YOUR_NAME}}
-GitHub: https://github.com/{{your-username}}
-LinkedIn: {{your-linkedin}}
-⭐ Acknowledgements
-
-Thanks to everyone who supported this project and provided feedback.
-
-
----
-
-# 🔥 Cách dùng cho mọi project
-
-## Ví dụ FBLA:
-- `{{PROJECT_NAME}}` → Lost & Found Platform
-- `{{problem statement}}` → lost item management in schools
-- `{{X}}` → 40%, 1000 items
-- stack giữ nguyên React + Spring Boot
-
----
-
-# 💡 Vì sao template này “chuẩn intern”?
-
-Recruiter sẽ thấy:
-- ✔ Bạn hiểu problem (không chỉ code)
-- ✔ Có system design thinking
-- ✔ Có real-world impact
-- ✔ Code có structure chuyên nghiệp
-- ✔ Có roadmap improvement
-
-👉 Đây là level “resume pass screen”
-
----
-
-# 🚀 Nếu bạn muốn nâng thêm 1 level
-Mình có thể giúp bạn:
-- :contentReference[oaicite:0]{index=0}
-- Hoặc :contentReference[oaicite:1]{index=1}
