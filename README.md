@@ -1,95 +1,174 @@
-# 🚀 FBLA Project
+# 🚀 FBLA Smart Lost & Found System
 
-We are building a website that helps everyone in the school find their lost item in my school in the US - the name school is Discovery High School.
+A full-stack, AI-powered Lost & Found platform built for **Discovery High School (US)** to modernize and automate item recovery workflows using AI, real-time coordination, and secure verification systems.
 
 ---
 
 ## 🎯 Overview
 
-FBLA Project is a full-stack web application designed to solve the inefficiency of traditional lost and found methods in schools.
+This project replaces the traditional manual lost-and-found process (physical bins, social media posts) with a **centralized digital system** that enables:
 
-The goal of this project is to digitize the lost and found process, making it easier for students to report and recover lost items through an automated platform.
+- Intelligent AI-based item matching
+- Secure multi-user recovery workflow
+- Automated email-based notifications
+- Admin analytics & monitoring dashboard
+
+This is designed as a **real-world engineering system**, not a CRUD application.
 
 ---
 
 ## ❗ Problem Statement
 
-The current lost and found system at Discovery High School relies on physical bins or disorganized social media posts, making it difficult for students to track down missing belongings.
+The current system at Discovery High School suffers from:
 
-In many cases, the lack of a centralized digital database causes:
-- Low recovery rates for valuable student items.
-- Wasted time for both students and school staff searching through physical bins.
-- Lack of security and verification when someone claims an item.
+- Low recovery rate of lost items
+- No centralized tracking database
+- Manual, inefficient claim process
+- Lack of verification between users
+- No analytics for administrators
 
-This project addresses these issues by providing a centralized and efficient system.
+This project solves these issues through **automation, AI, and structured workflows**.
 
 ---
 
 ## ✨ Features
 
-- 🔐 Authentication & Authorization (JWT for secure login)
-- 👤 User management system (Student & Admin roles)
-- 📦 Core feature 1: Report Lost/Found items with detailed descriptions and images
-- 🔎 Core feature 2: Advanced multimodal retrieval system using CLIP embeddings and cosine similarity, enabling semantic image-based search for lost-and-found items and hybrid filtering engine combining vector similarity search with structured metadata filters (category, date, location) for high-precision results
-- 🖼️ File/Image upload support
-- 📊 Dashboard for admin/user management
-- ⚡ Responsive UI / optimized UX
+### 🔐 Authentication & Security
+- JWT-based authentication system
+- Email verification required for account activation
+- Role-based access control (Student / Admin)
+- Two-factor authentication using image-based login
+- Fraud prevention using unique pickup verification codes
 
 ---
 
-## 🧱 Tech Stack
+### 🔍 AI-Powered Matching System
+- OpenAI CLIP image embeddings
+- Cosine similarity-based image matching
+- Hybrid search (image + metadata filtering)
+- Ranked similarity scoring with percentage output
+- Personalized AI suggestions (owner-only visibility)
 
-### Frontend
-- React.js
-- Vite
-- Axios
-- CSS
+---
 
-### Backend
-- .NET Core
-- JWT
-- RESTful API architecture
+### 📬 Notification System
+- Email-driven event notification pipeline
+- Triggers for:
+  - New found item postings
+  - AI-matched item detection
+  - Admin announcements
+  - Pickup status updates
+- Supports both image-based and text-based matching alerts
 
-### Database
-- SQL Server
+---
 
-### Tools
-- Git & GitHub
-- Postman
-- VS Code
-- Visual Studio
+### 🤝 Pickup & Claim Workflow
+- Multi-step recovery process:
+  - “I will pick up” request
+  - Schedule negotiation between users
+  - Confirmation of meeting time
+  - Verification code exchange during handoff
+- Dynamic rescheduling system
+- Email synchronization for every workflow state change
+
+---
+
+### 📊 Admin Dashboard
+- Bar chart: Lost / Found / Returned items
+- Pie chart: system distribution overview
+- Line chart: inventory trend over time
+- Tracks:
+  - Recovery rate
+  - Item backlog
+  - System efficiency metrics
+
+---
+
+### ♿ Accessibility Features
+- Voice-controlled navigation using Web Speech API
+- Hands-free interaction support
+- Accessibility-first UI design
 
 ---
 
 ## 🏗️ System Architecture
 
 ```
-Frontend (React)
+Frontend (React + Vite)
 ↓
-REST API (.NET Core)
+REST API (ASP.NET Core .NET 8)
 ↓
-Repository / Service Layer
+Service / Business Layer
 ↓
-Data Access
-↓
-Object Business
+AI Matching Engine (CLIP + Cosine Similarity)
 ↓
 Database (SQL Server)
+↓
+Email Notification System (SMTP)
 ```
 
+---
+
+## ☁️ Deployment
+
+- Hosted on Microsoft Azure
+- Optimized for:
+  - High concurrency handling
+  - Async email processing
+  - Scalable API architecture
 
 ---
 
-## 📸 Screenshots / Demo
+## 🧠 Tech Stack
 
-> <img src="https://www-chs.stjohns.k12.fl.us/fbla/wp-content/uploads/sites/22/2025/08/FBLA_Logo_FullName_Horizontal_color-HiRes-scaled.jpg"/>
-> <img src="https://back2me.vercel.app/Image/avatar_web.png"/>
+### Frontend
+- React.js (Vite)
+- Web Speech API
+
+### Backend
+- ASP.NET Core (.NET 8)
+- SignalR (real-time updates)
+- JWT Authentication
+
+### AI / Matching
+- OpenAI CLIP embeddings
+- Cosine similarity engine
+
+### Database
+- SQL Server
+
+### Cloud
+- Microsoft Azure
 
 ---
 
-## 📊 Impact
+## 🔥 Engineering Highlights
 
-- ⚡ Reduced manual processing time by 60%
-- 📦 Handles 100+ records/items efficiently
-- 👥 Supports multi-role system (Admin / User)
-- 🚀 Improves overall workflow efficiency
+- Designed a **multi-user state-driven workflow system**
+- Built **AI-powered multimodal search engine**
+- Implemented **event-driven email notification architecture**
+- Solved real-world constraint: no push notifications → email-based system design
+- Created **fraud-resistant verification system**
+- Integrated AI + workflow + security + analytics into a unified platform
+
+---
+
+## 📈 Impact
+
+- Improved item recovery efficiency through AI matching
+- Reduced manual workload for school staff
+- Increased transparency between users
+- Enabled secure real-world item handoff
+- Provided actionable analytics for administrators
+
+---
+
+## 🧩 Future Improvements
+
+- WebSocket-based push notification system
+- Vector database integration (FAISS / Pinecone)
+- Location-based matching system
+- AI ranking model optimization
+- Mobile-first redesign
+
+---
